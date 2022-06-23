@@ -1,5 +1,5 @@
 from unicodedata import category
-from flask import Blueprint, render_template, request,flash,redirect,url_for
+from flask import Blueprint, render_template, request,flash,redirect,url_for,jsonify
 from flask_login import login_required, current_user
 from .models import Ticket, User, Comment
 from . import db
@@ -74,10 +74,10 @@ def tickets(ticket_id):
     return render_template("current_ticket.html",user=current_user,ticket=ticket)
 
 
-@views.route("/assign-consultant/<id>",methods=['GET','POST'])
+@views.route("/assign-consultant/<ticket_id>",methods=['GET','POST'])
 @login_required
-def assign_consultant(id):
-    ticket = Ticket.query.filter_by(id=id).first()
+def assign_consultant(ticket_id):
+    ticket = Ticket.query.filter_by(id=ticket_id).first()
     consultants = User.query.filter_by(usertype='Consultant').all()
     if not ticket:
         flash("Ticket does not exist", category='error')
@@ -92,15 +92,15 @@ def assign_consultant(id):
             ticket.status = status
             db.session.commit()
             flash("Consultant Assigned",category='success')
-            return redirect(url_for('views.home'))
+            return redirect('/tickets/'+str(ticket_id))
     
     return render_template('assign_consultant.html',user=current_user,consultants = consultants)
 
 
-@views.route("/update-status/<id>",methods=['GET','POST'])
+@views.route("/update-status/<ticket_id>",methods=['GET','POST'])
 @login_required
-def update_status(id):
-    ticket = Ticket.query.filter_by(id=id).first()
+def update_status(ticket_id):
+    ticket = Ticket.query.filter_by(id=ticket_id).first()
     if not ticket:
         flash("Ticket does not exist", category='error')
     elif current_user.usertype != 'Consultant':
@@ -115,7 +115,7 @@ def update_status(id):
             if status == 'Complete':
                 return redirect('/estimated-details/'+str(ticket.id))
             flash("Status updated",category='success')
-            return redirect(url_for('views.home'))
+            return redirect('/tickets/'+str(ticket_id))
     return render_template('update_status.html',user=current_user)
 
 @views.route("create-comment/<ticket_id>",methods=['POST'])
@@ -134,24 +134,41 @@ def create_comment(ticket_id):
         else:
             flash("Post does not exist",category='error')
 
-    return redirect(url_for('views.home'))
+    return redirect('/tickets/'+str(ticket_id))
 
 
 @views.route("/delete-comment/<comment_id>")
 @login_required
 def delete_comment(comment_id):
     comment = Comment.query.filter_by(id=comment_id).first()
-
+    ticket_id = comment.ticket_id
     if not comment:
        flash("Comment does not exist", category='error')
     elif current_user.id != comment.author:
         flash("You are not authorized to delete this comment", category='error')
     else:
         comment.status = "Deleted"
-        #db.session.delete(comment)
         db.session.commit()
         
-    return redirect(url_for('views.home'))
+    return redirect('/tickets/'+str(ticket_id))
+
+@views.route("/edit-comment/<comment_id>/<newtext>",methods=['POST'])
+@login_required
+def edit_comment(comment_id,newtext):
+    comment = Comment.query.filter_by(id=comment_id).first()
+    ticket_id = comment.ticket_id
+    if not comment:
+        flash("Comment does not exist", category='error')
+    elif current_user.id != comment.author:
+        flash("You do not have permission to update status",category='error')
+    else:
+        if request.method == "POST":
+            comment.text = newtext
+            comment.status = "Edited"
+            db.session.commit()
+            flash("Comment Edited",category='success')
+    return redirect('/tickets/'+str(ticket_id))
+
 
 @views.route("/estimated-details/<ticket_id>",methods=['GET','POST'])
 @login_required
@@ -164,5 +181,5 @@ def estimated_details(ticket_id):
         ticket.cost = cost
         db.session.commit()
         flash("Estimated Details Updated",category='success')
-        return redirect(url_for('views.home'))
+        return redirect('/tickets/'+str(ticket_id))
     return render_template('estimate_details.html',user=current_user)
