@@ -1,0 +1,137 @@
+{% extends "base.html" %}
+{% block title %} {% endblock %}
+{% block content %}
+<h1 align="center">{% block header %}Tickets{% endblock %}</h1>
+    <div id="tickets">
+    {% for ticket in tickets %}
+        <div class="card border-dark">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                Ticket #{{ticket.id}}
+                <div class="ml-auto p-2">
+                Created By: 
+                <a href="/ticketsby/{{ticket.author.username}}">
+                    {{ticket.author.username}}
+                </a>
+                </div>
+                {% if user.id == ticket.author_id %}
+                <div class = "btn-group">
+                    <button 
+                        type="button" 
+                        class="btn btn-sm btn-dark" 
+                    > 
+                        <a href="/delete-ticket/{{ticket.id}}" class="dropdown-item">
+                            <span class="bi-trash"></span>
+                        </a>
+                    </button>
+                </div>
+                {% endif %}
+                {% if user.usertype == 'GDC_SPOC' %}
+                <div class = "btn-group">
+                    <button 
+                        type="button" 
+                        class="btn btn-sm btn-dark" 
+                    > 
+                        <a href="/assign-consultant/{{ticket.id}}" class="dropdown-item">
+                            <span class="bi-pen"></span> Assign Consultant
+                        </a>
+                    </button>
+                </div>
+                {% endif %}
+                {% if user.usertype == 'Consultant' %}
+                <div class = "btn-group">
+                    <button 
+                        type="button" 
+                        class="btn btn-sm btn-dark" 
+                    > 
+                        <a href="/update-status/{{ticket.id}}" class="dropdown-item">
+                            <span class="bi-pen"></span> Update Status
+                        </a>
+                    </button>
+                </div>
+                {% endif %}
+            </div>
+            <div class = "card-body">
+                <div class = "card-text">
+                    <h5>Customer Name: {{ticket.custname}}</h5>
+                    <p>Customer Requirement: {{ticket.custreq}}</p>
+                    <p>Assigned Consultant: {{ticket.consultant.username}}</p>
+                    <p>Current Status: {{ticket.status}}</p>
+                    {% if ticket.status == 'Complete' %}
+                        <p><b>Estimated Details:</b></p>
+                        <p>Time: {{ticket.hours}} Hours</p>
+                        <p>Cost: {{ticket.cost}} INR</p>
+                    {% endif %}
+                </div>
+                <br>
+                <div class="collapse" id="comments-{{ticket.id}}">
+                    <div class="card">
+                        <div class="card-body" id="comments-expanded-{{ticket.id}}">
+                            {% for comment in ticket.comments %}
+                            <div class="d-flex justify-content-between align-items-center">
+                                <div>
+                                    <a href="/tickets/{{comment.User.username}}">{{comment.User.username}} ({{comment.User.usertype}})</a>:
+                                    {% if comment.status == 'Deleted' %}
+                                        <i>This message was deleted</i>
+                                    {% else %}
+                                        {{comment.text}}
+                                    {% endif %}
+                                </div>
+                                <div>
+                                    <small class="text-muted">{{comment.date_created}}</small>
+                                    {% if user.id == comment.author %}
+                                    <div class = "btn-group">
+                                        <button 
+                                            type="button" 
+                                            class="btn btn-sm btn-dark" 
+                                        > 
+                                        <a href="/delete-comment/{{comment.id}}" class="dropdown-item">
+                                            <span class="bi-trash"></span>
+                                        </a>
+                                        </button>
+                                    </div>
+                                    {% endif %}
+                                </div>
+                            </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+                <p class ="card-text">
+                    {% if ticket.comments|length > 0 %}
+                    <a data-bs-toggle="collapse" href="#comments-{{ticket.id}}" role="button">
+                        <small>View {{ticket.comments|length}} Comments</small>
+                    </a>
+                    {% else %}
+                    <small class="text-muted">No Comments</small>
+                    {% endif %}
+                </p>    
+                <form class="input-group mb-3" method="POST" action="/create-comment/{{ticket.id}}">
+                    <input 
+                        type="text" 
+                        id="text" 
+                        name="text" 
+                        class="form-control" 
+                        placeholder="Comment here"
+                    />
+                    <button type="submit" class="btn btn-dark">Comment</button>
+                </form>
+            </div>
+            <div class = "card-footer text-muted">
+                {{ticket.date_created}}
+            </div>
+        </div>
+        <br>
+    </div>
+    {% endfor %}
+    {% block footer %}
+    {% if user.usertype == 'PSS' %}
+    <div align="center">
+        <a href="/create-ticket">
+            <button type="button" class="btn btn-dark btn-lg">
+                Create New Ticket
+            </button>
+        </a>
+    </div>
+    {% endif %}
+    {% endblock %}
+{% endblock %}

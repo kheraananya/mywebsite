@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+{% block title %} Assign Consultant {% endblock %}
+{% block content %}
+<h1 align="center">Assign a Consultant</h1>
+<form method='POST'>
+    <div align='center' class="form-group">
+        <label for="consultant-name">Select Consultant</label>
+        <select class="form-select" id="consultant-name" name = "consultant-name">
+            {% for consultant in consultants %}
+                <option value="{{consultant.username}}">{{consultant.username}}</option>
+            {% endfor %}
+        </select>
+        <br>
+        <button type="submit" class="btn btn-lg btn-dark">Assign</button>
+    </div>
+</form>
+{% endblock %}

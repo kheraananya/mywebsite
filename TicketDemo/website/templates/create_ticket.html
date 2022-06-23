@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+{% block title %} Create Ticket {% endblock %}
+{% block content %}
+<h1 align="center">Create a Ticket</h1>
+<form method='POST'>
+    <div align='center' class="form-group">
+        <label for="custname">Customer Name</label>
+        <input 
+            type="text" 
+            id = "custname" 
+            name = "custname" 
+            class = "form-control"
+            placeholder = "Enter Customer Name"
+        />
+        <label for="custreq">Customer Requirement</label>
+        <input 
+            type="text" 
+            id = "custreq" 
+            name = "custreq" 
+            class = "form-control"
+            placeholder = "Enter Customer Requirement"
+        />
+        <br>
+        <button type="submit" class="btn btn-lg btn-dark">Create</button>
+    </div>
+</form>
+{% endblock %}

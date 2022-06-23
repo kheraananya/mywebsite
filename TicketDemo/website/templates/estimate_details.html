@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+{% block title %} Effort Estimation {% endblock %}
+{% block content %}
+<h1 align="center">Effort Estimation</h1>
+<form method='POST'>
+    <div align='center' class="form-group">
+        <label for="hours">Hours Required</label>
+        <input 
+            type="number" 
+            id = "hours" 
+            name = "hours" 
+            class = "form-control"
+            placeholder = "Enter Estimated Hours"
+        />
+        <br>
+        <label for="cost">Cost</label>
+        <input 
+            type="number" 
+            id = "cost" 
+            name = "cost"
+            class = "form-control"
+            placeholder = "Enter Estimated Cost"
+        />
+        <br>
+        <button type="submit" class="btn btn-lg btn-dark">Submit</button>
+    </div>
+</form>
+{% endblock %}

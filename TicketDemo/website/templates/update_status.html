@@ -1,0 +1,19 @@
+{% extends "base.html" %}
+{% block title %} Update Status {% endblock %}
+{% block content %}
+<h1 align="center">Update Status</h1>
+<form method='POST'>
+    <div align='center' class="form-group">
+        <label for="status">Update Status</label>
+        <input 
+            type="text" 
+            id = "status" 
+            name = "status" 
+            class = "form-control"
+            placeholder = "Enter New Status"
+        />
+        <br>
+        <button type="submit" class="btn btn-lg btn-dark">Update</button>
+    </div>
+</form>
+{% endblock %}
