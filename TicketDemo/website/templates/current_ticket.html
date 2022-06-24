@@ -77,8 +77,9 @@
                                 <div>
                                     <small class="text-muted">
                                         {% if comment.status == 'Edited' %}
-                                            <i id="editmsg{{comment.id}}">(Edited)</i>
+                                            <i>(Edited)</i>
                                         {% endif %}
+                                        <i id="editmsg{{comment.id}}"></i>
                                         {{comment.date_created}}
                                     </small>
                                     {% if user.id == comment.author %}
@@ -152,6 +153,7 @@
                 edittext.contentEditable = 'False';
                 icon.setAttribute("class","bi-pen");
                 var newtext = edittext.innerHTML;
+                editmsg.textContent = "(Edited)";
                 let xhr = new XMLHttpRequest();
                 xhr.open("POST", "/edit-comment/"+comment_id+"/"+newtext);
                 data = {"newtext":newtext};
