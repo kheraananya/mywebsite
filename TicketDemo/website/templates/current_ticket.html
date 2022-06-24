@@ -80,7 +80,7 @@
                                             <i>(Edited)</i>
                                         {% endif %}
                                         <i id="editmsg{{comment.id}}"></i>
-                                        {{comment.date_created}}
+                                        {{comment.date_created | humanize}}
                                     </small>
                                     {% if user.id == comment.author %}
                                     <div class = "btn-group">
@@ -133,7 +133,7 @@
                 </form>
             </div>
             <div class = "card-footer text-muted">
-                {{ticket.date_created}}
+                {{ticket.date_created | humanize}}
             </div>
         </div>
         <br>

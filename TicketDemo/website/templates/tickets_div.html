@@ -77,7 +77,7 @@
                                     {% endif %}
                                 </div>
                                 <div>
-                                    <small class="text-muted">{{comment.date_created}}</small>
+                                    <small class="text-muted">{{comment.date_created | humanize}}</small>
                                     {% if user.id == comment.author %}
                                     <div class = "btn-group">
                                         <button 
