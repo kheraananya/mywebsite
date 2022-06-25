@@ -54,7 +54,7 @@
                     <p>Customer Requirement: {{ticket.custreq}}</p>
                     <p>Assigned Consultant: {{ticket.consultant.username}}</p>
                     <p>Current Status: {{ticket.status}}</p>
-                    {% if ticket.status == 'Complete' %}
+                    {% if ticket.status == 'Completed' %}
                         <p><b>Estimated Details:</b></p>
                         <p>Time: {{ticket.hours}} Hours</p>
                         <p>Cost: {{ticket.cost}} INR</p>

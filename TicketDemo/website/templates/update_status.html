@@ -5,13 +5,10 @@
 <form method='POST'>
     <div align='center' class="form-group">
         <label for="status">Update Status</label>
-        <input 
-            type="text" 
-            id = "status" 
-            name = "status" 
-            class = "form-control"
-            placeholder = "Enter New Status"
-        />
+        <select class="form-select" id="status" name = "status">
+            <option value="Pending">Pending</option>
+            <option value="Completed">Completed</option>
+        </select>
         <br>
         <button type="submit" class="btn btn-lg btn-dark">Update</button>
     </div>

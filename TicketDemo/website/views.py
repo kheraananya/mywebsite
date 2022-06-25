@@ -122,7 +122,7 @@ def update_status(ticket_id):
             ticket.status = status
             ticket.last_modified = now
             db.session.commit()
-            if status == 'Complete':
+            if status == 'Completed':
                 return redirect('/estimated-details/'+str(ticket.id))
             flash("Status updated",category='success')
             return redirect('/tickets/'+str(ticket_id))
