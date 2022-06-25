@@ -25,6 +25,7 @@ class Ticket(db.Model):
     custname = db.Column(db.String(150),unique=True)
     custreq = db.Column(db.String(150))
     date_created = db.Column(db.DateTime, default = time.strftime("%d/%B/%Y %H:%M:%S"))
+    last_modified = db.Column(db.DateTime, default = time.strftime("%d/%B/%Y %H:%M:%S"))
     author_id = db.Column(db.Integer, db.ForeignKey('User.id',ondelete="CASCADE"),nullable=False)
     consultant_id = db.Column(db.Integer, db.ForeignKey('User.id',ondelete="CASCADE"),nullable=True)
     author = db.relationship("User",foreign_keys=[author_id])

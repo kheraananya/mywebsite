@@ -10,6 +10,7 @@
                 <th>Customer Name</th>
                 <th>Created By</th>
                 <th>Created on</th>
+                <th>Last Modified</th>
                 <th>Consultant Assigned</th>
                 <th>Current Status</th>
             </tr>
@@ -21,13 +22,13 @@
                   <td>{{ticket.custname}}</td>
                   <td>{{ticket.author.username}}</td>
                   <td>{{ticket.date_created}}</td>
-                  
+                  <td>{{ticket.last_modified}}</td>
                   <td>{% if ticket.consultant_id %}
-                    {{ticket.consultant.username}}
+                        {{ticket.consultant.username}}
                       {% else %}
                         Not Assigned
-                       {% endif %}
-                    </td>
+                      {% endif %}
+                  </td>
                   <td>{{ticket.status}}</td>
               </tr>
           {% endfor %}

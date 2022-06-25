@@ -3,6 +3,8 @@ from flask import Blueprint, render_template, request,flash,redirect,url_for,jso
 from flask_login import login_required, current_user
 from .models import Ticket, User, Comment
 from . import db
+from datetime import datetime
+import time
 
 views = Blueprint("views",__name__)
 
@@ -40,6 +42,7 @@ def create_ticket():
 @views.route("/delete-ticket/<id>")
 @login_required
 def delete_ticket(id):
+    now = time.strftime("%d/%B/%Y %H:%M:%S")
     ticket = Ticket.query.filter_by(id=id).first()
 
     if not ticket:
@@ -48,6 +51,7 @@ def delete_ticket(id):
         flash("You do not have permission to delete this ticket",category='error')
     else:
         db.session.delete(ticket)
+        ticket.last_modified = now
         db.session.commit()
         flash('Ticket Deleted',category='success')
     return redirect(url_for('views.home'))
@@ -77,6 +81,7 @@ def tickets(ticket_id):
 @views.route("/assign-consultant/<ticket_id>",methods=['GET','POST'])
 @login_required
 def assign_consultant(ticket_id):
+    now = time.strftime("%d/%B/%Y %H:%M:%S")
     ticket = Ticket.query.filter_by(id=ticket_id).first()
     consultants = User.query.filter_by(usertype='Consultant').all()
     if not ticket:
@@ -90,6 +95,7 @@ def assign_consultant(ticket_id):
             consultant_id = User.query.filter_by(username=consultant).first().id
             ticket.consultant_id = consultant_id
             ticket.status = status
+            ticket.last_modified = now
             db.session.commit()
             flash("Consultant Assigned",category='success')
             return redirect('/tickets/'+str(ticket_id))
@@ -100,6 +106,7 @@ def assign_consultant(ticket_id):
 @views.route("/update-status/<ticket_id>",methods=['GET','POST'])
 @login_required
 def update_status(ticket_id):
+    now = time.strftime("%d/%B/%Y %H:%M:%S")
     ticket = Ticket.query.filter_by(id=ticket_id).first()
     if not ticket:
         flash("Ticket does not exist", category='error')
@@ -111,6 +118,7 @@ def update_status(ticket_id):
         if request.method == "POST":
             status = request.form.get('status')
             ticket.status = status
+            ticket.last_modified = now
             db.session.commit()
             if status == 'Complete':
                 return redirect('/estimated-details/'+str(ticket.id))
@@ -121,15 +129,17 @@ def update_status(ticket_id):
 @views.route("create-comment/<ticket_id>",methods=['POST'])
 @login_required
 def create_comment(ticket_id):
+    ticket = Ticket.query.filter_by(id=ticket_id).first()
+    now = time.strftime("%d/%B/%Y %H:%M:%S")
     text = request.form.get('text')
 
     if not text:
         flash("Comment cannot be empty",category='error')
     else:
-        ticket = Ticket.query.filter_by(id=ticket_id)
         if ticket:
             comment = Comment(text=text,author=current_user.id,ticket_id=ticket_id)
             db.session.add(comment)
+            ticket.last_modified = now
             db.session.commit()
         else:
             flash("Post does not exist",category='error')
@@ -140,14 +150,17 @@ def create_comment(ticket_id):
 @views.route("/delete-comment/<comment_id>")
 @login_required
 def delete_comment(comment_id):
+    now = time.strftime("%d/%B/%Y %H:%M:%S")
     comment = Comment.query.filter_by(id=comment_id).first()
     ticket_id = comment.ticket_id
+    ticket = Ticket.query.filter_by(id=ticket_id).first()
     if not comment:
        flash("Comment does not exist", category='error')
     elif current_user.id != comment.author:
         flash("You are not authorized to delete this comment", category='error')
     else:
         comment.status = "Deleted"
+        ticket.last_modified = now
         db.session.commit()
         
     return redirect('/tickets/'+str(ticket_id))
@@ -155,8 +168,10 @@ def delete_comment(comment_id):
 @views.route("/edit-comment/<comment_id>/<newtext>",methods=['POST'])
 @login_required
 def edit_comment(comment_id,newtext):
+    now = time.strftime("%d/%B/%Y %H:%M:%S")
     comment = Comment.query.filter_by(id=comment_id).first()
     ticket_id = comment.ticket_id
+    ticket = Ticket.query.filter_by(id=ticket_id).first()
     if not comment:
         flash("Comment does not exist", category='error')
     elif current_user.id != comment.author:
@@ -165,6 +180,7 @@ def edit_comment(comment_id,newtext):
         if request.method == "POST":
             comment.text = newtext
             comment.status = "Edited"
+            ticket.last_modified = now
             db.session.commit()
             flash("Comment Edited",category='success')
     return redirect('/tickets/'+str(ticket_id))
@@ -173,12 +189,14 @@ def edit_comment(comment_id,newtext):
 @views.route("/estimated-details/<ticket_id>",methods=['GET','POST'])
 @login_required
 def estimated_details(ticket_id):
+    now = time.strftime("%d/%B/%Y %H:%M:%S")
     ticket = Ticket.query.filter_by(id=ticket_id).first()
     if request.method == "POST":
         hours = request.form.get('hours')
         cost = request.form.get('cost')
         ticket.hours = hours
         ticket.cost = cost
+        ticket.last_modified = now
         db.session.commit()
         flash("Estimated Details Updated",category='success')
         return redirect('/tickets/'+str(ticket_id))
