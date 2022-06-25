@@ -1,3 +1,4 @@
+from asyncio import constants
 from time import timezone
 from . import db
 from flask_login import UserMixin
@@ -14,9 +15,11 @@ class User(db.Model, UserMixin):
     password = db.Column(db.String(150))
     usertype = db.Column(db.String(20))
     date_created = db.Column(db.DateTime, default = time.strftime("%d/%B/%Y %H:%M:%S") )
+    
     #tickets = db.relationship('Ticket', backref='User',passive_deletes=True)
     #consulted = db.relationship('Ticket', backref='User',passive_deletes=True)
     comments = db.relationship('Comment',backref='User',passive_deletes=True)
+    status = db.Column(db.String(20))
 
 
 class Ticket(db.Model):

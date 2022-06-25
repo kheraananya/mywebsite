@@ -90,12 +90,14 @@ def assign_consultant(ticket_id):
         flash("You do not have permission to assign consultant",category='error')
     else:
         if request.method == "POST":
-            consultant = request.form.get('consultant-name')
+            consultant_name = request.form.get('consultant-name')
             status = "Consultant assigned"
-            consultant_id = User.query.filter_by(username=consultant).first().id
+            consultant = User.query.filter_by(username=consultant_name).first()
+            consultant_id = consultant.id
             ticket.consultant_id = consultant_id
             ticket.status = status
             ticket.last_modified = now
+            consultant.status = "Occupied"
             db.session.commit()
             flash("Consultant Assigned",category='success')
             return redirect('/tickets/'+str(ticket_id))

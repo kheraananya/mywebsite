@@ -6,9 +6,20 @@
     <div align='center' class="form-group">
         <label for="consultant-name">Select Consultant</label>
         <select class="form-select" id="consultant-name" name = "consultant-name">
-            {% for consultant in consultants %}
-                <option value="{{consultant.username}}">{{consultant.username}}</option>
-            {% endfor %}
+            <optgroup label="Available consultants">
+                {% for consultant in consultants %}
+                    {% if consultant.status != "Occupied" %}
+                        <option value="{{consultant.username}}">{{consultant.username}}</option>
+                    {% endif %}  
+                {% endfor %}     
+            </optgroup>
+            <optgroup label="Occupied consultants">
+                {% for consultant in consultants %}
+                    {% if consultant.status == "Occupied" %}
+                    <option selected disabled>{{consultant.username}}</option>
+                    {% endif %}
+                {% endfor %} 
+            </optgroup>
         </select>
         <br>
         <button type="submit" class="btn btn-lg btn-dark">Assign</button>
