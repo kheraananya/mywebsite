@@ -9,7 +9,7 @@
                 <th>Ticket ID</th>        
                 <th>Customer Name</th>
                 <th>Created By</th>
-                <th>Date Created</th>
+                <th>Created on</th>
                 <th>Consultant Assigned</th>
                 <th>Current Status</th>
             </tr>
@@ -18,10 +18,16 @@
           {% for ticket in tickets %}
               <tr>
                   <td><a href="/tickets/{{ticket.id}}">{{ticket.id}}</a></td>
-                  <td><a href="/tickets/{{ticket.id}}">{{ticket.custname}}</a></td>
+                  <td>{{ticket.custname}}</td>
                   <td>{{ticket.author.username}}</td>
-                  <td>{{ticket.date_created | humanize }}</td>
-                  <td>{{ticket.consultant.username}}</td>
+                  <td>{{ticket.date_created}}</td>
+                  
+                  <td>{% if ticket.consultant_id %}
+                    {{ticket.consultant.username}}
+                      {% else %}
+                        Not Assigned
+                       {% endif %}
+                    </td>
                   <td>{{ticket.status}}</td>
               </tr>
           {% endfor %}
@@ -45,3 +51,4 @@
     {% endif %}
     {% endblock %}
 {% endblock %}
+

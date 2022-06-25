@@ -3,6 +3,7 @@ from . import db
 from flask_login import UserMixin
 from sqlalchemy.sql import func
 from datetime import datetime
+import datetime
 import time
 
 class User(db.Model, UserMixin):
@@ -12,7 +13,7 @@ class User(db.Model, UserMixin):
     username = db.Column(db.String(150),unique=True)
     password = db.Column(db.String(150))
     usertype = db.Column(db.String(20))
-    date_created = db.Column(db.DateTime,default = time.strftime("%d %B, %Y %H:%M:%S"))
+    date_created = db.Column(db.DateTime, default = time.strftime("%d/%B/%Y %H:%M:%S") )
     #tickets = db.relationship('Ticket', backref='User',passive_deletes=True)
     #consulted = db.relationship('Ticket', backref='User',passive_deletes=True)
     comments = db.relationship('Comment',backref='User',passive_deletes=True)
@@ -23,7 +24,7 @@ class Ticket(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     custname = db.Column(db.String(150),unique=True)
     custreq = db.Column(db.String(150))
-    date_created = db.Column(db.DateTime,default = time.strftime("%d %B, %Y %H:%M:%S"))
+    date_created = db.Column(db.DateTime, default = time.strftime("%d/%B/%Y %H:%M:%S"))
     author_id = db.Column(db.Integer, db.ForeignKey('User.id',ondelete="CASCADE"),nullable=False)
     consultant_id = db.Column(db.Integer, db.ForeignKey('User.id',ondelete="CASCADE"),nullable=True)
     author = db.relationship("User",foreign_keys=[author_id])
@@ -36,7 +37,7 @@ class Ticket(db.Model):
 class Comment(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     text = db.Column(db.String(200),nullable=False)
-    date_created = db.Column(db.DateTime,default = time.strftime("%d %B, %Y %H:%M:%S"))
+    date_created = db.Column(db.DateTime, default = time.strftime("%d-%b-%Y %H:%M:%S") , index =True)
     author = db.Column(db.Integer, db.ForeignKey(
         'User.id', ondelete="CASCADE"),nullable=False)
     ticket_id = db.Column(db.Integer, db.ForeignKey(
