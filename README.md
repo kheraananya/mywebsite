@@ -12,5 +12,5 @@ Steps to run:
     - Install PostgreSQL
     - Open pgAdmin4
     - Create new database and name it "TicketDemo"
-    - Open init.py and update the following line with your password: 'postgresql://postgres:<password>@localhost/TicketDemo'
+    - Open init.py and update the following line with your password: 'postgresql://postgres:(password)@localhost/TicketDemo'
 3. Run app.py
