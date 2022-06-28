@@ -14,8 +14,8 @@ Python Modules to be installed:
 
 ## Installation
 
-Install Flask using pip command : 'pip install flask'
-  Steps to run:
+Install Flask using pip command : 'pip install flask'.
+ Steps to run:
  * Install all modules given above using pip
  * Connect with local PostgreSQL database:
     * Install PostgreSQL
