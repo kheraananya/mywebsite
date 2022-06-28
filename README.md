@@ -7,28 +7,28 @@ Python Modules to be installed:
 - flask_sqlalchemy
 - psycopg2
 
-### Libraries Used
+## Libraries Used
 
 * [Werkzeug](https://werkzeug.palletsprojects.com/en/2.1.x/) - It is used to create a WSGI (Web Server Gateway Interface) compatible web application in Python.
 * [Flask_login](https://flask-login.readthedocs.io/en/latest/) - Flask-Login provides user session management for Flask. It handles the common tasks of logging in, logging     out, and remembering your users'.
 
-### Installation
+## Installation
 
 Install Flask using pip command : 'pip install flask'
 Steps to run:
  * Install all modules given above using pip
  * Connect with local PostgreSQL database:
-    *Install PostgreSQL
-    *Open pgAdmin4
-    *Create new database and name it "TicketDemo"
-    *Open init.py and update the following line with your password:' 'postgresql://postgres:(password)@localhost/TicketDemo' '
+    * Install PostgreSQL
+    * Open pgAdmin4
+    * Create new database and name it "TicketDemo"
+    * Open init.py and update the following line with your password:' 'postgresql://postgres:(password)@localhost/TicketDemo' '
 
 ## Connect PostgreSQL Using Python
 ```python
 def create_app():
     app = Flask(__name__)
-    app.config['SECRET_KEY'] = "hariharan"
-    app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://postgres:252001@localhost/TicketDemo'
+    app.config['SECRET_KEY'] = "Any key"
+    app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://postgres:(password)@localhost/TicketDemo'
     app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
     db.init_app(app)
 ```
