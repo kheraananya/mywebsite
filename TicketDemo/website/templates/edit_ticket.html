@@ -1,0 +1,158 @@
+{% extends "base.html" %}
+{% block title %} Edit Ticket {% endblock %}
+{% block content %}
+<h1 align="center"> Edit Ticket </h1>
+{% if user.usertype == 'reporter' %}
+<form method='POST'>
+    <div align='center' class="form-group">
+        <label for="custname">Customer Name</label>
+        <input 
+            type="text" 
+            id = "custname" 
+            name = "custname" 
+            class = "form-control"
+            placeholder = "{{ticket.custname}}"
+        />
+        <label for="custreq">Customer Requirement</label>
+        <input 
+            type="text" 
+            id = "custreq" 
+            name = "custreq" 
+            class = "form-control"
+            placeholder = "{{ticket.custreq}}"
+        />
+        <br>
+        <button type="submit" class="btn btn-lg btn-dark">Edit</button>
+    </div>
+</form>
+{% endif %}
+{% if user.usertype == 'assignee' %}
+<form method='POST'>
+    <div align='center' class="form-group">
+        <label for="custname">Customer Name</label>
+        <input 
+            type="text" 
+            id = "custname" 
+            name = "custname" 
+            class = "form-control"
+            placeholder = "{{ticket.custname}}"
+        />
+        <label for="custreq">Customer Requirement</label>
+        <input 
+            type="text" 
+            id = "custreq" 
+            name = "custreq" 
+            class = "form-control"
+            placeholder = "{{ticket.custreq}}"
+        />
+        <br>
+        <label for="status">Update Status</label>
+        <select class="form-select" id="status" name = "status">
+            <option value="Pending">Pending</option>
+            <option value="Completed">Completed</option>
+        </select>
+        <br>
+        <label for="hours">Hours</label>
+        <input 
+            type="number" 
+            id = "hours" 
+            name = "hours" 
+            class = "form-control"
+            placeholder = "{{ticket.hours}}"
+        />
+        <br>
+        <label for="cost">Cost</label>
+        <input 
+            type="number" 
+            id = "cost" 
+            name = "cost"
+            class = "form-control"
+            placeholder = "{{ticket.cost}}"
+        />
+        <br>
+        <button type="submit" class="btn btn-lg btn-dark">Edit</button>
+    </div>
+</form>
+{% endif %}
+
+{% if user.usertype == 'admin' %}
+<form method='POST'>
+    <div align='center' class="form-group">
+        <label for="custname">Customer Name</label>
+        <input 
+            type="text" 
+            id = "custname" 
+            name = "custname" 
+            class = "form-control"
+        />
+        <label for="custreq">Customer Requirement</label>
+        <input 
+            type="text" 
+            id = "custreq" 
+            name = "custreq" 
+            class = "form-control"
+            placeholder = "{{ticket.custreq}}"
+        />
+        <br>
+        <label for="status">Update Status</label>
+        <select class="form-select" id="status" name = "status">
+            <option value="Pending">Pending</option>
+            <option value="Completed">Completed</option>
+        </select>
+        <br>
+        <label for="hours">Hours</label>
+        <input 
+            type="number" 
+            id = "hours" 
+            name = "hours" 
+            class = "form-control"
+            placeholder = "{{ticket.hours}}"
+        />
+        <br>
+        <label for="cost">Cost</label>
+        <input 
+            type="number" 
+            id = "cost" 
+            name = "cost"
+            class = "form-control"
+            placeholder = "{{ticket.cost}}"
+        />
+        <br>
+        <select class="form-select" id="assignee-name" name = "assignee-name">
+            <option></option>
+                <optgroup label="Available assignees">
+                   
+                    {% for assignee in assignees %}
+                        {% if assignee.status != "Occupied" %}
+                            <option value="{{assignee.username}}">{{assignee.username}}</option>
+                        {% endif %}  
+                    {% endfor %}     
+                </optgroup>
+            <optgroup label="Occupied assignees">
+                {% for assignee in assignees %}
+                    {% if assignee.status == "Occupied" %}
+                    <option selected disabled>{{assignee.username}}</option>
+                    {% endif %}
+                {% endfor %} 
+            </optgroup>
+        </select>
+        <br>
+        <button type="submit" class="btn btn-lg btn-dark">Edit</button>
+    </div>
+</form>
+{% endif %}
+<script>
+    $(document).ready(function() {
+        var custname = document.getElementById("custname");
+        var custreq = document.getElementById("custreq");
+        var status = document.getElementById("status");
+        var hours = document.getElementById("hours");
+        var cost = document.getElementById("cost");
+        custname.value = "{{ticket.custname}}";
+        custreq.value = "{{ticket.custreq}}";
+        status.value = "{{ticket.status}}";
+        hours.value = "{{ticket.hours}}";
+        cost.value = "{{ticket.cost}}";
+    });
+</script>
+{% endblock %}

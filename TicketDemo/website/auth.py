@@ -49,7 +49,7 @@ def signup():
             flash('Email is invalid',category='error')
         else:
             new_user = User(email=email,username = username,password = generate_password_hash(password1,method="sha256"),usertype = usertype)
-            if usertype == "Consultant":
+            if usertype == "assignee":
                 new_user.status = "Available"
             db.session.add(new_user)
             db.session.commit()

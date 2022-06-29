@@ -11,6 +11,16 @@
                     {{ticket.author.username}}
                 </a>
                 </div>
+                <div class = "btn-group">
+                    <button 
+                        type="button" 
+                        class="btn btn-sm" 
+                    > 
+                        <a href="/edit-ticket/{{ticket.id}}" class="dropdown-item">
+                            <span class="bi-pen">Edit Ticket</span>
+                        </a>
+                    </button>
+                </div>
                 {% if user.id == ticket.author_id %}
                 <div class = "btn-group">
                     <button 
@@ -23,19 +33,19 @@
                     </button>
                 </div>
                 {% endif %}
-                {% if user.usertype == 'GDC_SPOC' %}
+                {% if user.usertype == 'admin' %}
                 <div class = "btn-group">
                     <button 
                         type="button" 
                         class="btn btn-sm" 
                     > 
-                        <a href="/assign-consultant/{{ticket.id}}" class="dropdown-item">
-                            <span class="bi-pen"></span> Assign Consultant
+                        <a href="/assign-assignee/{{ticket.id}}" class="dropdown-item">
+                            <span class="bi-pen"></span> Assignee
                         </a>
                     </button>
                 </div>
                 {% endif %}
-                {% if user.usertype == 'Consultant' %}
+                {% if user.usertype == 'assignee' %}
                 <div class = "btn-group">
                     <button 
                         type="button" 
@@ -52,7 +62,7 @@
                 <div class = "card-text">
                     <h5>Customer Name: {{ticket.custname}}</h5>
                     <p>Customer Requirement: {{ticket.custreq}}</p>
-                    <p>Assigned Consultant: {{ticket.consultant.username}}</p>
+                    <p>Assignee: {{ticket.assignee.username}}</p>
                     <p>Current Status: {{ticket.status}}</p>
                     {% if ticket.status == 'Completed' %}
                         <p><b>Estimated Details:</b></p>
@@ -64,10 +74,10 @@
                 <div class="collapse" id="comments-{{ticket.id}}">
                     <div class="card">
                         <div class="card-body" id="comments-expanded-{{ticket.id}}">
-                            {% for comment in ticket.comments %}
+                            {% for comment in comments %}
                             <div class="d-flex justify-content-between align-items-center">
                                 <div>
-                                    <a href="/tickets/{{comment.User.username}}">{{comment.User.username}} ({{comment.User.usertype}})</a>:
+                                    <a href="/ticketsby/{{comment.User.username}}">{{comment.User.username}} ({{comment.User.usertype}})</a>:
                                     {% if comment.status == 'Deleted' %}
                                         <i>This message was deleted</i>
                                     {% else %}
@@ -77,13 +87,13 @@
                                 <div>
                                     <small class="text-muted">
                                         {% if comment.status == 'Edited' %}
-                                            <i>(Edited)</i>
+                                            <i id="editmsgflag{{comment.id}}">(Edited)</i>
                                         {% endif %}
-                                        <i id="editmsg{{comment.id}}"></i>
+                                            <i id="editmsg{{comment.id}}"></i>
                                         {{comment.date_created | humanize}}
                                     </small>
                                     {% if user.id == comment.author %}
-                                    <div class = "btn-group">
+                                    <div class = "btn-group" id="buttongroup{{comment.id}}">
                                         <button 
                                             type="button" 
                                             class="btn btn-sm" 
@@ -93,15 +103,14 @@
                                         </a>
                                         </button>
                                         {% if comment.status != 'Deleted' %}
-                                        <button 
+                                        <button
+                                            id="button{{comment.id}}"
                                             type="button" 
                                             class="btn btn-sm"
                                             comment_id="{{comment.id}}"
                                             onclick="editComment('{{comment.id}}')"
                                         >
                                         <span class="bi-pen" id="icon{{comment.id}}"></span>
-                                        <!-- <a href="/edit-comment/{{comment.id}}" class="dropdown-item">
-                                        </a> -->
                                         </button>
                                         {% endif %}
                                     </div>
@@ -141,26 +150,44 @@
         <br>
     </div>
     <script>
-        function editComment(comment_id) {
+        function editComment(comment_id) 
+        {
             var edittext = document.getElementById("comment"+comment_id);
+            var button = document.getElementById("button"+comment_id);
             var icon = document.getElementById("icon"+comment_id);
             var editmsg = document.getElementById("editmsg"+comment_id);
-            if(!edittext.isContentEditable)
-            {
-                edittext.contentEditable = 'True';
-                icon.setAttribute("class","bi-save");
-            }
-            else
-            {
-                edittext.contentEditable = 'False';
+            var editmsgflag = document.getElementById("editmsgflag"+comment_id);
+            var textbox = document.createElement("textarea");
+            var close = document.createElement("button");
+            var curr = document.createElement("span");
+            var btngroup = document.getElementById("buttongroup"+comment_id);
+            var currtext = edittext.textContent;
+            close.innerHTML = "<span class='bi-x-lg'></span>";
+            icon.setAttribute("class","bi-save");
+            curr.innerHTML = currtext;
+            textbox.value=currtext;
+            edittext.parentNode.replaceChild(textbox, edittext);
+            btngroup.append(close);
+            close.onclick = function() {
                 icon.setAttribute("class","bi-pen");
-                var newtext = edittext.innerHTML;
-                editmsg.textContent = "(Edited)";
-                let xhr = new XMLHttpRequest();
-                xhr.open("POST", "/edit-comment/"+comment_id+"/"+newtext);
-                data = {"newtext":newtext};
-                xhr.send(data);
-            }
+                textbox.parentNode.replaceChild(curr,textbox);
+                btngroup.removeChild(close);
+            };
+            button.onclick = function() {
+                icon.setAttribute("class","bi-pen");
+                var newtext = textbox.value;
+                edittext.innerHTML = newtext;
+                textbox.parentNode.replaceChild(edittext,textbox);
+                const dict_values = {comment_id, newtext};
+                const s = JSON.stringify(dict_values);
+                $.ajax({
+                    url:"/edit-comment/"+comment_id,
+                    type:"POST",
+                    contentType: "application/json",
+                    data: JSON.stringify(s)
+                });
+                btngroup.removeChild(close);
+            };
         }
     </script>
 {% endblock %}

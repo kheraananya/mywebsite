@@ -25,19 +25,19 @@
                     </button>
                 </div>
                 {% endif %}
-                {% if user.usertype == 'GDC_SPOC' %}
+                {% if user.usertype == 'admin' %}
                 <div class = "btn-group">
                     <button 
                         type="button" 
                         class="btn btn-sm btn-dark" 
                     > 
-                        <a href="/assign-consultant/{{ticket.id}}" class="dropdown-item">
-                            <span class="bi-pen"></span> Assign Consultant
+                        <a href="/assign-assignee/{{ticket.id}}" class="dropdown-item">
+                            <span class="bi-pen"></span> Assign assignee
                         </a>
                     </button>
                 </div>
                 {% endif %}
-                {% if user.usertype == 'Consultant' %}
+                {% if user.usertype == 'assignee' %}
                 <div class = "btn-group">
                     <button 
                         type="button" 
@@ -54,7 +54,7 @@
                 <div class = "card-text">
                     <h5>Customer Name: {{ticket.custname}}</h5>
                     <p>Customer Requirement: {{ticket.custreq}}</p>
-                    <p>Assigned Consultant: {{ticket.consultant.username}}</p>
+                    <p>Assigned assignee: {{ticket.assignee.username}}</p>
                     <p>Current Status: {{ticket.status}}</p>
                     {% if ticket.status == 'Complete' %}
                         <p><b>Estimated Details:</b></p>
@@ -124,7 +124,7 @@
     </div>
     {% endfor %}
     {% block footer %}
-    {% if user.usertype == 'PSS' %}
+    {% if user.usertype == 'reporter' %}
     <div align="center">
         <a href="/create-ticket">
             <button type="button" class="btn btn-dark btn-lg">

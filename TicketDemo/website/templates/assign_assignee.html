@@ -1,0 +1,49 @@
+{% extends "base.html" %}
+{% block title %} Assign assignee {% endblock %}
+{% block content %}
+<style>
+    html { overflow-y: scroll; }
+</style>
+<body>
+	<h1 align="center">Assign a assignee</h1>
+<form method='POST'>
+    <div align='center' class="form-group">
+        
+        <select class="form-select" id="assignee-name" name = "assignee-name">
+            <option></option>
+                <optgroup label="Available assignees">
+                   
+                    {% for assignee in assignees %}
+                        {% if assignee.status != "Occupied" %}
+                            <option value="{{assignee.username}}">{{assignee.username}}</option>
+                        {% endif %}  
+                    {% endfor %}     
+                </optgroup>
+            <optgroup label="Occupied assignees">
+                {% for assignee in assignees %}
+                    {% if assignee.status == "Occupied" %}
+                    <option selected disabled>{{assignee.username}}</option>
+                    {% endif %}
+                {% endfor %} 
+            </optgroup>
+        </select>
+
+        <br>
+        <br>
+        <button type="submit" class="btn btn-lg btn-dark">Assign</button>
+    </div>
+</form>
+<script type="text/javascript">
+    $(document).ready(function() {
+        $('#assignee-name').select2({
+            placeholder:{ id:"", text:'Please select assignee'},
+            allowClear:true
+        });
+        $("#assignee-name").val("");
+        $("#assignee-name").trigger("change");
+    });
+
+    </script>
+</body>
+</html>
+{% endblock %}

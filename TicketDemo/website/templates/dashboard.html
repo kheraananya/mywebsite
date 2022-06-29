@@ -11,7 +11,7 @@
                 <th>Created By</th>
                 <th>Created on</th>
                 <th>Last Modified</th>
-                <th>Consultant Assigned</th>
+                <th>Assignee</th>
                 <th>Current Status</th>
             </tr>
         </thead>
@@ -23,8 +23,8 @@
                   <td>{{ticket.author.username}}</td>
                   <td>{{ticket.date_created}}</td>
                   <td>{{ticket.last_modified}}</td>
-                  <td>{% if ticket.consultant_id %}
-                        {{ticket.consultant.username}}
+                  <td>{% if ticket.assignee_id %}
+                        {{ticket.assignee.username}}
                       {% else %}
                         Not Assigned
                       {% endif %}
@@ -41,7 +41,7 @@
   } );
 </script>
 {% block footer %}
-    {% if user.usertype == 'PSS' %}
+    {% if user.usertype == 'reporter' %}
     <div align="center">
         <a href="/create-ticket">
             <button type="button" class="btn btn-info lg">

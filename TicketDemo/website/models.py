@@ -30,9 +30,9 @@ class Ticket(db.Model):
     date_created = db.Column(db.DateTime, default = time.strftime("%d/%B/%Y %H:%M:%S"))
     last_modified = db.Column(db.DateTime, default = time.strftime("%d/%B/%Y %H:%M:%S"))
     author_id = db.Column(db.Integer, db.ForeignKey('User.id',ondelete="CASCADE"),nullable=False)
-    consultant_id = db.Column(db.Integer, db.ForeignKey('User.id',ondelete="CASCADE"),nullable=True)
+    assignee_id = db.Column(db.Integer, db.ForeignKey('User.id',ondelete="CASCADE"),nullable=True)
     author = db.relationship("User",foreign_keys=[author_id])
-    consultant = db.relationship("User",foreign_keys=[consultant_id])
+    assignee = db.relationship("User",foreign_keys=[assignee_id])
     status = db.Column(db.String(150))
     comments = db.relationship('Comment',backref='Ticket',passive_deletes=True)
     hours = db.Column(db.Float)
@@ -40,7 +40,7 @@ class Ticket(db.Model):
 
 class Comment(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    text = db.Column(db.String(200),nullable=False)
+    text = db.Column(db.String(10000),nullable=False)
     date_created = db.Column(db.DateTime, default = time.strftime("%d-%b-%Y %H:%M:%S") , index =True)
     author = db.Column(db.Integer, db.ForeignKey(
         'User.id', ondelete="CASCADE"),nullable=False)
