@@ -13,87 +13,95 @@
                 <!-- <a href="/ticketsby/{{ticket.author.username}}">
                 </a> -->
                 </div>
-                <div class = "btn-group">
-                    <button 
-                        type="button" 
-                        class="btn btn-sm" 
-                    > 
-                        <a href="/edit-ticket/{{ticket.id}}" class="dropdown-item">
-                            <span class="bi-pen">Edit Ticket</span>
-                        </a>
-                    </button>
-                </div>
-                {% if user.id == ticket.author_id %}
-                <div class = "btn-group">
-                    <button 
-                        type="button" 
-                        class="btn btn-sm" 
-                    > 
-                        <a href="/delete-ticket/{{ticket.id}}" class="dropdown-item">
-                            <span class="bi-trash"></span>
-                        </a>
-                    </button>
-                </div>
-                {% endif %}
-                {% if user.usertype == 'admin' %}
-                <!-- <div class = "btn-group">
-                    <button 
-                        type="button" 
-                        class="btn btn-sm" 
-                    > 
-                        <a href="/assign-assignee/{{ticket.id}}" class="dropdown-item">
-                            <span class="bi-pen"></span> Assignee
-                        </a>
-                    </button>
-                </div> -->
-                <div style="width:20%">
-                <select class="form-select" id="assignee-name" name = "assignee-name">
-                    <option></option>
-                        <optgroup label="Available assignees">
-                            {% for assignee in assignees %}
-                                {% if assignee.status != "Occupied" %}
-                                    <option value="{{assignee.username}}">{{assignee.username}}</option>
-                                {% endif %}  
-                            {% endfor %}     
-                        </optgroup>
-                    <optgroup label="Occupied assignees">
-                        {% for assignee in assignees %}
-                            {% if assignee.status == "Occupied" %}
-                            <option selected disabled>{{assignee.username}}</option>
-                            {% endif %}
-                        {% endfor %} 
-                    </optgroup>
-                </select>
-                </div>
-                {% endif %}
-                {% if user.usertype == 'assignee' or user.usertype == 'admin' %}
-                    <!-- <button 
-                        type="button" 
-                        class="btn btn-sm" 
-                    > 
-                        <a href="/update-status/{{ticket.id}}" class="dropdown-item">
-                            <span class="bi-pen"></span> Update Status
-                        </a>
-                    </button> -->
-                    <div style="width:20%">
-                        <select class="form-select" id="status-name" name = "status-name">
-                            {% for status in statuses %}
-                                <option value="{{status.status}}">{{status.status}}</option>
-                            {% endfor %}
-                        </select>
-                    </div>
-                    {% if user.usertype == 'assignee' %}
-                    <div style="width:20%">
+                {% if ticket.status != "Closed" %}
+                    <div class = "btn-group">
                         <button 
                             type="button" 
                             class="btn btn-sm" 
                         > 
-                            <a href="/estimated-details/{{ticket.id}}" class="dropdown-item">
-                                <span class="bi-pen"></span> Effort Estimation
+                            <a href="/edit-ticket/{{ticket.id}}" class="dropdown-item">
+                                <span class="bi-pen">Edit Ticket</span>
+                            </a>
+                        </button>
+                    </div>
+                    {% if user.id == ticket.author_id %}
+                    <div class = "btn-group">
+                        <button 
+                            type="button" 
+                            class="btn btn-sm" 
+                        > 
+                            <a href="/delete-ticket/{{ticket.id}}" class="dropdown-item">
+                                <span class="bi-trash"></span>
                             </a>
                         </button>
                     </div>
                     {% endif %}
+                    {% if user.usertype == 'admin' %}
+                    <!-- <div class = "btn-group">
+                        <button 
+                            type="button" 
+                            class="btn btn-sm" 
+                        > 
+                            <a href="/assign-assignee/{{ticket.id}}" class="dropdown-item">
+                                <span class="bi-pen"></span> Assignee
+                            </a>
+                        </button>
+                    </div> -->
+                    <div style="width:20%">
+                    <select class="form-select" id="assignee-name" name = "assignee-name">
+                        <option></option>
+                            <optgroup label="Available assignees">
+                                {% for assignee in assignees %}
+                                    {% if assignee.status != "Occupied" %}
+                                        <option value="{{assignee.username}}">{{assignee.username}}</option>
+                                    {% endif %}  
+                                {% endfor %}     
+                            </optgroup>
+                        <optgroup label="Occupied assignees">
+                            {% for assignee in assignees %}
+                                {% if assignee.status == "Occupied" %}
+                                <option selected disabled>{{assignee.username}}</option>
+                                {% endif %}
+                            {% endfor %} 
+                        </optgroup>
+                    </select>
+                    </div>
+                    {% endif %}
+                    {% if user.usertype == 'assignee' or user.usertype == 'admin' %}
+                        <!-- <button 
+                            type="button" 
+                            class="btn btn-sm" 
+                        > 
+                            <a href="/update-status/{{ticket.id}}" class="dropdown-item">
+                                <span class="bi-pen"></span> Update Status
+                            </a>
+                        </button> -->
+                        <div style="width:20%">
+                            <select class="form-select" id="status-name" name = "status-name">
+                                {% for status in statuses %}
+                                    <option value="{{status.status}}">{{status.status}}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        {% if user.usertype == 'assignee' %}
+                        <div style="width:20%">
+                            <button 
+                                type="button" 
+                                class="btn btn-sm" 
+                            > 
+                                <a href="/estimated-details/{{ticket.id}}" class="dropdown-item">
+                                    <span class="bi-pen"></span> Effort Estimation
+                                </a>
+                            </button>
+                        </div>
+                        {% endif %}
+                    {% endif %}
+                {% else %}
+                    <button type="button" class="btn btn-sm" > 
+                        <a href="/reopen-ticket/{{ticket.id}}" class="dropdown-item">
+                            <span class="bi-door-open"></span> Re-Open Ticket
+                        </a>
+                    </button>
                 {% endif %}
             </div>
             <div class = "card-body">
@@ -199,7 +207,7 @@
     <script>
         $(document).ready(function() {
             $('#assignee-name').select2({
-            placeholder:{ id:"", text:'Please select assignee'},
+            placeholder:{ id:"", text:'Select assignee'},
             allowClear:true,
             });
             $("#assignee-name").val("")  
@@ -216,7 +224,7 @@
                 window.location.reload()
             });
             $('#status-name').select2({
-            placeholder:{ id:"", text:'Please select status'},
+            placeholder:{ id:"", text:'Select status'},
             allowClear:true,
             });
             $("#status-name").val("")  

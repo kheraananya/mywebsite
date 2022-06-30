@@ -26,37 +26,39 @@ def home():
 @views.route("/create-ticket",methods=['GET','POST'])
 @login_required
 def create_ticket():
-    now = time.strftime("%d/%B/%Y %H:%M:%S")
     questions = Question.query.all()
     if(questions):
         if request.method == "POST":
-            currticket = Ticket.query.order_by(Ticket.id.desc()).first()
+            now = time.strftime("%d/%B/%Y %H:%M:%S")
+            status= "Opened"
+            ticket = Ticket(author_id = current_user.id,status=status,date_created=now,last_modified=now)
+            #currticket = Ticket.query.order_by(Ticket.id.desc()).first()
             custname = request.form.get("custname")
             title = request.form.get("title")
-            currticket.custname = custname
-            currticket.title = title
+            ticket.custname = custname
+            ticket.title = title
+            db.session.add(ticket)
+            db.session.commit()
+            for question in questions:
+                ticketquestionmap = TicketQuestionMap(ticket_id=ticket.id,question_id=question.id)
+                db.session.add(ticketquestionmap)
+            db.session.commit()
             for question in questions:
                 answer = request.form.get("q"+str(question.id))
-                map = TicketQuestionMap.query.filter_by(ticket_id=currticket.id,question_id=question.id).first()
+                map = TicketQuestionMap.query.filter_by(ticket_id=ticket.id,question_id=question.id).first()
                 map.value = str(answer)
             if(custname and title):
                 db.session.commit()
             else:
-                flash("Enter require details",category="error")
+                flash("Enter required details",category="error")
             return redirect(url_for("views.home"))
+
+        return render_template("create_ticket.html",questions=questions,user=current_user)
+
     else:
         flash("Please complete Master Setup first",category="error")
         return redirect(url_for("views.home"))
 
-    status="Ticket Created"
-    ticket = Ticket(author_id = current_user.id,status=status,date_created=now,last_modified=now)
-    db.session.add(ticket)
-    db.session.commit()
-    for question in questions:
-        ticketquestionmap = TicketQuestionMap(ticket_id=ticket.id,question_id=question.id)
-        db.session.add(ticketquestionmap)
-    db.session.commit()
-    return render_template("create_ticket.html",ticket=ticket,questions=questions,user=current_user)
 
 
 @views.route("/delete-ticket/<id>")
@@ -118,21 +120,20 @@ def assign_assignee(ticket_id):
     else:
         if request.method == "POST":
             if(ticket.assignee_id):
-                #flash("Assignee already assigned to this ticket",category="error")
-                return redirect('/tickets/'+str(ticket_id))
-            else:
-                output = request.get_json()
-                result = json.loads(output)
-                assignee_name = str(result)
-                assignee = User.query.filter_by(username=assignee_name).first()
-                assignee_id = assignee.id
-                ticket.assignee_id = assignee_id
-                ticket.status = "Assigned"
-                ticket.last_modified = now
-                assignee.status = "Occupied"
-                db.session.commit()
-                #flash("Assignee Assigned",category='success')
-                return redirect('/tickets/'+str(ticket_id))
+                curr_assignee_id = ticket.assignee_id
+                curr_assignee = User.query.filter_by(id=curr_assignee_id).first()
+                curr_assignee.status="Available"
+            output = request.get_json()
+            result = json.loads(output)
+            assignee_name = str(result)
+            assignee = User.query.filter_by(username=assignee_name).first()
+            assignee_id = assignee.id
+            ticket.assignee_id = assignee_id
+            ticket.status = "Assigned"
+            ticket.last_modified = now
+            assignee.status = "Occupied"
+            db.session.commit()
+            return redirect('/tickets/'+str(ticket_id))
     return redirect('/tickets/'+str(ticket_id))
 
 
@@ -141,7 +142,7 @@ def assign_assignee(ticket_id):
 def update_status(ticket_id):
     statuses = Status.query.all()
     if(statuses):
-        dummy = "ok"
+        pass
     else:
         flash("Please complete Master Setup first",category="error")
         return render_template("/tickets/"+ticket.id)
@@ -256,12 +257,11 @@ def estimated_details(ticket_id):
 @views.route("/edit-ticket/<ticket_id>",methods=['GET','POST'])
 @login_required
 def edit_ticket(ticket_id):
-    def object_as_dict(obj):
-        return {c.key: getattr(obj, c.key)
-            for c in inspect(obj).mapper.column_attrs}
     questions = Question.query.all()
     statuses = Status.query.all()
     efforts = Effort.query.all()
+    ticketquestionmaps = TicketQuestionMap.query.filter_by(ticket_id=ticket_id).all()
+    ticketeffortmaps = TicketEffortMap.query.filter_by(ticket_id=ticket_id).all()
     now = time.strftime("%d/%B/%Y %H:%M:%S")
     ticket = Ticket.query.filter_by(id=ticket_id).first()
     assignees = User.query.filter_by(usertype='assignee').all()
@@ -322,7 +322,17 @@ def edit_ticket(ticket_id):
                 db.session.commit()
             return redirect('/tickets/'+str(ticket_id))
 
-    return render_template('edit_ticket.html',user=current_user,assignees = assignees,ticket=ticket,efforts=efforts,statuses=statuses,questions=questions)
+    return render_template('edit_ticket.html',user=current_user,assignees = assignees,ticket=ticket,efforts=efforts,statuses=statuses,questions=questions,ticketquestionmaps=ticketquestionmaps,ticketeffortmaps=ticketeffortmaps)
+
+
+@views.route("/reopen-ticket/<ticket_id>",methods=['GET'])
+@login_required
+def reopen_ticket(ticket_id):
+    ticket = Ticket.query.filter_by(id=ticket_id).first()
+    ticket.status = "Opened"
+    db.session.commit()
+    return redirect('/tickets/'+str(ticket_id))
+
 
 @views.route("/master",methods=['GET'])
 @login_required
@@ -372,9 +382,22 @@ def master_status():
     if request.method == "POST":
         output = request.get_json()
         for ele in output:
+            if(Status.query.all()):
+                pass
+            else:
+                status1 = Status(status="Opened",date_created=now,author_id=current_user.id)
+                status2 = Status(status="Assigned",date_created=now,author_id=current_user.id)
+                status3 = Status(status="In-Review",date_created=now,author_id=current_user.id)
+                status4 = Status(status="Closed",date_created=now,author_id=current_user.id)
+                db.session.add(status1)
+                db.session.add(status2)
+                db.session.add(status3)
+                db.session.add(status4)
+                db.session.commit()
             status = Status(status=str(ele["value"]),date_created=now,author_id=current_user.id)
             db.session.add(status)
             db.session.commit()
+            
     return redirect('/master')
 
 @views.route("/delete-status/<status_id>",methods=['GET'])
@@ -421,6 +444,7 @@ def delete_effort(effort_id):
 @login_required
 def master_alert_home():
     alerts = MasterAlertConfig.query.all()
+    statuses = Status.query.all()
     if request.method == 'POST':
         ticket_status = request.form.get('ticket_status')
         alert_subject = request.form.get('alert_subject')
@@ -434,7 +458,7 @@ def master_alert_home():
         db.session.commit()
         return redirect('/master-alert-home')
 
-    return render_template('master_alert.html',user=current_user,alerts=alerts)
+    return render_template('master_alert.html',user=current_user,alerts=alerts,statuses=statuses)
 
 
 @views.route("/delete-alert/<alert_id>",methods=['GET'])

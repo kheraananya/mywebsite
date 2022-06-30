@@ -15,7 +15,11 @@
         <form method='POST'>
             <div align='center' class="form-group">
                 <label for="ticket_status">Ticket Status:</label>
-                <input type="text" name="ticket_status" placeholder="Enter Ticket Status" class="form-control name_list"/>
+                <select class="form-select" id="ticket_status" name = "ticket_status" placeholder="Enter Ticket Status">
+                    {% for status in statuses %}
+                        <option value="{{status.status}}">{{status.status}}</option>
+                    {% endfor %}
+                </select>
                 <br>
                 <label for="alert_subject">Alert Subject:</label>
                 <input type="text" name="alert_subject" placeholder="Enter Alert Subject" class="form-control name_list"/>

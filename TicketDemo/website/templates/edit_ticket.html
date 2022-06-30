@@ -2,7 +2,6 @@
 {% block title %} Edit Ticket {% endblock %}
 {% block content %}
 <h1 align="center"> Edit Ticket </h1>
-{% if user.usertype == 'reporter' %}
 <form method='POST'>
     <div align='center' class="form-group">
         <label for="custname">Customer Name:</label>
@@ -11,7 +10,7 @@
             id = "custname"
             name = "custname" 
             class = "form-control"
-            placeholder = "Enter Customer Name"
+            value = "{{ticket.custname}}"
         />
         <br>
     <label for="title">Requirement Title:</label>
@@ -20,156 +19,52 @@
             id = "title"
             name = "title" 
             class = "form-control"
-            placeholder = "Enter Requirement Title"
+            value = "{{ticket.title}}"
         />
     <br>
-    {% for question in questions %}
-        <label for="q{{question.id}}">{{question.question}}</label>
-        <input 
-            type="text" 
-            id = "q{{question.id}}"
-            name = "q{{question.id}}" 
-            class = "form-control"
-            placeholder = "{{question.question}}"
-        />
-        <br>
-    {% endfor %}
-        <button type="submit" class="btn btn-lg btn-dark">Edit</button>
-    </div>
-</form>
-<br>
-<div align="center"><button onclick="javascript:history.back()" class="btn btn-lg btn-dark">Cancel</button></div>
-<br>
-{% endif %}
-{% if user.usertype == 'assignee' %}
-<form method='POST'>
-    <div align='center' class="form-group">
-        <label for="custname">Customer Name:</label>
-        <input 
-            type="text" 
-            id = "custname"
-            name = "custname" 
-            class = "form-control"
-            placeholder = "Enter Customer Name"
-        />
-        <br>
-    <label for="title">Requirement Title:</label>
-        <input 
-            type="text" 
-            id = "title"
-            name = "title" 
-            class = "form-control"
-            placeholder = "Enter Requirement Title"
-        />
-    <br>
-    {% for question in questions %}
-        <label for="q{{question.id}}">{{question.question}}</label>
-        <input 
-            type="text" 
-            id = "q{{question.id}}"
-            name = "q{{question.id}}" 
-            class = "form-control"
-            placeholder = "{{question.question}}"
-        />
-        <br>
-    {% endfor %}
-        <label for="status">Status</label>
-        <select class="form-select" id="status" name = "status">
-            {% for status in statuses %}
-                <option value="{{status.status}}">{{status.status}}</option>
+    {% if user.usertype != "reporter" %}
+        {% for ticketquestionmap in ticketquestionmaps %}
+            {% for question in questions %}
+                {% if question.id == ticketquestionmap.question_id %}
+                    <label for="q{{question.id}}">{{question.question}}</label>
+                    <input 
+                        type="text" 
+                        id = "q{{question.id}}"
+                        name = "q{{question.id}}" 
+                        class = "form-control"
+                        value = "{{ticketquestionmap.value}}"
+                    />
+                {% endif %}
+                <br>
             {% endfor %}
+        {% endfor %}
+        <label for="status">Status</label>
+            <select class="form-select" id="status" name = "status">
+                {% for status in statuses %}
+                    <option value="{{status.status}}">{{status.status}}</option>
+                {% endfor %}
             </select>
         <br>
-        {% for effort in efforts %}
-        <label for="e{{effort.id}}">{{effort.effort}}</label>
-        <input 
-            type="text" 
-            id = "e{{effort.id}}"
-            name = "e{{effort.id}}" 
-            class = "form-control"
-            placeholder = "{{effort.effort}}"
-        />
-        <br>
-        {% endfor %}
-        <br>
-        <button type="submit" class="btn btn-lg btn-dark">Edit</button>
-    </div>
-</form>
-<br>
-<div align="center"><button onclick="javascript:history.back()" class="btn btn-lg btn-dark">Cancel</button></div>
-<br>
-{% endif %}
-
-{% if user.usertype == 'admin' %}
-<form method='POST'>
-    <div align='center' class="form-group">
-        <label for="custname">Customer Name:</label>
-        <input 
-            type="text" 
-            id = "custname"
-            name = "custname" 
-            class = "form-control"
-            placeholder = "Enter Customer Name"
-        />
-        <br>
-    <label for="title">Requirement Title:</label>
-        <input 
-            type="text" 
-            id = "title"
-            name = "title" 
-            class = "form-control"
-            placeholder = "Enter Requirement Title"
-        />
-    <br>
-    {% for question in questions %}
-        <label for="q{{question.id}}">{{question.question}}</label>
-        <input 
-            type="text" 
-            id = "q{{question.id}}"
-            name = "q{{question.id}}" 
-            class = "form-control"
-            placeholder = "{{question.question}}"
-        />
-        <br>
-    {% endfor %}
-        <label for="status">Status</label>
-        <select class="form-select" id="status" name = "status">
-            {% for status in statuses %}
-                <option value="{{status.status}}">{{status.status}}</option>
+        {% for ticketeffortmap in ticketeffortmaps %}
+            {% for effort in efforts %}
+                {% if effort.id == ticketeffortmap.effort_id %}
+                    <label for="e{{effort.id}}">{{effort.effort}}</label>
+                    <input 
+                        type="text" 
+                        id = "e{{effort.id}}"
+                        name = "e{{effort.id}}" 
+                        class = "form-control"
+                        value = "{{ticketeffortmap.value}}"
+                    />
+                    <br>
+                {% endif %}
             {% endfor %}
-            </select>
-        <br>
-        {% for effort in efforts %}
-        <label for="e{{effort.id}}">{{effort.effort}}</label>
-        <input 
-            type="text" 
-            id = "e{{effort.id}}"
-            name = "e{{effort.id}}" 
-            class = "form-control"
-            placeholder = "{{effort.effort}}"
-        />
-        <br>
         {% endfor %}
-        <br>
+    {% endif %}
         <button type="submit" class="btn btn-lg btn-dark">Edit</button>
     </div>
 </form>
 <br>
 <div align="center"><button onclick="javascript:history.back()" class="btn btn-lg btn-dark">Cancel</button></div>
 <br>
-{% endif %}
-<script>
-    $(document).ready(function() {
-        //var q1 = document.getElementById("q1");
-        //var q2 = document.getElementById("q2");
-        var status = document.getElementById("status");
-        //var e1 = document.getElementById("e1");
-        //var e2 = document.getElementById("e2");
-        //q1.value = "{{ticket.q1}}";
-        //q2.value = "{{ticket.q2}}";
-        //status.value = "{{ticket.status}}";
-        //e1.value = "{{ticket.e1}}";
-        //e2.value = "{{ticket.e2}}";
-    });
-</script>
 {% endblock %}
