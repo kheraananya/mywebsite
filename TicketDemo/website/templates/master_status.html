@@ -1,0 +1,67 @@
+{% extends "base.html" %}
+{% block title %} Master Ticket Statuses {% endblock %}
+{% block content %}
+<body>
+    <br>
+    <div align='center'>
+        <a href="/master-question-home"><button type="button" class="btn btn-primary">Questionaires</button></a>
+        <a href="/master-status-home"><button type="button" class="btn btn-success">Ticket Statuses</button></a>
+        <a href="/master-effort-home"><button type="button" class="btn btn-primary">Effort Estimation Fields</button></a>
+        <a href="/master-alert-home"><button type="button" class="btn btn-primary">Alert Configuration</button></a>
+        <button type="button" class="btn btn-primary">Assignee Login Creation</button>
+    </div>
+    <br>
+    <div class="container">
+        <div class="form-group">  
+             <form name="add_status" id="add_status">  
+                  <div class="table-responsive">
+                       <table class="table table-bordered" id="dynamic_field">  
+                            <tr>  
+                                 <td style="width:84%"><input type="text" name="status" placeholder="Enter status" class="form-control name_list"/></td>  
+                                 <td><button type="button" name="add" id="add" class="btn btn-success">Add Ticket Status</button></td>  
+                            </tr>  
+                       </table>  
+                  </div>  
+             </form>  
+        </div>  
+    </div>
+    <div class="container">
+        <table class = "table" id="myTable">
+            <thead class = "thead-light">
+                <tr>
+                    <th>Status ID</th>        
+                    <th>Status</th>
+                    <th>Created On</th>
+                    <th>Created By</th>
+                    <th></th>
+                </tr>
+            </thead>
+        <tbody>
+            {% for status in statuses %}
+                <tr>
+                    <td>{{status.id}}</a></td>
+                    <td>{{status.status}}</td>
+                    <td>{{status.date_created}}</td>
+                    <td>{{user.username}}</td>
+                    <td><a href="/delete-status/{{status.id}}"><button>Delete</button></a></td>
+                </tr>
+            {% endfor %}
+        </tbody>  
+    </table>
+   </div>
+   <script>  
+    $(document).ready(function(){ 
+        $('#myTable').DataTable();  
+        $('#add').click(function(){  
+                $.ajax({  
+                    url:"/master-status",  
+                    method:"POST",  
+                    contentType: "application/json",
+                    data: JSON.stringify($('#add_status').serializeArray()),
+                });
+                window.location.href = "/master-status-home"; 
+            });
+        });
+    </script>
+</body>
+{% endblock %}   

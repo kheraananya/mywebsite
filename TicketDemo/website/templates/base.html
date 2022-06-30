@@ -44,12 +44,15 @@
         </button>
         <div class = "collapse navbar-collapse" id = "navbar">
             <div class = "navbar-nav">
-                <a class="nav-item nav-link" href ="/home">Home</a>
+                <a class="nav-item nav-link" id="home" href ="/home">Home</a>
                 {% if user.is_authenticated %}
                     <a class="nav-item nav-link" href ="/logout">Logout</a>
+                    {% if user.usertype=="admin" %}
+                        <a class="nav-item nav-link" id="master" href ="/master">Master Setup</a>
+                    {% endif %}
                 {% else %}
-                    <a class="nav-item nav-link" href ="/login">Login</a>
-                    <a class="nav-item nav-link" href ="/signup">Signup</a>
+                    <a class="nav-item nav-link" id="login" href ="/login">Login</a>
+                    <a class="nav-item nav-link" id="signup" href ="/signup">Signup</a>
                 {% endif %}
             </div>
         </div>
@@ -77,5 +80,8 @@
         integrity="sha384-pprn3073KE6tl6bjs2QrFaJGz5/SUsLqktiwsUTF55Jfv3qYSDhgCecCxMW52nD2"
         crossorigin="anonymous"
     ></script>
+    <style>
+        html { overflow-y: scroll; }
+    </style>
 </body>
 </html>

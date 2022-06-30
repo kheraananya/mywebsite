@@ -1,15 +1,17 @@
 {% extends "base.html" %}
 {% block title %} {% endblock %}
 {% block content %}
-<h1 align="center">{% block header %}Ticket #{{ticket.id}} {% endblock %}</h1>
+<h1 align="center">{% block header %}{% endblock %}</h1>
     <div id="tickets">
         <div class="card border-dark">
             <div class="card-header d-flex justify-content-between align-items-center">
                 <div class="ml-auto p-2">
+                <b>Ticket #{{ticket.id}}</b>
+                <br>
                 Created By: 
-                <a href="/ticketsby/{{ticket.author.username}}">
-                    {{ticket.author.username}}
-                </a>
+                {{ticket.author.username}}
+                <!-- <a href="/ticketsby/{{ticket.author.username}}">
+                </a> -->
                 </div>
                 <div class = "btn-group">
                     <button 
@@ -34,7 +36,7 @@
                 </div>
                 {% endif %}
                 {% if user.usertype == 'admin' %}
-                <div class = "btn-group">
+                <!-- <div class = "btn-group">
                     <button 
                         type="button" 
                         class="btn btn-sm" 
@@ -43,32 +45,77 @@
                             <span class="bi-pen"></span> Assignee
                         </a>
                     </button>
+                </div> -->
+                <div style="width:20%">
+                <select class="form-select" id="assignee-name" name = "assignee-name">
+                    <option></option>
+                        <optgroup label="Available assignees">
+                            {% for assignee in assignees %}
+                                {% if assignee.status != "Occupied" %}
+                                    <option value="{{assignee.username}}">{{assignee.username}}</option>
+                                {% endif %}  
+                            {% endfor %}     
+                        </optgroup>
+                    <optgroup label="Occupied assignees">
+                        {% for assignee in assignees %}
+                            {% if assignee.status == "Occupied" %}
+                            <option selected disabled>{{assignee.username}}</option>
+                            {% endif %}
+                        {% endfor %} 
+                    </optgroup>
+                </select>
                 </div>
                 {% endif %}
-                {% if user.usertype == 'assignee' %}
-                <div class = "btn-group">
-                    <button 
+                {% if user.usertype == 'assignee' or user.usertype == 'admin' %}
+                    <!-- <button 
                         type="button" 
                         class="btn btn-sm" 
                     > 
                         <a href="/update-status/{{ticket.id}}" class="dropdown-item">
                             <span class="bi-pen"></span> Update Status
                         </a>
-                    </button>
-                </div>
+                    </button> -->
+                    <div style="width:20%">
+                        <select class="form-select" id="status-name" name = "status-name">
+                            {% for status in statuses %}
+                                <option value="{{status.status}}">{{status.status}}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    {% if user.usertype == 'assignee' %}
+                    <div style="width:20%">
+                        <button 
+                            type="button" 
+                            class="btn btn-sm" 
+                        > 
+                            <a href="/estimated-details/{{ticket.id}}" class="dropdown-item">
+                                <span class="bi-pen"></span> Effort Estimation
+                            </a>
+                        </button>
+                    </div>
+                    {% endif %}
                 {% endif %}
             </div>
             <div class = "card-body">
                 <div class = "card-text">
                     <h5>Customer Name: {{ticket.custname}}</h5>
-                    <p>Customer Requirement: {{ticket.custreq}}</p>
+                    <p>Requirement Title: {{ticket.title}}</p>
+                    {% for ticketquestionmap in ticketquestionmaps %}
+                        {% for question in questions %}
+                            {% if question.id == ticketquestionmap.question_id %}
+                                <p><b>{{question.question}}:</b>{{ticketquestionmap.value}}</p>
+                            {% endif %}
+                        {% endfor %}
+                    {% endfor %}
+                    {% for ticketeffortmap in ticketeffortmaps %}
+                        {% for effort in efforts %}
+                            {% if effort.id == ticketeffortmap.effort_id %}
+                                <p><b>{{effort.effort}}:</b>{{ticketeffortmap.value}}</p>
+                            {% endif %}
+                        {% endfor %}
+                    {% endfor %}
                     <p>Assignee: {{ticket.assignee.username}}</p>
                     <p>Current Status: {{ticket.status}}</p>
-                    {% if ticket.status == 'Completed' %}
-                        <p><b>Estimated Details:</b></p>
-                        <p>Time: {{ticket.hours}} Hours</p>
-                        <p>Cost: {{ticket.cost}} INR</p>
-                    {% endif %}
                 </div>
                 <br>
                 <div class="collapse" id="comments-{{ticket.id}}">
@@ -150,6 +197,42 @@
         <br>
     </div>
     <script>
+        $(document).ready(function() {
+            $('#assignee-name').select2({
+            placeholder:{ id:"", text:'Please select assignee'},
+            allowClear:true,
+            });
+            $("#assignee-name").val("")  
+            $("#assignee-name").trigger("change");
+            $('#assignee-name').on('select2:select', function (e) {
+                var data = e.params.data;
+                const s = JSON.stringify(data.text);
+                $.ajax({
+                    url:"/assign-assignee/{{ticket.id}}",
+                    type:"POST",
+                    contentType: "application/json",
+                    data: JSON.stringify(s)
+                });
+                window.location.reload()
+            });
+            $('#status-name').select2({
+            placeholder:{ id:"", text:'Please select status'},
+            allowClear:true,
+            });
+            $("#status-name").val("")  
+            $("#status-name").trigger("change");
+            $('#status-name').on('select2:select', function (e) {
+                var data = e.params.data;
+                const s = JSON.stringify(data.text);
+                $.ajax({
+                    url:"/update-status/{{ticket.id}}",
+                    type:"POST",
+                    contentType: "application/json",
+                    data: JSON.stringify(s)
+                });
+                window.location.reload()
+            });
+        });
         function editComment(comment_id) 
         {
             var edittext = document.getElementById("comment"+comment_id);

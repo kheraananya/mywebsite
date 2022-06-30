@@ -3,26 +3,19 @@
 {% block content %}
 <h1 align="center">Effort Estimation</h1>
 <form method='POST'>
-    <div align='center' class="form-group">
-        <label for="hours">Hours Required</label>
+    <div align='center' class="form-group"></div>
+    {% for effort in efforts %}
+        <label for="e{{effort.id}}">{{effort.effort}}</label>
         <input 
-            type="number" 
-            id = "hours" 
-            name = "hours" 
+            type="text" 
+            id = "e{{effort.id}}"
+            name = "e{{effort.id}}" 
             class = "form-control"
-            placeholder = "Enter Estimated Hours"
+            placeholder = "{{effort.effort}}"
         />
         <br>
-        <label for="cost">Cost</label>
-        <input 
-            type="number" 
-            id = "cost" 
-            name = "cost"
-            class = "form-control"
-            placeholder = "Enter Estimated Cost"
-        />
-        <br>
-        <button type="submit" class="btn btn-lg btn-dark">Submit</button>
+    {% endfor %}
+        <button type="submit" class="btn btn-lg btn-dark">Update</button>
     </div>
 </form>
 {% endblock %}

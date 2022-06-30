@@ -5,154 +5,171 @@
 {% if user.usertype == 'reporter' %}
 <form method='POST'>
     <div align='center' class="form-group">
-        <label for="custname">Customer Name</label>
+        <label for="custname">Customer Name:</label>
         <input 
             type="text" 
-            id = "custname" 
+            id = "custname"
             name = "custname" 
             class = "form-control"
-            placeholder = "{{ticket.custname}}"
-        />
-        <label for="custreq">Customer Requirement</label>
-        <input 
-            type="text" 
-            id = "custreq" 
-            name = "custreq" 
-            class = "form-control"
-            placeholder = "{{ticket.custreq}}"
+            placeholder = "Enter Customer Name"
         />
         <br>
+    <label for="title">Requirement Title:</label>
+        <input 
+            type="text" 
+            id = "title"
+            name = "title" 
+            class = "form-control"
+            placeholder = "Enter Requirement Title"
+        />
+    <br>
+    {% for question in questions %}
+        <label for="q{{question.id}}">{{question.question}}</label>
+        <input 
+            type="text" 
+            id = "q{{question.id}}"
+            name = "q{{question.id}}" 
+            class = "form-control"
+            placeholder = "{{question.question}}"
+        />
+        <br>
+    {% endfor %}
         <button type="submit" class="btn btn-lg btn-dark">Edit</button>
     </div>
 </form>
+<br>
+<div align="center"><button onclick="javascript:history.back()" class="btn btn-lg btn-dark">Cancel</button></div>
+<br>
 {% endif %}
 {% if user.usertype == 'assignee' %}
 <form method='POST'>
     <div align='center' class="form-group">
-        <label for="custname">Customer Name</label>
+        <label for="custname">Customer Name:</label>
         <input 
             type="text" 
-            id = "custname" 
+            id = "custname"
             name = "custname" 
             class = "form-control"
-            placeholder = "{{ticket.custname}}"
+            placeholder = "Enter Customer Name"
         />
-        <label for="custreq">Customer Requirement</label>
+        <br>
+    <label for="title">Requirement Title:</label>
         <input 
             type="text" 
-            id = "custreq" 
-            name = "custreq" 
+            id = "title"
+            name = "title" 
             class = "form-control"
-            placeholder = "{{ticket.custreq}}"
+            placeholder = "Enter Requirement Title"
+        />
+    <br>
+    {% for question in questions %}
+        <label for="q{{question.id}}">{{question.question}}</label>
+        <input 
+            type="text" 
+            id = "q{{question.id}}"
+            name = "q{{question.id}}" 
+            class = "form-control"
+            placeholder = "{{question.question}}"
         />
         <br>
-        <label for="status">Update Status</label>
+    {% endfor %}
+        <label for="status">Status</label>
         <select class="form-select" id="status" name = "status">
-            <option value="Pending">Pending</option>
-            <option value="Completed">Completed</option>
-        </select>
+            {% for status in statuses %}
+                <option value="{{status.status}}">{{status.status}}</option>
+            {% endfor %}
+            </select>
         <br>
-        <label for="hours">Hours</label>
+        {% for effort in efforts %}
+        <label for="e{{effort.id}}">{{effort.effort}}</label>
         <input 
-            type="number" 
-            id = "hours" 
-            name = "hours" 
+            type="text" 
+            id = "e{{effort.id}}"
+            name = "e{{effort.id}}" 
             class = "form-control"
-            placeholder = "{{ticket.hours}}"
+            placeholder = "{{effort.effort}}"
         />
         <br>
-        <label for="cost">Cost</label>
-        <input 
-            type="number" 
-            id = "cost" 
-            name = "cost"
-            class = "form-control"
-            placeholder = "{{ticket.cost}}"
-        />
+        {% endfor %}
         <br>
         <button type="submit" class="btn btn-lg btn-dark">Edit</button>
     </div>
 </form>
+<br>
+<div align="center"><button onclick="javascript:history.back()" class="btn btn-lg btn-dark">Cancel</button></div>
+<br>
 {% endif %}
 
 {% if user.usertype == 'admin' %}
 <form method='POST'>
     <div align='center' class="form-group">
-        <label for="custname">Customer Name</label>
+        <label for="custname">Customer Name:</label>
         <input 
             type="text" 
-            id = "custname" 
+            id = "custname"
             name = "custname" 
             class = "form-control"
+            placeholder = "Enter Customer Name"
         />
-        <label for="custreq">Customer Requirement</label>
+        <br>
+    <label for="title">Requirement Title:</label>
         <input 
             type="text" 
-            id = "custreq" 
-            name = "custreq" 
+            id = "title"
+            name = "title" 
             class = "form-control"
-            placeholder = "{{ticket.custreq}}"
+            placeholder = "Enter Requirement Title"
+        />
+    <br>
+    {% for question in questions %}
+        <label for="q{{question.id}}">{{question.question}}</label>
+        <input 
+            type="text" 
+            id = "q{{question.id}}"
+            name = "q{{question.id}}" 
+            class = "form-control"
+            placeholder = "{{question.question}}"
         />
         <br>
-        <label for="status">Update Status</label>
+    {% endfor %}
+        <label for="status">Status</label>
         <select class="form-select" id="status" name = "status">
-            <option value="Pending">Pending</option>
-            <option value="Completed">Completed</option>
-        </select>
+            {% for status in statuses %}
+                <option value="{{status.status}}">{{status.status}}</option>
+            {% endfor %}
+            </select>
         <br>
-        <label for="hours">Hours</label>
+        {% for effort in efforts %}
+        <label for="e{{effort.id}}">{{effort.effort}}</label>
         <input 
-            type="number" 
-            id = "hours" 
-            name = "hours" 
+            type="text" 
+            id = "e{{effort.id}}"
+            name = "e{{effort.id}}" 
             class = "form-control"
-            placeholder = "{{ticket.hours}}"
+            placeholder = "{{effort.effort}}"
         />
         <br>
-        <label for="cost">Cost</label>
-        <input 
-            type="number" 
-            id = "cost" 
-            name = "cost"
-            class = "form-control"
-            placeholder = "{{ticket.cost}}"
-        />
-        <br>
-        <select class="form-select" id="assignee-name" name = "assignee-name">
-            <option></option>
-                <optgroup label="Available assignees">
-                   
-                    {% for assignee in assignees %}
-                        {% if assignee.status != "Occupied" %}
-                            <option value="{{assignee.username}}">{{assignee.username}}</option>
-                        {% endif %}  
-                    {% endfor %}     
-                </optgroup>
-            <optgroup label="Occupied assignees">
-                {% for assignee in assignees %}
-                    {% if assignee.status == "Occupied" %}
-                    <option selected disabled>{{assignee.username}}</option>
-                    {% endif %}
-                {% endfor %} 
-            </optgroup>
-        </select>
+        {% endfor %}
         <br>
         <button type="submit" class="btn btn-lg btn-dark">Edit</button>
     </div>
 </form>
+<br>
+<div align="center"><button onclick="javascript:history.back()" class="btn btn-lg btn-dark">Cancel</button></div>
+<br>
 {% endif %}
 <script>
     $(document).ready(function() {
-        var custname = document.getElementById("custname");
-        var custreq = document.getElementById("custreq");
+        //var q1 = document.getElementById("q1");
+        //var q2 = document.getElementById("q2");
         var status = document.getElementById("status");
-        var hours = document.getElementById("hours");
-        var cost = document.getElementById("cost");
-        custname.value = "{{ticket.custname}}";
-        custreq.value = "{{ticket.custreq}}";
-        status.value = "{{ticket.status}}";
-        hours.value = "{{ticket.hours}}";
-        cost.value = "{{ticket.cost}}";
+        //var e1 = document.getElementById("e1");
+        //var e2 = document.getElementById("e2");
+        //q1.value = "{{ticket.q1}}";
+        //q2.value = "{{ticket.q2}}";
+        //status.value = "{{ticket.status}}";
+        //e1.value = "{{ticket.e1}}";
+        //e2.value = "{{ticket.e2}}";
     });
 </script>
 {% endblock %}

@@ -37,7 +37,9 @@
 </div>
 <script>
     $(document).ready( function () {
-      $('#myTable').DataTable();  
+        $('#myTable').DataTable();  
+        var x = document.getElementById("home");
+        x.setAttribute("class","nav-item nav-link active");
   } );
 </script>
 {% block footer %}

@@ -4,24 +4,39 @@
 <h1 align="center">Create a Ticket</h1>
 <form method='POST'>
     <div align='center' class="form-group">
-        <label for="custname">Customer Name</label>
+    <label for="custname">Customer Name:<span style="color:red">*</span></label>
         <input 
             type="text" 
-            id = "custname" 
+            id = "custname"
             name = "custname" 
             class = "form-control"
             placeholder = "Enter Customer Name"
         />
-        <label for="custreq">Customer Requirement</label>
+        <br>
+    <label for="title">Requirement Title:<span style="color:red">*</span></label>
         <input 
             type="text" 
-            id = "custreq" 
-            name = "custreq" 
+            id = "title"
+            name = "title" 
             class = "form-control"
-            placeholder = "Enter Customer Requirement"
+            placeholder = "Enter Requirement Title"
+        />
+    <br>
+    {% for question in questions %}
+        <label for="q{{question.id}}">{{question.question}}</label>
+        <input 
+            type="text" 
+            id = "q{{question.id}}"
+            name = "q{{question.id}}" 
+            class = "form-control"
+            placeholder = "{{question.question}}"
         />
         <br>
+    {% endfor %}
         <button type="submit" class="btn btn-lg btn-dark">Create</button>
     </div>
 </form>
+<br>
+<div align="center"><button onclick="javascript:history.back()" class="btn btn-lg btn-dark">Cancel</button></div>
+<br>
 {% endblock %}

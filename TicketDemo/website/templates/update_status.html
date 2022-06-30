@@ -6,8 +6,9 @@
     <div align='center' class="form-group">
         <label for="status">Update Status</label>
         <select class="form-select" id="status" name = "status">
-            <option value="Pending">Pending</option>
-            <option value="Completed">Completed</option>
+        {% for status in statuses %}
+            <option value="{{status.status}}">{{status.status}}</option>
+        {% endfor %}
         </select>
         <br>
         <button type="submit" class="btn btn-lg btn-dark">Update</button>

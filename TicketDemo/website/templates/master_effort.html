@@ -1,0 +1,67 @@
+{% extends "base.html" %}
+{% block title %} Master Effort Estimation Fields{% endblock %}
+{% block content %}
+<body>
+    <br>
+    <div align='center'>
+        <a href="/master-question-home"><button type="button" class="btn btn-primary">Questionaires</button></a>
+        <a href="/master-status-home"><button type="button" class="btn btn-primary">Ticket Statuses</button></a>
+        <a href="/master-effort-home"><button type="button" class="btn btn-success">Effort Estimation Fields</button></a>
+        <a href="/master-alert-home"><button type="button" class="btn btn-primary">Alert Configuration</button></a>
+        <button type="button" class="btn btn-primary">Assignee Login Creation</button>
+    </div>
+    <br>
+    <div class="container">   
+        <div class="form-group">  
+             <form name="add_effort" id="add_effort">  
+                  <div class="table-responsive">
+                       <table class="table table-bordered" id="dynamic_field">  
+                            <tr>  
+                                 <td style="width:89%"><input type="text" name="effort" placeholder="Enter effort" class="form-control name_list"/></td>  
+                                 <td><button type="button" name="add" id="add" class="btn btn-success">Add Field</button></td>  
+                            </tr>  
+                       </table>  
+                  </div>  
+             </form>  
+        </div>  
+    </div>
+    <div class="container">
+        <table class = "table" id="myTable">
+            <thead class = "thead-light">
+                <tr>
+                    <th>Effort ID</th>        
+                    <th>Effort</th>
+                    <th>Created On</th>
+                    <th>Created By</th>
+                    <th></th>
+                </tr>
+            </thead>
+        <tbody>
+            {% for effort in efforts %}
+                <tr>
+                    <td>{{effort.id}}</a></td>
+                    <td>{{effort.effort}}</td>
+                    <td>{{effort.date_created}}</td>
+                    <td>{{user.username}}</td>
+                    <td><a href="/delete-effort/{{effort.id}}"><button>Delete</button></a></td>
+                </tr>
+            {% endfor %}
+        </tbody>  
+    </table>
+   </div>
+   <script>  
+    $(document).ready(function(){ 
+        $('#myTable').DataTable();  
+        $('#add').click(function(){  
+                $.ajax({  
+                    url:"/master-effort",  
+                    method:"POST",  
+                    contentType: "application/json",
+                    data: JSON.stringify($('#add_effort').serializeArray()),
+                });
+                window.location.href = "/master-effort-home"; 
+            });
+        });
+    </script>
+</body>
+{% endblock %}   
