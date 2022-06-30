@@ -10,6 +10,7 @@ from datetime import datetime
 import time
 import json
 
+
 views = Blueprint("views",__name__)
 
 @views.route("/")
@@ -140,6 +141,7 @@ def assign_assignee(ticket_id):
 @views.route("/update-status/<ticket_id>",methods=['GET','POST'])
 @login_required
 def update_status(ticket_id):
+    ticketeffortmap = TicketEffortMap.query.filter_by(ticket_id=ticket_id).all()
     statuses = Status.query.all()
     if(statuses):
         pass
@@ -159,6 +161,12 @@ def update_status(ticket_id):
             output = request.get_json()
             result = json.loads(output)
             status = str(result)
+            if(status=="Closed"):
+                if(ticketeffortmap):
+                    pass
+                else:
+                    flash("Please do effort estimation before closing ticket",category="error")
+                    return redirect('/tickets/'+str(ticket_id))
             ticket.status = status
             ticket.last_modified = now
             db.session.commit()

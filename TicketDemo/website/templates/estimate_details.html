@@ -3,7 +3,7 @@
 {% block content %}
 <h1 align="center">Effort Estimation</h1>
 <form method='POST'>
-    <div align='center' class="form-group"></div>
+    <div align='center' class="form-group">
     {% for effort in efforts %}
         <label for="e{{effort.id}}">{{effort.effort}}</label>
         <input 
@@ -18,4 +18,6 @@
         <button type="submit" class="btn btn-lg btn-dark">Update</button>
     </div>
 </form>
+<br>
+<div align="center"><button type="button" onclick="javascript:history.back()" class="btn btn-lg btn-dark">Cancel</button></div>
 {% endblock %}
