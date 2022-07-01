@@ -193,12 +193,14 @@ width: 50%;
                     <form method="post" action= "/attach-image/{{ticket.id}}" enctype="multipart/form-data">
                         <dl>
                             <p>
-                                <input type="file" name="pic" class="form-control" autocomplete="off" required>
+                                <div class="input-group mb-3">
+                                    <input type="file" name="pic" class="form-control" autocomplete="off" required>
+                                    <div class="input-group-append"> 
+                                        <input type="submit" value="Submit" class="btn btn-info">
+                                    </div>
+                                </div>
                             </p>
                         </dl>
-                        <p>
-                            <input type="submit" value="Submit" class="btn btn-info">
-                        </p>
                     </form>
                 </div>
                 
