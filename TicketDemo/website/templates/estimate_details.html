@@ -1,23 +1,28 @@
 {% extends "base.html" %}
 {% block title %} Effort Estimation {% endblock %}
 {% block content %}
-<h1 align="center">Effort Estimation</h1>
+<br>
+<div align="left"><button onclick="javascript:history.back()" class="btn btn-secondary">&laquo; Back</button></div>
+<br>
 <form method='POST'>
-    <div align='center' class="form-group">
-    {% for effort in efforts %}
-        <label for="e{{effort.id}}">{{effort.effort}}</label>
-        <input 
-            type="text" 
-            id = "e{{effort.id}}"
-            name = "e{{effort.id}}" 
-            class = "form-control"
-            placeholder = "{{effort.effort}}"
-        />
+    <div align="right"><button class="btn btn-info">Update</button></div>
+    <br>
+
+    <div style="border: 1px solid grey; border-radius: 5px; background-color: #C9E5EF; padding:20px">
+        <div style="border : 1px solid grey ;color: white; border-radius: 5px; background-color: #003E7F; padding:10px">
+            Estimation Field:
+        </div>
         <br>
-    {% endfor %}
-        <button type="submit" class="btn btn-lg btn-dark">Update</button>
+        {% for effort in efforts %}
+        <label for="e{{effort.id}}">{{effort.effort}}</label>
+        <input type="text" id="e{{effort.id}}" name="e{{effort.id}}" class="form-control"
+            placeholder="{{effort.effort}}" />
+        
+        {% endfor %}
+
+    </div>
+
     </div>
 </form>
 <br>
-<div align="center"><button type="button" onclick="javascript:history.back()" class="btn btn-lg btn-dark">Cancel</button></div>
 {% endblock %}
