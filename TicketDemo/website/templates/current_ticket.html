@@ -99,7 +99,7 @@
                 {% else %}
                     <button type="button" class="btn btn-sm" > 
                         <a href="/reopen-ticket/{{ticket.id}}" class="dropdown-item">
-                            <span class="bi-door-open"></span> Re-Open Ticket
+                            <span class="bi-door-open"></span> Reopen
                         </a>
                     </button>
                 {% endif %}
@@ -126,27 +126,49 @@
                     <p>Current Status: {{ticket.status}}</p>
                 </div>
                 <br>
+                <div class="row">
+                    <form method="post" action= "/attach-image/{{ticket.id}}" enctype="multipart/form-data">
+                        <dl>
+                            <p>
+                                <input type="file" name="pic" class="form-control" autocomplete="off" required>
+                            </p>
+                        </dl>
+                        <p>
+                            <input type="submit" value="Submit" class="btn btn-info">
+                        </p>
+                    </form>
+                </div>
+                <div class="container">
+                    <p>Attachments:</p>
+                    {% for image in images_list %}
+                        <img width="200" height="200" src="data:image/png;base64, {{image.0}}" />
+                        <button type="button" class="btn btn-sm">
+                            <a href="/delete-image/{{image.1}}" class="dropdown-item">
+                                <span class="bi-x-lg"></span>
+                            </a>
+                        </button> 
+                    {% endfor %}
+                </div>
                 <div class="collapse" id="comments-{{ticket.id}}">
                     <div class="card">
                         <div class="card-body" id="comments-expanded-{{ticket.id}}">
                             {% for comment in comments %}
                             <div class="d-flex justify-content-between align-items-center">
                                 <div>
-                                    <a href="/ticketsby/{{comment.User.username}}">{{comment.User.username}} ({{comment.User.usertype}})</a>:
-                                    {% if comment.status == 'Deleted' %}
-                                        <i>This message was deleted</i>
+                                    {% if comment.status == 'Edited' %}
+                                        <small>{{comment.User.username}} ({{comment.User.usertype}}) edited a comment - {{comment.date_created | humanize}} </small>
+                                        <pre contenteditable="false" id="comment{{comment.id}}">{{comment.text}}</pre>
                                     {% else %}
-                                        <span contenteditable="false" id="comment{{comment.id}}">{{comment.text}}</span>
+                                        <small>{{comment.User.username}} ({{comment.User.usertype}}) added a comment - {{comment.date_created | humanize}} </small>
+                                        {% if comment.status == 'Deleted' %}
+                                            <br>
+                                            <small><i>This message was deleted</i></small>
+                                        {% else %}
+                                            <pre contenteditable="false" id="comment{{comment.id}}">{{comment.text}}</pre>
+                                        {% endif %}
                                     {% endif %}
                                 </div>
                                 <div>
-                                    <small class="text-muted">
-                                        {% if comment.status == 'Edited' %}
-                                            <i id="editmsgflag{{comment.id}}">(Edited)</i>
-                                        {% endif %}
-                                            <i id="editmsg{{comment.id}}"></i>
-                                        {{comment.date_created | humanize}}
-                                    </small>
                                     {% if user.id == comment.author %}
                                     <div class = "btn-group" id="buttongroup{{comment.id}}">
                                         <button 
@@ -172,6 +194,7 @@
                                     {% endif %}
                                 </div>
                             </div>
+                            <hr class="solid">
                             {% endfor %}
                         </div>
                     </div>
@@ -185,16 +208,18 @@
                     <small class="text-muted">No Comments</small>
                     {% endif %}
                 </p>    
-                <form class="input-group mb-3" method="POST" action="/create-comment/{{ticket.id}}">
-                    <input 
-                        type="text" 
-                        id="text" 
-                        name="text" 
-                        class="form-control" 
-                        placeholder="Comment here"
-                    />
-                    <button type="submit" class="btn btn-dark">Comment</button>
-                </form>
+                {% if ticket.status != "Closed" %}
+                    <form class="input-group mb-3" method="POST" action="/create-comment/{{ticket.id}}">
+                        <textarea 
+                            type="text" 
+                            id="text" 
+                            name="text" 
+                            class="form-control" 
+                            placeholder="Comment here"
+                        ></textarea>
+                        <button type="submit" class="btn btn-dark">Comment</button>
+                    </form>
+                {% endif %}
             </div>
             <div class = "card-footer text-muted">
                 Created On: {{ticket.date_created}}
@@ -250,7 +275,7 @@
             var editmsgflag = document.getElementById("editmsgflag"+comment_id);
             var textbox = document.createElement("textarea");
             var close = document.createElement("button");
-            var curr = document.createElement("span");
+            var curr = document.createElement("pre");
             var btngroup = document.getElementById("buttongroup"+comment_id);
             var currtext = edittext.textContent;
             close.innerHTML = "<span class='bi-x-lg'></span>";

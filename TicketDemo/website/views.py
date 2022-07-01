@@ -2,13 +2,14 @@ from msilib.schema import CustomAction
 from re import X
 from sre_constants import CATEGORY_DIGIT
 from unicodedata import category
-from flask import Blueprint, render_template, request,flash,redirect,url_for,jsonify
+from flask import Blueprint, render_template, request,flash,redirect,url_for,jsonify,Response
 from flask_login import login_required, current_user
-from .models import MasterAlertConfig, Question, Status, Ticket, User, Comment,TicketQuestionMap, Effort, TicketEffortMap
+from .models import MasterAlertConfig, Question, Status, Ticket, User, Comment,TicketQuestionMap, Effort, TicketEffortMap,Img
 from . import db
 from datetime import datetime
 import time
 import json
+from werkzeug.utils import secure_filename
 
 
 views = Blueprint("views",__name__)
@@ -100,12 +101,14 @@ def tickets(ticket_id):
     ticketeffortmaps = TicketEffortMap.query.filter_by(ticket_id=ticket_id).all()
     questions = Question.query.all()
     statuses = Status.query.all()
+    images_raw = Img.query.all()
+    images_list = proc_image(images_raw,ticket_id)
     ticket = Ticket.query.filter_by(id=ticket_id).first()
     comments = Comment.query.filter(Comment.ticket_id==ticket_id).order_by(Comment.id.asc()).all()
     if not ticket:
         flash("Invalid ticket ID",category='error')
         return redirect(url_for('views.home'))
-    return render_template("current_ticket.html",user=current_user,ticket=ticket,comments=comments,ticketquestionmaps=ticketquestionmaps,questions=questions,ticketeffortmaps=ticketeffortmaps,efforts=efforts,assignees=assignees,statuses=statuses)
+    return render_template("current_ticket.html",user=current_user,ticket=ticket,comments=comments,ticketquestionmaps=ticketquestionmaps,questions=questions,ticketeffortmaps=ticketeffortmaps,efforts=efforts,assignees=assignees,statuses=statuses,images_list=images_list)
 
 
 @views.route("/assign-assignee/<ticket_id>",methods=['GET','POST'])
@@ -476,3 +479,54 @@ def delete_alert(alert_id):
     db.session.delete(alert)
     db.session.commit()
     return redirect('/master-alert-home')
+
+
+import PIL.Image as Image
+import io
+import base64
+import numpy as np
+import cv2
+
+@views.route("/attach-image/<ticket_id>",methods=['POST'])
+@login_required
+def attach_image(ticket_id):
+    pic = request.files['pic']
+    if not pic:
+        return 'No pic uploaded!', 400
+
+    filename = secure_filename(pic.filename)
+    mimetype = pic.mimetype
+    if not filename or not mimetype:
+        return 'Bad upload!', 400
+
+    img = Img(img=pic.read(), name=filename, mimetype=mimetype,ticket_id=ticket_id)
+    db.session.add(img)
+    db.session.commit()
+    return redirect('/tickets/'+str(ticket_id))
+
+
+@views.route("/delete-image/<image_id>",methods=['GET'])
+@login_required
+def delete_image(image_id):
+    img = Img.query.filter_by(id=image_id).first()
+    ticket_id = img.ticket_id
+    db.session.delete(img)
+    db.session.commit()
+    return redirect('/tickets/'+str(ticket_id))
+
+def proc_image(images_raw,ticket_id):
+    images_list=[]
+    for image_raw in images_raw:
+        if(str(image_raw.ticket_id) == str(ticket_id)):
+            npimg = np.fromstring(image_raw.img, np.uint8)
+            img = cv2.imdecode(npimg,cv2.IMREAD_COLOR)
+            img = Image.fromarray(img.astype("uint8"))
+            rawBytes = io.BytesIO()
+            img.save(rawBytes, "JPEG")
+            rawBytes.seek(0)
+            img_base64 = base64.b64encode(rawBytes.read())
+            img_base64 = str(img_base64).lstrip('b')
+            img_base64 = str(img_base64).strip("'")
+            imgtuple = (img_base64,image_raw.id)
+            images_list.append(imgtuple)
+    return images_list
