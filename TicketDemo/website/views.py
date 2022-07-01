@@ -1,10 +1,7 @@
-from msilib.schema import CustomAction
-from re import X
-from sre_constants import CATEGORY_DIGIT
 from unicodedata import category
-from flask import Blueprint, render_template, request,flash,redirect,url_for,jsonify,Response
+from flask import Blueprint, render_template, request,flash,redirect,url_for,jsonify
 from flask_login import login_required, current_user
-from .models import MasterAlertConfig,MasterAlertAudit, Question, Status, Ticket, User, Comment,TicketQuestionMap, Effort, TicketEffortMap,Img
+from .models import ImageDB, MasterAlertConfig,MasterAlertAudit,MasterResetHistory, Question, Status, Ticket, User, Comment,TicketQuestionMap, Effort, TicketEffortMap
 from . import db
 from datetime import datetime
 import time
@@ -18,18 +15,20 @@ views = Blueprint("views",__name__)
 @views.route("/home")
 @login_required
 def home():
+    alertaudits = MasterAlertAudit.query.all()
     if current_user.usertype == 'assignee':
         tickets = Ticket.query.filter_by(assignee_id=current_user.id).all()
     else:
         tickets = Ticket.query.all()
-    return render_template("dashboard.html",user=current_user,tickets=tickets)
+    return render_template("dashboard.html",user=current_user,tickets=tickets,alertaudits=alertaudits)
 
 
 @views.route("/create-ticket",methods=['GET','POST'])
 @login_required
 def create_ticket():
     questions = Question.query.all()
-    if(questions):
+    masteralertconfig = MasterAlertConfig.query.all()
+    if(questions and masteralertconfig):
         if request.method == "POST":
             now = time.strftime("%d/%B/%Y %H:%M:%S")
             status= "Opened"
@@ -102,7 +101,7 @@ def tickets(ticket_id):
     ticketeffortmaps = TicketEffortMap.query.filter_by(ticket_id=ticket_id).all()
     questions = Question.query.all()
     statuses = Status.query.all()
-    images_raw = Img.query.all()
+    images_raw = ImageDB.query.all()
     images_list = proc_image(images_raw,ticket_id)
     ticket = Ticket.query.filter_by(id=ticket_id).first()
     comments = Comment.query.filter(Comment.ticket_id==ticket_id).order_by(Comment.id.asc()).all()
@@ -504,7 +503,7 @@ def attach_image(ticket_id):
     if not filename or not mimetype:
         return 'Bad upload!', 400
 
-    img = Img(img=pic.read(), name=filename, mimetype=mimetype,ticket_id=ticket_id)
+    img = ImageDB(img=pic.read(), name=filename, mimetype=mimetype,ticket_id=ticket_id)
     db.session.add(img)
     db.session.commit()
     return redirect('/tickets/'+str(ticket_id))
@@ -513,7 +512,7 @@ def attach_image(ticket_id):
 @views.route("/delete-image/<image_id>",methods=['GET'])
 @login_required
 def delete_image(image_id):
-    img = Img.query.filter_by(id=image_id).first()
+    img = ImageDB.query.filter_by(id=image_id).first()
     ticket_id = img.ticket_id
     db.session.delete(img)
     db.session.commit()
@@ -537,7 +536,6 @@ def proc_image(images_raw,ticket_id):
     return images_list
 
 def alertmechanism(ticket_status, ticket_id):
-
     current = MasterAlertConfig.query.filter_by(ticket_status=ticket_status).first()
     ticket = Ticket.query.filter_by(id = ticket_id ).first()
     admins = User.query.filter_by(usertype = "admin").all()
@@ -548,7 +546,6 @@ def alertmechanism(ticket_status, ticket_id):
     assignee = User.query.filter_by(id = assignee_id).first()
     if(assignee):
         assignee_email = assignee.email
-    
     alertsub =  current.alert_subject
     alertbody = current.alert_body
     recipients = current.recipients
@@ -573,5 +570,30 @@ def alertmechanism(ticket_status, ticket_id):
     db.session.add(emailaudit)
     db.session.commit()
 
-        
-    #print(str(ticket_id) + " " + alertsub + " " + alertbody +" "+ recipients_email)
+@views.route("/master-reset-home",methods=['GET'])
+@login_required
+def master_reset_home():
+    admins = User.query.filter_by(usertype = "admin").all()
+    resets = MasterResetHistory.query.all()
+    return render_template('master_reset.html',resets=resets,user=current_user,admins=admins)
+
+@views.route("/master-reset",methods=['GET'])
+@login_required
+def master_reset():
+    now = time.strftime("%d/%B/%Y %H:%M:%S")
+    MasterAlertConfig.query.delete()
+    MasterAlertAudit.query.delete()
+    Comment.query.delete()
+    ImageDB.query.delete()
+    TicketEffortMap.query.delete()
+    TicketQuestionMap.query.delete()
+    Effort.query.delete()
+    Question.query.delete()
+    Status.query.delete()
+    Ticket.query.delete()
+    User.query.filter_by(usertype="reporter").delete()
+    User.query.filter_by(usertype="assignee").delete()
+    newreset = MasterResetHistory(reset_by=current_user.id,reset_on=now)
+    db.session.add(newreset)
+    db.session.commit()
+    return redirect('/master-reset-home')

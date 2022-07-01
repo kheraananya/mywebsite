@@ -1,0 +1,49 @@
+{% extends "base.html" %}
+{% block title %} Master Effort Estimation Fields{% endblock %}
+{% block content %}
+<body>
+    <br>
+    <div align='center'>
+        <a href="/master-question-home"><button type="button" class="btn btn-primary">Questionaires</button></a>
+        <a href="/master-status-home"><button type="button" class="btn btn-primary">Ticket Statuses</button></a>
+        <a href="/master-effort-home"><button type="button" class="btn btn-primary">Effort Estimation Fields</button></a>
+        <a href="/master-alert-home"><button type="button" class="btn btn-primary">Alert Configuration</button></a>
+        <a href="/master-reset-home"><button type="button" class="btn btn-success">Reset Database</button></a>
+    </div>
+    <br>
+    <div align = "center" class="container">   
+        <a href="/master-reset"><button type="button" class="btn btn-lg btn-danger">Reset Database</button></button></a>
+    </div>
+    <div class="container">
+        <table class = "table" id="myTable">
+            <thead class = "thead-light">
+                <tr>
+                    <th>ID</th>        
+                    <th>Reset By</th>
+                    <th>Reset On</th>
+                </tr>
+            </thead>
+        <tbody>
+            {% for reset in resets %}
+                <tr>
+                    <td>{{reset.id}}</a></td>
+                    <td>
+                        {% for admin in admins %}
+                            {% if admin.id == reset.reset_by %}
+                                {{admin.username}}
+                            {% endif %}
+                        {% endfor %}
+                    </td>
+                    <td>{{reset.reset_on}}</td>
+                </tr>
+            {% endfor %}
+        </tbody>  
+    </table>
+   </div>
+</body>
+<script>  
+    $(document).ready(function(){ 
+        $('#myTable').DataTable();  
+    });
+</script>
+{% endblock %}   

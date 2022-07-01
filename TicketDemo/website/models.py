@@ -35,6 +35,7 @@ class Ticket(db.Model):
     comments = db.relationship('Comment',backref='Ticket',passive_deletes=True)
 
 class Comment(db.Model):
+    __tablename__ = 'Comment'
     id = db.Column(db.Integer, primary_key=True)
     text = db.Column(db.Text,nullable=False)
     date_created = db.Column(db.DateTime, default = time.strftime("%d-%b-%Y %H:%M:%S") , index =True)
@@ -97,15 +98,16 @@ class MasterAlertAudit(db.Model):
     recipients = db.Column(db.String(200))
     sent_on = db.Column(db.DateTime, default = time.strftime("%d/%B/%Y %H:%M:%S"))
 
-class Img(db.Model):
+class ImageDB(db.Model):
+    __tablename__ = 'ImageDB'
     id = db.Column(db.Integer, primary_key=True)
     img = db.Column(db.LargeBinary)
     name = db.Column(db.Text, nullable=False)
     mimetype = db.Column(db.Text, nullable=False)
     ticket_id = db.Column(db.Integer, db.ForeignKey('Ticket.id', ondelete="CASCADE"),nullable=False)
 
-# class MasterResetHistory(db.Model):
-#     __tablename__ = 'MasterResetHistory'
-#     id = db.Column(db.Integer, primary_key=True)
-#     reset_by = db.Column(db.Integer, db.ForeignKey('User.id',ondelete="CASCADE"),nullable=False)
-#     reset_on = db.Column(db.DateTime, default = time.strftime("%d/%B/%Y %H:%M:%S"))
+class MasterResetHistory(db.Model):
+    __tablename__ = 'MasterResetHistory'
+    id = db.Column(db.Integer, primary_key=True)
+    reset_by = db.Column(db.Integer, db.ForeignKey('User.id',ondelete="CASCADE"),nullable=False)
+    reset_on = db.Column(db.DateTime, default = time.strftime("%d/%B/%Y %H:%M:%S"))

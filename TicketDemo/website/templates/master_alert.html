@@ -7,10 +7,9 @@
     <div align='center'>
         <a href="/master-question-home"><button type="button" class="btn btn-primary">Questionaires</button></a>
         <a href="/master-status-home"><button type="button" class="btn btn-primary">Ticket Statuses</button></a>
-        <a href="/master-effort-home"><button type="button" class="btn btn-primary">Effort Estimation
-                Fields</button></a>
+        <a href="/master-effort-home"><button type="button" class="btn btn-primary">Effort EstimationFields</button></a>
         <a href="/master-alert-home"><button type="button" class="btn btn-success">Alert Configuration</button></a>
-        <button type="button" class="btn btn-primary">Assignee Login Creation</button>
+        <a href="/master-reset-home"><button type="button" class="btn btn-primary">Reset Database</button></a>
     </div>
     <br>
     <div align="right">
@@ -23,8 +22,11 @@
             <div class="form-group" class="grid-container" style="display: grid;
             grid-template-columns: auto auto ; grid-gap: 30px; padding: 10px;">
                 <div><label for="ticket_status">Ticket Status:</label>
-                    <input type="text" name="ticket_status" placeholder="Enter Ticket Status"
-                        class="form-control name_list" />
+                    <select class="form-select" id="ticket_status" name = "ticket_status" placeholder="Enter Ticket Status">
+                        {% for status in statuses %}
+                            <option value="{{status.status}}">{{status.status}}</option>
+                        {% endfor %}
+                    </select>
                 </div>
                 <div>
                     <label for="alert_subject">Alert Subject:</label>
