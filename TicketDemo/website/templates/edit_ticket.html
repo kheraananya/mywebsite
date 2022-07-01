@@ -22,7 +22,6 @@
             value = "{{ticket.title}}"
         />
     <br>
-    {% if user.usertype != "reporter" %}
         {% for ticketquestionmap in ticketquestionmaps %}
             {% for question in questions %}
                 {% if question.id == ticketquestionmap.question_id %}
@@ -38,6 +37,7 @@
                 <br>
             {% endfor %}
         {% endfor %}
+        {% if user.usertype != "reporter" %}
         <label for="status">Status</label>
             <select class="form-select" id="status" name = "status">
                 {% for status in statuses %}

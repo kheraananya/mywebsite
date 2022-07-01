@@ -2,6 +2,7 @@ from asyncio import constants
 from time import timezone
 from . import db
 from flask_login import UserMixin
+import sqlalchemy
 from sqlalchemy.sql import func
 from datetime import datetime
 import datetime
@@ -95,3 +96,16 @@ class MasterAlertAudit(db.Model):
     alert_body = db.Column(db.String(5000))
     recipients = db.Column(db.String(200))
     sent_on = db.Column(db.DateTime, default = time.strftime("%d/%B/%Y %H:%M:%S"))
+
+class Img(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    img = db.Column(db.LargeBinary)
+    name = db.Column(db.Text, nullable=False)
+    mimetype = db.Column(db.Text, nullable=False)
+    ticket_id = db.Column(db.Integer, db.ForeignKey('Ticket.id', ondelete="CASCADE"),nullable=False)
+
+# class MasterResetHistory(db.Model):
+#     __tablename__ = 'MasterResetHistory'
+#     id = db.Column(db.Integer, primary_key=True)
+#     reset_by = db.Column(db.Integer, db.ForeignKey('User.id',ondelete="CASCADE"),nullable=False)
+#     reset_on = db.Column(db.DateTime, default = time.strftime("%d/%B/%Y %H:%M:%S"))
