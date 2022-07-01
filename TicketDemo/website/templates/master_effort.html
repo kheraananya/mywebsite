@@ -8,17 +8,17 @@
         <a href="/master-status-home"><button type="button" class="btn btn-primary">Ticket Statuses</button></a>
         <a href="/master-effort-home"><button type="button" class="btn btn-success">Effort Estimation Fields</button></a>
         <a href="/master-alert-home"><button type="button" class="btn btn-primary">Alert Configuration</button></a>
-        <a href="/master-dbreset"><button type="button" class="btn btn-primary">Reset Database</button></a>
+        <button type="button" class="btn btn-primary">Assignee Login Creation</button>
     </div>
     <br>
     <div class="container">   
         <div class="form-group">  
              <form name="add_effort" id="add_effort">  
                   <div class="table-responsive">
-                       <table class="table table-bordered" id="dynamic_field">  
+                       <table class="table" id="dynamic_field" style = "background-color: black; border-radius:15px;">  
                             <tr>  
-                                 <td style="width:89%"><input type="text" name="effort" placeholder="Enter effort" class="form-control name_list"/></td>  
-                                 <td><button type="button" name="add" id="add" class="btn btn-success">Add Field</button></td>  
+                                <td style="width:89%"><input type="text" name="effort" placeholder="Enter effort" class="form-control name_list"/></td>  
+                                <td><button type="button" name="add" id="add" class="btn btn-success">Add Field</button></td>  
                             </tr>  
                        </table>  
                   </div>  
@@ -43,7 +43,7 @@
                     <td>{{effort.effort}}</td>
                     <td>{{effort.date_created}}</td>
                     <td>{{user.username}}</td>
-                    <td><a href="/delete-effort/{{effort.id}}"><button>Delete</button></a></td>
+                    <td><a href="/delete-effort/{{effort.id}}"><button type="button" class="btn btn-danger">Delete</button></a></td>
                 </tr>
             {% endfor %}
         </tbody>  
@@ -63,5 +63,6 @@
             });
         });
     </script>
+    <br>
 </body>
 {% endblock %}   
