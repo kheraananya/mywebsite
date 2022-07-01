@@ -1,71 +1,89 @@
 {% extends "base.html" %}
 {% block title %} Master Ticket Statuses {% endblock %}
 {% block content %}
+
 <body>
     <br>
     <div align='center'>
         <a href="/master-question-home"><button type="button" class="btn btn-primary">Questionaires</button></a>
         <a href="/master-status-home"><button type="button" class="btn btn-primary">Ticket Statuses</button></a>
-        <a href="/master-effort-home"><button type="button" class="btn btn-primary">Effort Estimation Fields</button></a>
+        <a href="/master-effort-home"><button type="button" class="btn btn-primary">Effort Estimation
+                Fields</button></a>
         <a href="/master-alert-home"><button type="button" class="btn btn-success">Alert Configuration</button></a>
-        <a href="/master-dbreset"><button type="button" class="btn btn-primary">Reset Database</button></a>
+        <button type="button" class="btn btn-primary">Assignee Login Creation</button>
     </div>
     <br>
     <div class="container">
         <form method='POST'>
-            <div align='center' class="form-group">
-                <label for="ticket_status">Ticket Status:</label>
-                <select class="form-select" id="ticket_status" name = "ticket_status" placeholder="Enter Ticket Status">
-                    {% for status in statuses %}
-                        <option value="{{status.status}}">{{status.status}}</option>
-                    {% endfor %}
-                </select>
-                <br>
-                <label for="alert_subject">Alert Subject:</label>
-                <input type="text" name="alert_subject" placeholder="Enter Alert Subject" class="form-control name_list"/>
-                <br>
-                <label for="alert_body">Alert Body:</label>
-                <textarea type="text" name="alert_body" placeholder="Enter Alert Body" class="form-control name_list"></textarea>
-                <br>
-                <label for="recipients">Recipients:</label>
-                <input type="text" name="recipients" placeholder="Enter Recipients" class="form-control name_list"/>
-                <br>
-                <button type="submit" id="submit" class="btn btn-lg btn-dark">Create</button>
+            <div class="form-group" class="grid-container" style="display: grid;
+            grid-template-columns: auto auto ; grid-gap: 30px; padding: 10px;">
+                <div><label for="ticket_status">Ticket Status:</label>
+                    <input type="text" name="ticket_status" placeholder="Enter Ticket Status"
+                        class="form-control name_list" />
+                </div>
+                <div>
+                    <label for="alert_subject">Alert Subject:</label>
+                    <input type="text" name="alert_subject" placeholder="Enter Alert Subject"
+                        class="form-control name_list" />
+
+                </div>
+                <div>
+                    <label for="alert_body">Alert Body:</label>
+                    <input type="text" name="alert_body" placeholder="Enter Alert Body"
+                        class="form-control name_list" />
+
+                </div>
+                <div>
+                    <label for="recipients">Recipients:</label>
+                    <input type="text" name="recipients" placeholder="Enter Recipients"
+                        class="form-control name_list" />
+
+                </div>
+            </div>
+            <br>
+            <div align="center">
+                <button type="button" class="btn btn-info">Create</button>
+
                 <br>
             </div>
+
+            <br>
+
         </form>
     </div>
     <div class="container">
-        <table class = "table" id="myTable">
-            <thead class = "thead-light">
+        <table class="table" id="myTable">
+            <thead class="thead-light">
                 <tr>
-                    <th>Ticket Status</th>        
+                    <th>Ticket Status</th>
                     <th>Alert Body</th>
                     <th>Alert Subject</th>
                     <th>Recipients</th>
                     <th></th>
                 </tr>
             </thead>
-        <tbody>
-            {% for alert in alerts %}
+            <tbody>
+                {% for alert in alerts %}
                 <tr>
                     <td>{{alert.ticket_status}}</a></td>
                     <td>{{alert.alert_body}}</td>
                     <td>{{alert.alert_subject}}</td>
                     <td>{{alert.recipients}}</td>
-                    <td><a href="/delete-alert/{{alert.id}}"><button>Delete</button></a></td>
+                    <td><a href="/delete-alert/{{alert.id}}"><button type="button"
+                                class="btn btn-danger">Delete</button></a></td>
                 </tr>
-            {% endfor %}
-        </tbody>  
-    </table>
-   </div>
-<script>
-    $(document).ready( function () {
-        $('#myTable').DataTable();  
-        $('#submit').click(function(){
-            window.location.href = "/master-alert-home";
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    <script>
+        $(document).ready(function () {
+            $('#myTable').DataTable();
+            $('#submit').click(function () {
+                window.location.href = "/master-alert-home";
+            });
         });
-    });
-</script>
+    </script>
+    <br>
 </body>
 {% endblock %}

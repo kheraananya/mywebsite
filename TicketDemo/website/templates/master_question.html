@@ -8,16 +8,16 @@
         <a href="/master-status-home"><button type="button" class="btn btn-primary">Ticket Statuses</button></a>
         <a href="/master-effort-home"><button type="button" class="btn btn-primary">Effort Estimation Fields</button></a>
         <a href="/master-alert-home"><button type="button" class="btn btn-primary">Alert Configuration</button></a>
-        <a href="/master-dbreset"><button type="button" class="btn btn-primary">Reset Database</button></a>
+        <button type="button" class="btn btn-primary">Assignee Login Creation</button>
     </div>
     <br>
     <div class="container">    
         <div class="form-group">  
              <form name="add_question" id="add_question">  
-                  <div class="table-responsive">
-                       <table class="table table-bordered" id="dynamic_field">  
+                  <div class="table-responsive"  >
+                       <table class="table" id="dynamic_field" style = "background-color: black; border-radius:15px;">  
                             <tr>  
-                                 <td style="width:86%"><input type="text" name="Question" placeholder="Enter Question" class="form-control name_list"/></td>  
+                                 <td style="width:86% "><input type="text" name="Question" placeholder="Enter Question" class="form-control name_list"/></td>  
                                  <td><button type="button" name="add" id="add" class="btn btn-success">Save Question</button></td>  
                             </tr>  
                        </table>  
@@ -43,12 +43,14 @@
                     <td>{{question.question}}</td>
                     <td>{{question.date_created}}</td>
                     <td>{{user.username}}</td>
-                    <td><a href="/delete-question/{{question.id}}"><button>Delete</button></a></td>
+                    <td><a href="/delete-question/{{question.id}}"> <button type="button" class="btn btn-danger">Delete</button></a></td>
                 </tr>
             {% endfor %}
-        </tbody>  
+        </tbody> 
+        <br> 
     </table>
    </div>
+
    <script>  
     $(document).ready(function(){ 
         $('#myTable').DataTable();  
@@ -63,5 +65,6 @@
             });
         });
     </script>
+    <br>
 </body>
 {% endblock %}   

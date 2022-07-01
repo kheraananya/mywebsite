@@ -4,7 +4,7 @@ from sre_constants import CATEGORY_DIGIT
 from unicodedata import category
 from flask import Blueprint, render_template, request,flash,redirect,url_for,jsonify,Response
 from flask_login import login_required, current_user
-from .models import MasterAlertConfig, Question, Status, Ticket, User, Comment,TicketQuestionMap, Effort, TicketEffortMap,Img
+from .models import MasterAlertConfig,MasterAlertAudit, Question, Status, Ticket, User, Comment,TicketQuestionMap, Effort, TicketEffortMap,Img
 from . import db
 from datetime import datetime
 import time
@@ -51,6 +51,7 @@ def create_ticket():
                 map.value = str(answer)
             if(custname and title):
                 db.session.commit()
+                alertmechanism("Opened", ticket.id)
             else:
                 flash("Enter required details",category="error")
             return redirect(url_for("views.home"))
@@ -137,6 +138,7 @@ def assign_assignee(ticket_id):
             ticket.last_modified = now
             assignee.status = "Occupied"
             db.session.commit()
+            alertmechanism(ticket.status, ticket.id)
             return redirect('/tickets/'+str(ticket_id))
     return redirect('/tickets/'+str(ticket_id))
 
@@ -173,6 +175,7 @@ def update_status(ticket_id):
             ticket.status = status
             ticket.last_modified = now
             db.session.commit()
+            alertmechanism(ticket.status, ticket.id)
             #flash("Status updated",category='success')
             return redirect('/tickets/'+str(ticket_id))
     return redirect('/tickets/'+str(ticket_id))
@@ -532,3 +535,43 @@ def proc_image(images_raw,ticket_id):
             imgtuple = (img_base64,image_raw.id)
             images_list.append(imgtuple)
     return images_list
+
+def alertmechanism(ticket_status, ticket_id):
+
+    current = MasterAlertConfig.query.filter_by(ticket_status=ticket_status).first()
+    ticket = Ticket.query.filter_by(id = ticket_id ).first()
+    admins = User.query.filter_by(usertype = "admin").all()
+    reporter_id = ticket.author_id
+    assignee_id = ticket.assignee_id
+    reporter = User.query.filter_by(id = reporter_id).first()
+    reporter_email = reporter.email
+    assignee = User.query.filter_by(id = assignee_id).first()
+    if(assignee):
+        assignee_email = assignee.email
+    
+    alertsub =  current.alert_subject
+    alertbody = current.alert_body
+    recipients = current.recipients
+    arr = recipients.split(";")
+    recipients_email = ""
+    for i  in range(len(arr)) :
+
+        if arr[i] == "reporter" :
+            recipients_email  = recipients_email + ";" + reporter_email
+        
+        elif arr[i] == "assignee" :
+            recipients_email  = recipients_email + ";" +  assignee_email
+        elif arr[i] == 'admin':
+            for admin in admins:
+                admin_email = admin.email
+                recipients_email  = recipients_email + ";" +  admin_email
+                
+       
+    recipients_email = recipients_email.strip(";")
+
+    emailaudit = MasterAlertAudit(ticket_status = ticket_status , alert_subject  = alertsub , alert_body = alertbody , recipients = recipients )
+    db.session.add(emailaudit)
+    db.session.commit()
+
+        
+    #print(str(ticket_id) + " " + alertsub + " " + alertbody +" "+ recipients_email)
