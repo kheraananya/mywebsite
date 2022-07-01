@@ -1,15 +1,57 @@
 {% extends "base.html" %}
 {% block title %} {% endblock %}
 {% block content %}
+<style>
+    * {
+      box-sizing: border-box;
+    }
+    
+    /* Create two unequal columns that floats next to each other */
+    .column {
+      float: left;
+      padding: 10px;
+      height: 300px; /* Should be removed. Only for demonstration */
+    }
+    
+    .left {
+      width: 75%;
+    }
+    
+    .right {
+      width: 25%;
+      
+    }
+    
+    /* Clear floats after the columns */
+    .row:after {
+      content: "";
+      display: table;
+      clear: both;
+    }
+
+    .people{
+        border:2px solid gray;
+      border-radius: 10px;
+      padding: 5px;
+      margin: 5px;
+    }
+    
+    .width-50{
+clear: none;
+float: left;
+width: 50%;
+
+}
+    </style>
 <h1 align="center">{% block header %}{% endblock %}</h1>
     <div id="tickets">
-        <div class="card border-dark">
+        <div>
             <div class="card-header d-flex justify-content-between align-items-center">
                 <div class="ml-auto p-2">
                 <b>Ticket #{{ticket.id}}</b>
                 <br>
-                Created By: 
-                {{ticket.author.username}}
+                <!-- Created By: 
+                {{ticket.author.username}} -->
                 <!-- <a href="/ticketsby/{{ticket.author.username}}">
                 </a> -->
                 </div>
@@ -104,29 +146,50 @@
                     </button>
                 {% endif %}
             </div>
+            
+            <div class="row">
+                <div class="column left">
             <div class = "card-body">
                 <div class = "card-text">
-                    <h5>Customer Name: {{ticket.custname}}</h5>
+                    <div class="people">
+                 <h5 style="font-size:19px; font-weight: bold; color: #5CB3FF; text-decoration: underline;">Details</h5>
+                    <p style="font-size:16px;"><b>Customer Name:</b>{{ticket.custname}}</p>
                     <p>Requirement Title: {{ticket.title}}</p>
+                   
+                <p>Assignee: {{ticket.assignee.username}}</p>
+                <p>Current Status: {{ticket.status}}</p>
+                    </div>
+                    
+                    <span class="people" style="float:left;">
+                        
+                        <h5 style="font-size:19px; font-weight: bold; color: #5CB3FF; text-decoration: underline;">Questions</h5>
                     {% for ticketquestionmap in ticketquestionmaps %}
                         {% for question in questions %}
                             {% if question.id == ticketquestionmap.question_id %}
-                                <p><b>{{question.question}}:</b>{{ticketquestionmap.value}}</p>
+                            
+                              <p class="width-50">{{question.question}}:{{ticketquestionmap.value}}</p>
+                            
                             {% endif %}
                         {% endfor %}
                     {% endfor %}
+                    </span>
+                    
+                    <span class="people" style="float:left;">
+                        <h5 style="font-size:19px; font-weight: bold; color: #5CB3FF; text-decoration: underline;">Estimation details</h5>
                     {% for ticketeffortmap in ticketeffortmaps %}
-                        {% for effort in efforts %}
-                            {% if effort.id == ticketeffortmap.effort_id %}
-                                <p><b>{{effort.effort}}:</b>{{ticketeffortmap.value}}</p>
-                            {% endif %}
-                        {% endfor %}
+                    {% for effort in efforts %}
+                        {% if effort.id == ticketeffortmap.effort_id %}
+                            <p>{{effort.effort}}:{{ticketeffortmap.value}}</p>
+                        {% endif %}
                     {% endfor %}
-                    <p>Assignee: {{ticket.assignee.username}}</p>
-                    <p>Current Status: {{ticket.status}}</p>
+                {% endfor %}
+                </span>
                 </div>
                 <br>
-                <div class="row">
+                
+                <div class="row" style="display: block; margin-left: 11px;">
+                    <span class="container people" style="display:block ;">
+                        <h5 style="font-size:19px; font-weight: bold; color: #5CB3FF; text-decoration: underline;">Attachments</h5>
                     <form method="post" action= "/attach-image/{{ticket.id}}" enctype="multipart/form-data">
                         <dl>
                             <p>
@@ -138,8 +201,8 @@
                         </p>
                     </form>
                 </div>
-                <div class="container">
-                    <p>Attachments:</p>
+                
+                    
                     {% for image in images_list %}
                         <img width="200" height="200" src="data:image/png;base64, {{image.0}}" />
                         <button type="button" class="btn btn-sm">
@@ -148,8 +211,10 @@
                             </a>
                         </button> 
                     {% endfor %}
-                </div>
-                <div class="collapse" id="comments-{{ticket.id}}">
+                </span>
+                <span class="people" style="float:left; width:840px;">
+                    <h5 style="font-size:19px; font-weight: bold; color: #5CB3FF; text-decoration: underline;">Comments</h5>
+                                <div class="collapse" id="comments-{{ticket.id}}" >
                     <div class="card">
                         <div class="card-body" id="comments-expanded-{{ticket.id}}">
                             {% for comment in comments %}
@@ -221,14 +286,38 @@
                     </form>
                 {% endif %}
             </div>
-            <div class = "card-footer text-muted">
+            
+            <!-- <div class = "card-footer text-muted">
                 Created On: {{ticket.date_created}}
                 <br>
                 Last Modified: {{ticket.last_modified}}
-            </div>
+            </div> -->
+
         </div>
+    </span>
         <br>
+    
+    <div class="column right" >
+        
+        <div class="people">
+            <h5 style="font-size:19px; font-weight: bold; color: #5CB3FF; text-decoration: underline;">People</h5>
+        <div class="ml-auto p-2">
+            Reported by:<img src="https://img.icons8.com/material-sharp/24/000000/person-male.png" height="20px" style="opacity: 0.5;"/>{{ticket.author.username}}
+                    Assignee: <img src="https://img.icons8.com/material-sharp/24/000000/person-male.png" height="20px" style="opacity: 0.5;"/>{{ticket.assignee.username}}
+                    </a>
+                    </div>
+                </div>
+    
+    <div class="people" style="margin-top: 10px;">
+        <h5 style="font-size:20px; font-weight: bold; color: #5CB3FF; text-decoration: underline;">Dates</h5>
+    <div class="ml-auto p-2">
+            Created: {{ticket.date_created}}
+            <br>
+            Last Modified: {{ticket.last_modified}}
+                   </div>
     </div>
+    </div>
+        </div>
     <script>
         $(document).ready(function() {
             $('#assignee-name').select2({
