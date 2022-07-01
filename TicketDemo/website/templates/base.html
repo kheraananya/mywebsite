@@ -26,41 +26,114 @@
     <script src = "https://cdn.datatables.net/1.12.1/js/jquery.dataTables.min.js"></script>
     <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
 	<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+    <style>
+        .dropbtn {
+          background-color: #3498DB;
+          color: white;
+          padding: 16px;
+          font-size: 16px;
+          border: none;
+          cursor: pointer;
+        }
+        
+        .dropbtn:hover, .dropbtn:focus {
+          background-color: #2980B9;
+        }
+        
+        .dropdown {
+          position: relative;
+          display: inline-block;
+        }
+        
+        .dropdown-content {
+          display: none;
+          position: absolute;
+          background-color: #2081e3;
+          min-width: 160px;
+          overflow: auto;
+          box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+          z-index: 1;
+        }
+        
+        .dropdown-content a {
+          color: black;
+          padding: 12px 16px;
+          text-decoration: none;
+          display: block;
+        }
+        
+        .dropdown a:hover {background-color: #ddd;}
+        
+        .show {display: block;}
+        span {
+  float: right;
+}
+        </style>
     <title>{% block title %}{% endblock %}</title>
 </head>
 <body>
-    <nav class = "navbar navbar-expand-lg navbar-dark bg-dark">
-        <a class="navbar-brand" href="">
-            <img src="https://1000logos.net/wp-content/uploads/2021/04/Adobe-logo.png" width="180" height="100" class="d-inline-block align-top" alt="">
-        </a>
+    <nav class = "navbar navbar-expand-sm bg-primary navbar-dark" style="height: 40px;">
+        <!-- <a class="navbar-brand" href=""> -->
+            <img src="https://img.icons8.com/external-justicon-flat-justicon/64/000000/external-adobe-social-media-justicon-flat-justicon.png" width="30px" height="27px" class="d-inline-block align-top" alt="" style="padding-left: 9px;" >
+        
+        <h5 style="padding-top: 5px; padding-right: 3px; font-size: 17px; padding-left: 4px; color: white;">Adobe</h5>
+        <div class="vl" style="border-left: 2px solid white;
+        height: 25px;"></div>
+        <h5 style="color:white; padding-top: 9px; padding-left: 3px; font-size: 15px; font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;">Scoping</h5>
         <div class = "container-fluid">
             <button 
                 class = "navbar-toggler" 
                 type = "button" 
                 data-bs-toggle = "collapse"
+                
                 data-bs-target = "#navbar"
             >
             <span class = "navbar-toggler-icon"></span>
         </button>
         <div class = "collapse navbar-collapse" id = "navbar">
-            <div class = "navbar-nav">
-                <a class="nav-item nav-link" id="home" href ="/home">Home</a>
-                {% if user.is_authenticated %}
-                    <a class="nav-item nav-link" href ="/logout">Logout</a>
-                    {% if user.usertype=="admin" %}
-                        <a class="nav-item nav-link" id="master" href ="/master">Master Setup</a>
+            <div class = "navbar-nav" style="font-size: 13px;">
+                <a class="nav-item nav-link" href ="/home" style="padding-left:25px; color: white;">Home</a>
+        
+        {% if user.usertype=="admin" %}
+                        <a class="nav-item nav-link" id="master" href ="/master" style="padding-left:25px; color: white;">Master Setup</a>
                     {% endif %}
-                {% else %}
-                    <a class="nav-item nav-link" id="login" href ="/login">Login</a>
-                    <a class="nav-item nav-link" id="signup" href ="/signup">Signup</a>
-                {% endif %}
             </div>
-        </div>
-        <span class="navbar-text">
+      </div>
+      <div>
             {% if user.is_authenticated %}
-                You are logged in as {{user.username}} ({{user.usertype}})
+            <span class="navbar-text">
+                <a class="nav-item nav-link" id="profile" href ="/viewprofile" style="color: white; padding-right: 5px; font-size: 13px;"><img src="https://img.icons8.com/ios-glyphs/30/000000/test-account.png" height="20px" style="padding-left:5px;"/></a>
+            </span>
+            <span class="navbar-text">
+            
+                <a class="nav-item nav-link" href ="/logout" style="color: white; font-size: 13px;">Logout</a>
+                </span>
+            {% else %}
+            <span class="navbar-text">
+                    <a class="nav-item nav-link" href ="/login" style="color: white; padding-left: 5px; font-size: 13px;">Login</a>
+                </span>
+                <span class="navbar-text">
+                    <a class="nav-item nav-link" href ="/signup" style="color: white; padding-right: 5px; font-size: 13px;">Signup</a>
+                </span>  
             {% endif %}
-        </span>
+        </div>
+        
+
+        <!-- <div class="dropdown"></div>
+        <button onclick="myFunction()" class="dropbtn" style="background-color:#0d6efd; margin-right: 60px;"><img src="https://img.icons8.com/ios-glyphs/30/000000/settings--v1.png" width="20px"/></button>
+        <div id="myDropdown" class="dropdown-content">
+            <a href="#home">Change password</a>
+            <a href="#about">Change profile picture</a>
+            <a href="#contact">Edit profile</a>
+          </div>
+        </div> -->
+        
+            <!-- You are logged in as {{user.username}} ({{user.usertype}})-->
+        
+   <!-- </span> -->
+  
+    <span class="navbar-icon"><i class="fa fa-gear"></i></span>
+    <i class="fa fa-gear"></i>
     </nav>
     {% with messages = get_flashed_messages(with_categories=True) %}
         {%if messages %}
@@ -80,6 +153,27 @@
         integrity="sha384-pprn3073KE6tl6bjs2QrFaJGz5/SUsLqktiwsUTF55Jfv3qYSDhgCecCxMW52nD2"
         crossorigin="anonymous"
     ></script>
+    <script>
+        /* When the user clicks on the button, 
+        toggle between hiding and showing the dropdown content */
+        function myFunction() {
+          document.getElementById("myDropdown").classList.toggle("show");
+        }
+        
+        // Close the dropdown if the user clicks outside of it
+        window.onclick = function(event) {
+          if (!event.target.matches('.dropbtn')) {
+            var dropdowns = document.getElementsByClassName("dropdown-content");
+            var i;
+            for (i = 0; i < dropdowns.length; i++) {
+              var openDropdown = dropdowns[i];
+              if (openDropdown.classList.contains('show')) {
+                openDropdown.classList.remove('show');
+              }
+            }
+          }
+        }
+        </script>
     <style>
         html { overflow-y: scroll; }
     </style>

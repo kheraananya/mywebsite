@@ -1,11 +1,15 @@
 {% extends "base.html" %}
 {% block title %} Dashboard {% endblock %}
 {% block content %}
+<style>
+    tr:hover {background-color: coral;}
+</style>
+<br>
 <br>
 <div class = "container">
     <table class = "table" id="myTable">
         <thead class = "thead-light">
-            <tr>
+            <tr style="background-color: #0d6efd;" >
                 <th>Ticket ID</th>        
                 <th>Customer Name</th>
                 <th>Created By</th>
@@ -46,7 +50,7 @@
     {% if user.usertype == 'reporter' %}
     <div align="center">
         <a href="/create-ticket">
-            <button type="button" class="btn btn-info lg">
+            <button type="button" class="btn btn-info lg" style="background-color: #0d6efd;">
                 Create New Ticket
             </button>
         </a>
@@ -54,4 +58,3 @@
     {% endif %}
     {% endblock %}
 {% endblock %}
-

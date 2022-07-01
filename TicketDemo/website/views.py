@@ -350,6 +350,8 @@ def master():
         return redirect('/home')
     return render_template('master.html',user=current_user)
 
+    
+
 @views.route("/master-question-home",methods=['GET','POST'])
 @login_required
 def master_question_home():
