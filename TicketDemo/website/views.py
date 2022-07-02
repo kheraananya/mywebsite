@@ -33,11 +33,12 @@ def create_ticket():
             now = time.strftime("%d/%B/%Y %H:%M:%S")
             status= "Opened"
             ticket = Ticket(author_id = current_user.id,status=status,date_created=now,last_modified=now)
-            #currticket = Ticket.query.order_by(Ticket.id.desc()).first()
             custname = request.form.get("custname")
             title = request.form.get("title")
+            region = request.form.get("region")
             ticket.custname = custname
             ticket.title = title
+            ticket.region = region
             db.session.add(ticket)
             db.session.commit()
             for question in questions:

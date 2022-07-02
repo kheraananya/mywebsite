@@ -38,14 +38,14 @@
         <div class="form-group" class="grid-container" style="display: grid;
         grid-template-columns: auto auto ; grid-gap: 30px; padding: 10px;">
             <div><label for="custname">Customer Name :</label>
-                <input type="text" name="custname" placeholder="Enter Customer Name "
+                <input type="text" name="custname" value="{{ticket.custname}}"
                     class="form-control name_list" />
 
             </div>
 
             <div>
                 <label for="title">Reqirement Title:</label>
-                <input type="text" name="title" placeholder="Enter Requirement  Title"
+                <input type="text" name="title" value = "{{ticket.title}}""
                     class="form-control name_list" />
 
             </div>
