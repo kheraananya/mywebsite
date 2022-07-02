@@ -88,17 +88,7 @@ width: 50%;
                     </div>
                     {% endif %}
                     {% if user.usertype == 'admin' %}
-                    <!-- <div class = "btn-group">
-                        <button 
-                            type="button" 
-                            class="btn btn-sm" 
-                        > 
-                            <a href="/assign-assignee/{{ticket.id}}" class="dropdown-item">
-                                <span class="bi-pen"></span> Assignee
-                            </a>
-                        </button>
-                    </div> -->
-                    <div style="width:20%;" >
+                    <div>
                         <span style="float: left; margin-left: -200px;">
                     <select class="form-select" id="assignee-name" name = "assignee-name" >
                         <option></option>
@@ -121,16 +111,8 @@ width: 50%;
                     </div>
                     {% endif %}
                     {% if user.usertype == 'assignee' or user.usertype == 'admin' %}
-                        <!-- <button 
-                            type="button" 
-                            class="btn btn-sm" 
-                        > 
-                            <a href="/update-status/{{ticket.id}}" class="dropdown-item">
-                                <span class="bi-pen"></span> Update Status
-                            </a>
-                        </button> -->
                         {% if user.usertype == 'assignee' %}
-                        <div style="width:20%">
+                        <div>
                             <button 
                                 type="button" 
                                 class="btn btn-sm" 
@@ -143,7 +125,7 @@ width: 50%;
                             </button>
                         </div>
                         {% endif %}
-                        <div style="width:20%;" >
+                        <div>
                             <span style="float: left; margin-left: -430px;">
                             <select class="form-select" id="status-name" name = "status-name" >
                                 {% for status in statuses %}
@@ -176,7 +158,7 @@ width: 50%;
                     <p style="font-size:16px;" class="width-50"><b>Customer Name:</b>{{ticket.custname}}</p>
                     <p class="width-50"><b>Requirement Title:</b> {{ticket.title}}</p>
                    
-                <p class="width-50"><b>Assignee:</b> {{ticket.assignee.username}}</p>
+                <p class="width-50"><b>Region:</b> {{ticket.region}}</p>
                 <p class="width-50"><b>Current Status:</b> {{ticket.status}}</p>
                 
                     </span>
@@ -222,10 +204,12 @@ width: 50%;
                         <dl>
                             <p>
                                 <div class="input-group mb-3">
+                                    {% if ticket.status != "Closed" %}
                                     <input type="file" name="pic" class="form-control" autocomplete="off" required>
                                     <div class="input-group-append"> 
                                         <input type="submit" value="Submit" class="btn btn-info">
                                     </div>
+                                    {% endif %}
                                 </div>
                             </p>
                         </dl>
@@ -235,11 +219,13 @@ width: 50%;
                     
                     {% for image in images_list %}
                         <img width="200" height="200" src="data:image/png;base64, {{image.0}}" />
+                        {% if ticket.status != "Closed" %}
                         <button type="button" class="btn btn-sm">
                             <a href="/delete-image/{{image.1}}" class="dropdown-item">
                                 <span class="bi-x-lg"></span>
                             </a>
                         </button> 
+                        {% endif %}
                     {% endfor %}
                 </span>
             </div>
@@ -389,7 +375,7 @@ width: 50%;
                     contentType: "application/json",
                     data: JSON.stringify(s)
                 });
-                window.location.reload()
+                location.reload();
             });
         });
         function editComment(comment_id) 

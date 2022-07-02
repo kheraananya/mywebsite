@@ -25,6 +25,7 @@ class Ticket(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     custname = db.Column(db.String(2000))
     title = db.Column(db.String(2000))
+    region = db.Column(db.String(200))
     date_created = db.Column(db.DateTime, default = time.strftime("%d/%B/%Y %H:%M:%S"))
     last_modified = db.Column(db.DateTime, default = time.strftime("%d/%B/%Y %H:%M:%S"))
     author_id = db.Column(db.Integer, db.ForeignKey('User.id',ondelete="CASCADE"),nullable=False)
