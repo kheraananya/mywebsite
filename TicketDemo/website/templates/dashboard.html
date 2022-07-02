@@ -2,14 +2,18 @@
 {% block title %} Dashboard {% endblock %}
 {% block content %}
 <style>
-    tr:hover {background-color: coral;}
+  .table>tbody>tr:nth-of-type(odd) {  
+   background-color:#C9E5EF;  
+}  
+   
+    
 </style>
 <br>
 <br>
 <div class = "container">
-    <table class = "table" id="myTable">
-        <thead class = "thead-light">
-            <tr style="background-color: rgb(141, 141, 141); color: white;" >
+    <table class = "table" id="myTable" class="table table-striped">
+        <thead >
+            <tr style="background-color: #003E7F; color: white;" >
                 <th>Ticket ID</th>        
                 <th>Customer Name</th>
                 <th>Created By</th>
@@ -42,8 +46,8 @@
 <br>
 <div class = "container">
     <table class = "table" id="myTable2">
-        <thead class = "thead-light">
-            <tr style="background-color: rgb(141, 141, 141); color: white;" >
+        <thead >
+            <tr style="background-color: #003E7F; color: white;" >
                 <th>ID</th>        
                 <th>Ticket Status</th>
                 <th>Alert Subject</th>

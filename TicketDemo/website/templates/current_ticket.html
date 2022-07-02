@@ -14,11 +14,11 @@
     }
     
     .left {
-      width: 75%;
+      width: 65%;
     }
     
     .right {
-      width: 25%;
+      width: 35%;
       
     }
     
@@ -30,10 +30,14 @@
     }
 
     .people{
-        border:2px solid gray;
+        
       border-radius: 10px;
       padding: 5px;
       margin: 5px;
+      border: 1px solid grey; 
+      border-radius: 5px;
+       background-color: #C9E5EF; 
+       
     }
     
     .width-50{
@@ -41,13 +45,14 @@ clear: none;
 float: left;
 width: 50%;
 
-}
+}p { margin: 0 }
+
     </style>
 <h1 align="center">{% block header %}{% endblock %}</h1>
     <div id="tickets">
         <div>
             <div class="card-header d-flex justify-content-between align-items-center">
-                <div class="ml-auto p-2">
+                <div class="ml-auto p-2" style="margin-left:-30px; font-size: 17px; text-decoration: underline; font-family: Verdana, Geneva, Tahoma, sans-serif; margin-right: -100px;">
                 <b>Ticket #{{ticket.id}}</b>
                 <br>
                 <!-- Created By: 
@@ -60,6 +65,9 @@ width: 50%;
                         <button 
                             type="button" 
                             class="btn btn-sm" 
+                            style="background-color: #C9E5EF; margin-left: -100px; border: 2px solid; "
+                            
+        
                         > 
                             <a href="/edit-ticket/{{ticket.id}}" class="dropdown-item">
                                 <span class="bi-pen">Edit Ticket</span>
@@ -71,6 +79,7 @@ width: 50%;
                         <button 
                             type="button" 
                             class="btn btn-sm" 
+                            style="margin-left:630px;"
                         > 
                             <a href="/delete-ticket/{{ticket.id}}" class="dropdown-item">
                                 <span class="bi-trash"></span>
@@ -89,8 +98,9 @@ width: 50%;
                             </a>
                         </button>
                     </div> -->
-                    <div style="width:20%">
-                    <select class="form-select" id="assignee-name" name = "assignee-name">
+                    <div style="width:20%;" >
+                        <span style="float: left; margin-left: -200px;">
+                    <select class="form-select" id="assignee-name" name = "assignee-name" >
                         <option></option>
                             <optgroup label="Available assignees">
                                 {% for assignee in assignees %}
@@ -107,6 +117,7 @@ width: 50%;
                             {% endfor %} 
                         </optgroup>
                     </select>
+                        </span>
                     </div>
                     {% endif %}
                     {% if user.usertype == 'assignee' or user.usertype == 'admin' %}
@@ -118,25 +129,30 @@ width: 50%;
                                 <span class="bi-pen"></span> Update Status
                             </a>
                         </button> -->
-                        <div style="width:20%">
-                            <select class="form-select" id="status-name" name = "status-name">
-                                {% for status in statuses %}
-                                    <option value="{{status.status}}">{{status.status}}</option>
-                                {% endfor %}
-                            </select>
-                        </div>
                         {% if user.usertype == 'assignee' %}
                         <div style="width:20%">
                             <button 
                                 type="button" 
                                 class="btn btn-sm" 
+                                style="margin-left:-200px;background-color: #C9E5EF; border: 2px solid"
+
                             > 
                                 <a href="/estimated-details/{{ticket.id}}" class="dropdown-item">
-                                    <span class="bi-pen"></span> Effort Estimation
+                                    <span class="bi-pen">Effort Estimation</span> 
                                 </a>
                             </button>
                         </div>
                         {% endif %}
+                        <div style="width:20%;" >
+                            <span style="float: left; margin-left: -430px;">
+                            <select class="form-select" id="status-name" name = "status-name" >
+                                {% for status in statuses %}
+                                    <option value="{{status.status}}">{{status.status}}</option>
+                                {% endfor %}
+                            </select>
+                            </span>
+                        </div>
+                        
                     {% endif %}
                 {% else %}
                     <button type="button" class="btn btn-sm" > 
@@ -151,45 +167,57 @@ width: 50%;
                 <div class="column left">
             <div class = "card-body">
                 <div class = "card-text">
-                    <div class="people">
-                 <h5 style="font-size:19px; font-weight: bold; color: #5CB3FF; text-decoration: underline;">Details</h5>
-                    <p style="font-size:16px;"><b>Customer Name:</b>{{ticket.custname}}</p>
-                    <p>Requirement Title: {{ticket.title}}</p>
+                    <div class="row" style="display: block; margin-left: -50px;">
                    
-                <p>Assignee: {{ticket.assignee.username}}</p>
-                <p>Current Status: {{ticket.status}}</p>
+                        <span class="people" style="float:left;">  
+                            
+                 <div style="font-size:17px; font-weight: bold; border: 1px solid grey; color: white; border-radius: 5px; background-color: #003E7F; padding: 7px; margin: -5px; margin-bottom: -15px;">Details</div>
+                 <br>
+                    <p style="font-size:16px;" class="width-50"><b>Customer Name:</b>{{ticket.custname}}</p>
+                    <p class="width-50"><b>Requirement Title:</b> {{ticket.title}}</p>
+                   
+                <p class="width-50"><b>Assignee:</b> {{ticket.assignee.username}}</p>
+                <p class="width-50"><b>Current Status:</b> {{ticket.status}}</p>
+                
+                    </span>
                     </div>
-                    
+
+                    <div class="row" style="display: block; margin-left: -50px;">
                     <span class="people" style="float:left;">
                         
-                        <h5 style="font-size:19px; font-weight: bold; color: #5CB3FF; text-decoration: underline;">Questions</h5>
+                        <div style="font-size:17px; font-weight: bold; border: 1px solid grey; color: white; border-radius: 5px; background-color: #003E7F; padding: 7px; margin: -5px; margin-bottom: -15px;">Questions</div>
+                        <br>
                     {% for ticketquestionmap in ticketquestionmaps %}
                         {% for question in questions %}
                             {% if question.id == ticketquestionmap.question_id %}
                             
-                              <p class="width-50">{{question.question}}:{{ticketquestionmap.value}}</p>
+                              <p><b>{{question.question}}:</b>{{ticketquestionmap.value}}</p>
                             
                             {% endif %}
                         {% endfor %}
                     {% endfor %}
                     </span>
-                    
-                    <span class="people" style="float:left;">
-                        <h5 style="font-size:19px; font-weight: bold; color: #5CB3FF; text-decoration: underline;">Estimation details</h5>
+                    </div>
+                    <div class="row" style="display: block; margin-left: -40px; margin-right: -20px;">
+                    <span class="people" style="display:block ;">
+                        <div style="font-size:17px; font-weight: bold; border: 1px solid grey; color: white; border-radius: 5px; background-color: #003E7F; padding: 7px; margin: -5px; margin-bottom: -15px;">Estimation details</div>
+                        <br>
                     {% for ticketeffortmap in ticketeffortmaps %}
                     {% for effort in efforts %}
                         {% if effort.id == ticketeffortmap.effort_id %}
-                            <p>{{effort.effort}}:{{ticketeffortmap.value}}</p>
+                            <p><b>{{effort.effort}}:</b>{{ticketeffortmap.value}}</p>
                         {% endif %}
                     {% endfor %}
                 {% endfor %}
                 </span>
                 </div>
-                <br>
+                </div>
                 
-                <div class="row" style="display: block; margin-left: 11px;">
-                    <span class="container people" style="display:block ;">
-                        <h5 style="font-size:19px; font-weight: bold; color: #5CB3FF; text-decoration: underline;">Attachments</h5>
+                
+                <div class="row" style="display: block; margin-left: -40px; margin-right: -20px;">
+                    <span class="container people" style="display:block ; ">
+                        <div style="font-size:17px; font-weight: bold; border: 1px solid grey; color: white; border-radius: 5px; background-color: #003E7F; padding: 7px; margin: -5px; margin-bottom: -15px;">Attachments</div>
+                 <br>
                     <form method="post" action= "/attach-image/{{ticket.id}}" enctype="multipart/form-data">
                         <dl>
                             <p>
@@ -202,7 +230,7 @@ width: 50%;
                             </p>
                         </dl>
                     </form>
-                </div>
+
                 
                     
                     {% for image in images_list %}
@@ -214,8 +242,11 @@ width: 50%;
                         </button> 
                     {% endfor %}
                 </span>
-                <span class="people" style="float:left; width:840px;">
-                    <h5 style="font-size:19px; font-weight: bold; color: #5CB3FF; text-decoration: underline;">Comments</h5>
+            </div>
+                <div class="row" style="display: block; margin-left: -50px;">
+                <span class="people" style="float:left; width:890px;">
+                    <div style="font-size:17px; font-weight: bold; border: 1px solid grey; color: white; border-radius: 5px; background-color: #003E7F; padding: 7px; margin: -5px; margin-bottom: -15px;">Details</div>
+                 <br>
                                 <div class="collapse" id="comments-{{ticket.id}}" >
                     <div class="card">
                         <div class="card-body" id="comments-expanded-{{ticket.id}}">
@@ -297,25 +328,29 @@ width: 50%;
 
         </div>
     </span>
+                </div>
         <br>
     
     <div class="column right" >
         
-        <div class="people">
-            <h5 style="font-size:19px; font-weight: bold; color: #5CB3FF; text-decoration: underline;">People</h5>
+        <div class="people" style="margin-left:15px; margin-right: -40px;">
+            <div style="font-size:17px; font-weight: bold; border: 1px solid grey; color: white; border-radius: 5px; background-color: #003E7F; padding: 7px; margin: -5px; margin-bottom: -15px;">People</div>
+                 <br>
         <div class="ml-auto p-2">
-            Reported by:<img src="https://img.icons8.com/material-sharp/24/000000/person-male.png" height="20px" style="opacity: 0.5;"/>{{ticket.author.username}}
-                    Assignee: <img src="https://img.icons8.com/material-sharp/24/000000/person-male.png" height="20px" style="opacity: 0.5;"/>{{ticket.assignee.username}}
+            <b>Reported by:</b><img src="https://img.icons8.com/material-sharp/24/000000/person-male.png" height="20px" style="opacity: 0.5;"/>{{ticket.author.username}}
+            <br>
+            <b> Assignee:</b><img src="https://img.icons8.com/material-sharp/24/000000/person-male.png" height="20px" style="opacity: 0.5;"/>{{ticket.assignee.username}}
                     </a>
                     </div>
                 </div>
     
-    <div class="people" style="margin-top: 10px;">
-        <h5 style="font-size:20px; font-weight: bold; color: #5CB3FF; text-decoration: underline;">Dates</h5>
+    <div class="people" style="margin-top: 10px; margin-left:15px; margin-right: -40px;">
+        <div style="font-size:17px; font-weight: bold; border: 1px solid grey; color: white; border-radius: 5px; background-color: #003E7F; padding: 7px; margin: -5px; margin-bottom: -15px;">Dates</div>
+                 <br>
     <div class="ml-auto p-2">
-            Created: {{ticket.date_created}}
+        <b>Created on:</b> {{ticket.date_created}}
             <br>
-            Last Modified: {{ticket.last_modified}}
+            <b>Last Modified on:</b> {{ticket.last_modified}}
                    </div>
     </div>
     </div>
