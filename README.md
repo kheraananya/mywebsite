@@ -6,6 +6,8 @@ Python Modules to be installed:
 - Flask
 - flask_sqlalchemy
 - psycopg2
+- pillow
+- opencv
 
 ## Libraries Used
 
