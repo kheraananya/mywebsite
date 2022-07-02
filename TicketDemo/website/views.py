@@ -597,3 +597,8 @@ def master_reset():
     db.session.add(newreset)
     db.session.commit()
     return redirect('/master-reset-home')
+
+@views.route("/viewprofile",methods=['GET'])
+@login_required
+def view_profile():
+    return render_template('viewprofile.html',user=current_user)
