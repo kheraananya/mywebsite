@@ -1,6 +1,13 @@
 {% extends "base.html" %}
 {% block title %} Master Questionaire {% endblock %}
 {% block content %}
+<style>
+    .table>tbody>tr:nth-of-type(odd) {  
+     background-color:#C9E5EF;  
+  }  
+     
+      
+  </style>
 <body>
     <br>
     <div align='center'>
@@ -15,10 +22,10 @@
         <div class="form-group">  
              <form name="add_question" id="add_question">  
                   <div class="table-responsive"  >
-                       <table class="table" id="dynamic_field" style = "background-color: black; border-radius:15px;">  
+                       <table class="table" id="dynamic_field" style = "background-color: #08a5df; border-radius:15px;">  
                             <tr>  
                                  <td style="width:86% "><input type="text" name="Question" placeholder="Enter Question" class="form-control name_list"/></td>  
-                                 <td><button type="button" name="add" id="add" class="btn btn-success">Save Question</button></td>  
+                                 <td><button type="button" name="add" id="add" class="btn btn-success" style="background-color: #003E7F;">Save Question</button></td>  
                             </tr>  
                        </table>  
                   </div>  
@@ -28,7 +35,7 @@
     <div class="container">
         <table class = "table" id="myTable">
             <thead class = "thead-light">
-                <tr>
+                <tr style="background-color: #003E7F; color: white;">
                     <th>Question ID</th>        
                     <th>Question</th>
                     <th>Created On</th>

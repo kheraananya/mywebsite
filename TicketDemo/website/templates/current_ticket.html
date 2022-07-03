@@ -3,419 +3,446 @@
 {% block content %}
 <style>
     * {
-      box-sizing: border-box;
+        box-sizing: border-box;
     }
-    
+
     /* Create two unequal columns that floats next to each other */
     .column {
-      float: left;
-      padding: 10px;
-      height: 300px; /* Should be removed. Only for demonstration */
+        float: left;
+        padding: 10px;
+        height: 300px;
+        /* Should be removed. Only for demonstration */
     }
-    
+
     .left {
-      width: 65%;
+        width: 65%;
     }
-    
+
     .right {
-      width: 35%;
-      
+        width: 35%;
+
     }
-    
+
     /* Clear floats after the columns */
     .row:after {
-      content: "";
-      display: table;
-      clear: both;
+        content: "";
+        display: table;
+        clear: both;
     }
 
-    .people{
-        
-      border-radius: 10px;
-      padding: 5px;
-      margin: 5px;
-      border: 1px solid grey; 
-      border-radius: 5px;
-       background-color: #C9E5EF; 
-       
+    .people {
+
+        border-radius: 10px;
+        padding: 5px;
+        margin: 5px;
+        border: 1px solid grey;
+        border-radius: 5px;
+        background-color: #C9E5EF;
+
     }
-    
-    .width-50{
-clear: none;
-float: left;
-width: 50%;
 
-}p { margin: 0 }
+    .width-50 {
+        clear: none;
+        float: left;
+        width: 50%;
 
-    </style>
+    }
+
+    p {
+        margin: 0
+    }
+</style>
 <h1 align="center">{% block header %}{% endblock %}</h1>
-    <div id="tickets">
-        <div>
-            <div class="card-header d-flex justify-content-between align-items-center">
-                <div class="ml-auto p-2" style="margin-left:-30px; font-size: 17px; text-decoration: underline; font-family: Verdana, Geneva, Tahoma, sans-serif; margin-right: -100px;">
-                <b>Ticket #{{ticket.id}}</b>
+<div id="tickets">
+    <div>
+        <div class="card-header d-flex justify-content-between align-items-center">
+            <div class="ml-auto p-2"
+                style="margin-left:-30px; font-size: 17px;  font-family: Verdana, Geneva, Tahoma, sans-serif; margin-right: -300px;">
+                <b style="font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif ; font-size: 23px;">Ticket
+                    #{{ticket.id}}</b>
                 <br>
                 <!-- Created By: 
                 {{ticket.author.username}} -->
                 <!-- <a href="/ticketsby/{{ticket.author.username}}">
                 </a> -->
-                </div>
-                {% if ticket.status != "Closed" %}
-                    <div class = "btn-group">
-                        <button 
-                            type="button" 
-                            class="btn btn-sm" 
-                            style="background-color: #C9E5EF; margin-left: -100px; border: 2px solid; "
-                            
-        
-                        > 
-                            <a href="/edit-ticket/{{ticket.id}}" class="dropdown-item">
-                                <span class="bi-pen">Edit Ticket</span>
-                            </a>
-                        </button>
-                    </div>
-                    {% if user.id == ticket.author_id %}
-                    <div class = "btn-group">
-                        <button 
-                            type="button" 
-                            class="btn btn-sm" 
-                            style="margin-left:630px;"
-                        > 
-                            <a href="/delete-ticket/{{ticket.id}}" class="dropdown-item">
-                                <span class="bi-trash"></span>
-                            </a>
-                        </button>
-                    </div>
-                    {% endif %}
-                    {% if user.usertype == 'admin' %}
-                    <div>
-                        <span style="float: left; margin-left: -200px;">
-                    <select class="form-select" id="assignee-name" name = "assignee-name" >
+            </div>
+            {% if ticket.status != "Closed" %}
+            <div class="btn-group">
+                <button type="button" class="btn btn-sm"
+                    style="background-color: #C9E5EF; {% if user.usertype=='reporter' %}margin-left: 80px; {% elif user.usertype=='assignee' %}margin-left: -100px;{% else %}left:-90px;top:-16px;position:absolute;{% endif %} border: 2px solid; float: left; ">
+                    <a href="/edit-ticket/{{ticket.id}}" class="dropdown-item">
+                        <span class="bi-pen">Edit Ticket</span>
+                    </a>
+                </button>
+            </div>
+            {% if user.id == ticket.author_id %}
+            <div class="btn-group">
+                <button type="button" class="btn btn-sm" style="margin-left:630px;">
+                    <a href="/delete-ticket/{{ticket.id}}" class="dropdown-item">
+                        <span class="bi-trash"></span>
+                    </a>
+                </button>
+            </div>
+            {% endif %}
+            {% if user.usertype == 'admin' %}
+            <div>
+                <span style="float: left; left: 550px; top: 59px; position: absolute;">
+                    <select class="form-select" id="assignee-name" name="assignee-name">
                         <option></option>
-                            <optgroup label="Available assignees">
-                                {% for assignee in assignees %}
-                                    {% if assignee.status != "Occupied" %}
-                                        <option value="{{assignee.username}}">{{assignee.username}}</option>
-                                    {% endif %}  
-                                {% endfor %}     
-                            </optgroup>
+                        <optgroup label="Available assignees">
+                            {% for assignee in assignees %}
+                            {% if assignee.status != "Occupied" %}
+                            <option value="{{assignee.username}}">{{assignee.username}}</option>
+                            {% endif %}
+                            {% endfor %}
+                        </optgroup>
                         <optgroup label="Occupied assignees">
                             {% for assignee in assignees %}
-                                {% if assignee.status == "Occupied" %}
-                                <option selected disabled>{{assignee.username}}</option>
-                                {% endif %}
-                            {% endfor %} 
+                            {% if assignee.status == "Occupied" %}
+                            <option selected disabled>{{assignee.username}}</option>
+                            {% endif %}
+                            {% endfor %}
                         </optgroup>
                     </select>
-                        </span>
-                    </div>
-                    {% endif %}
-                    {% if user.usertype == 'assignee' or user.usertype == 'admin' %}
-                        {% if user.usertype == 'assignee' %}
-                        <div>
-                            <button 
-                                type="button" 
-                                class="btn btn-sm" 
-                                style="margin-left:-200px;background-color: #C9E5EF; border: 2px solid"
+                </span>
+            </div>
+            {% endif %}
+            {% if user.usertype == 'assignee' or user.usertype == 'admin' %}
+            {% if user.usertype == 'assignee' %}
+            <div>
+                <button type="button" class="btn btn-sm"
+                    style="margin-left:-400px;background-color: #C9E5EF; border: 2px solid">
+                    <a href="/estimated-details/{{ticket.id}}" class="dropdown-item">
+                        <span class="bi-pen">Effort Estimation</span>
+                    </a>
+                </button>
+            </div>
+            {% endif %}
+            <div>
+                <span style="float: left; {% if user.usertype=='admin' %} margin-left:-820px;{% else %}margin-left: -670px;{% endif %}">
+                    <select class="form-control" id="status-name" name="status-name">
+                        {% for status in statuses %}
+                        <option value="{{status.status}}">{{status.status}}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</option>
+                        {% endfor %}
+                    </select>
+                </span>
+            </div>
 
-                            > 
-                                <a href="/estimated-details/{{ticket.id}}" class="dropdown-item">
-                                    <span class="bi-pen">Effort Estimation</span> 
-                                </a>
-                            </button>
-                        </div>
-                        {% endif %}
-                        <div>
-                            <span style="float: left; margin-left: -430px;">
-                            <select class="form-select" id="status-name" name = "status-name" >
-                                {% for status in statuses %}
-                                    <option value="{{status.status}}">{{status.status}}</option>
-                                {% endfor %}
-                            </select>
+            {% endif %}
+            {% else %}
+            <button type="button" class="btn btn-sm">
+                <a href="/reopen-ticket/{{ticket.id}}" class="dropdown-item">
+                    <span class="bi-door-open"></span> Reopen
+                </a>
+            </button>
+            {% endif %}
+        </div>
+
+        <div class="row">
+            <div class="column left">
+                <div class="card-body">
+                    <div class="card-text">
+
+                        <div style="display: block; margin-left: -60px; width: 784px;" class="row">
+                            <span class="people" style="float:left; width:880px;">
+                                <div
+                                    style="font-size:17px; font-weight: bold; border: 1px solid grey; color: white; border-radius: 5px; background-color: #003E7F; padding: 7px; margin: -5px; margin-bottom: -15px; width: 784px; margin-left: -6px; margin-top: -6px;">
+                                    <!-- <button class="btn" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne" type="button"> -->
+                                    Details
+                                    <!-- </button>-->
+
+                                </div>
+                                <br>
+
+                                <p style="font-size:16px;" class="width-50"><b>Customer Name:</b>{{ticket.custname}}</p>
+                                <p class="width-50"><b>Requirement Title:</b> {{ticket.title}}</p>
+                                <p class="width-50"><b>Region:</b> {{ticket.region}}</p>
+                                <p class="width-50"><b>Current Status:</b> {{ticket.status}}</p>
                             </span>
                         </div>
-                        
-                    {% endif %}
-                {% else %}
-                    <button type="button" class="btn btn-sm" > 
-                        <a href="/reopen-ticket/{{ticket.id}}" class="dropdown-item">
-                            <span class="bi-door-open"></span> Reopen
-                        </a>
-                    </button>
-                {% endif %}
-            </div>
-            
-            <div class="row">
-                <div class="column left">
-            <div class = "card-body">
-                <div class = "card-text">
-                    <div class="row" style="display: block; margin-left: -50px;">
-                   
-                        <span class="people" style="float:left;">  
-                            
-                 <div style="font-size:17px; font-weight: bold; border: 1px solid grey; color: white; border-radius: 5px; background-color: #003E7F; padding: 7px; margin: -5px; margin-bottom: -15px;">Details</div>
-                 <br>
-                    <p style="font-size:16px;" class="width-50"><b>Customer Name:</b>{{ticket.custname}}</p>
-                    <p class="width-50"><b>Requirement Title:</b> {{ticket.title}}</p>
-                   
-                <p class="width-50"><b>Region:</b> {{ticket.region}}</p>
-                <p class="width-50"><b>Current Status:</b> {{ticket.status}}</p>
-                
-                    </span>
+
+                        <div class="row" style="display: block; margin-left: -50px; margin-top: -20px;">
+                            <a data-bs-toggle="collapse" data-bs-target="#collapseTwo" aria-expanded="false"
+                                aria-controls="collapseTwo">
+
+
+                                <div
+                                    style="font-size:17px; font-weight: bold; border: 1px solid grey; color: white; border-radius: 5px; background-color: #003E7F; padding: 7px; margin: -5px; margin-bottom: -15px; width: 784px;">
+                                    Questions
+                                    <i class="bi-chevron-down"
+                                        style="width:11px; height:11px; float: right; padding-top: 3px; margin-right: 7px; "></i>
+
+                                </div>
+                            </a>
+                            <span
+                                style="float:left; margin-top: -10px; margin-left: -5px; margin-right: -5px; padding-right: 10px;"
+                                id="collapseTwo" class="collapse people">
+                                {% for ticketquestionmap in ticketquestionmaps %}
+                                {% for question in questions %}
+                                {% if question.id == ticketquestionmap.question_id %}
+
+                                <p><b>{{question.question}}:</b>{{ticketquestionmap.value}}</p>
+
+                                {% endif %}
+                                {% endfor %}
+                                {% endfor %}
+                            </span>
+                        </div>
+
+                        <div class="row" style="display: block; margin-left: -50px; margin-right: -20px;">
+                            <a data-bs-toggle="collapse" data-bs-target="#collapseThree" aria-expanded="true"
+                                aria-controls="collapseThree">
+
+                                <div
+                                    style="font-size:17px; font-weight: bold; border: 1px solid grey; color: white; border-radius: 5px; background-color: #003E7F; padding: 7px; margin: -5px; margin-bottom: -15px;  width: 784px;">
+                                    Estimation details
+                                    <i class="bi-chevron-down"
+                                        style="width:11px; height:11px; float: right; padding-top: 3px; margin-right: 7px; "></i>
+                                </div>
+                            </a>
+                            <span style="float:left; margin-top: -10px; margin-left: -5px; width: 784px;"
+                                id="collapseThree" class="collapse people">
+                                {% for ticketeffortmap in ticketeffortmaps %}
+                                {% for effort in efforts %}
+                                {% if effort.id == ticketeffortmap.effort_id %}
+                                <p><b>{{effort.effort}}:</b>{{ticketeffortmap.value}}</p>
+                                {% endif %}
+                                {% endfor %}
+                                {% endfor %}
+                            </span>
+                        </div>
                     </div>
 
-                    <div class="row" style="display: block; margin-left: -50px;">
-                    <span class="people" style="float:left;">
-                        
-                        <div style="font-size:17px; font-weight: bold; border: 1px solid grey; color: white; border-radius: 5px; background-color: #003E7F; padding: 7px; margin: -5px; margin-bottom: -15px;">Questions</div>
-                        <br>
-                    {% for ticketquestionmap in ticketquestionmaps %}
-                        {% for question in questions %}
-                            {% if question.id == ticketquestionmap.question_id %}
-                            
-                              <p><b>{{question.question}}:</b>{{ticketquestionmap.value}}</p>
-                            
+                    <div class="row" style="display: block; margin-left: -60px; width:784px;">
+                        <span class="people" style="float:left; width:880px;">
+                            <div
+                                style="font-size:17px; font-weight: bold; border: 1px solid grey; color: white; border-radius: 5px; background-color: #003E7F; padding: 7px; margin: -5px; margin-bottom: -15px; margin-right: -6px; margin-left: -6px; margin-top: -6px;">
+                                Comments</div>
+                            <br>
+                            <div class="collapse" id="comments-{{ticket.id}}">
+                                <div class="card">
+                                    <div class="card-body" id="comments-expanded-{{ticket.id}}">
+                                        {% for comment in comments %}
+                                        <div class="d-flex justify-content-between align-items-center">
+                                            <div>
+                                                {% if comment.status == 'Edited' %}
+                                                <small>{{comment.User.username}} ({{comment.User.usertype}}) edited a
+                                                    comment - {{comment.date_created | humanize}} </small>
+                                                <pre contenteditable="false"
+                                                    id="comment{{comment.id}}">{{comment.text}}</pre>
+                                                {% else %}
+                                                <small>{{comment.User.username}} ({{comment.User.usertype}}) added a
+                                                    comment - {{comment.date_created | humanize}} </small>
+                                                {% if comment.status == 'Deleted' %}
+                                                <br>
+                                                <small><i>This message was deleted</i></small>
+                                                {% else %}
+                                                <pre contenteditable="false"
+                                                    id="comment{{comment.id}}">{{comment.text}}</pre>
+                                                {% endif %}
+                                                {% endif %}
+                                            </div>
+                                            <div>
+                                                {% if user.id == comment.author %}
+                                                <div class="btn-group" id="buttongroup{{comment.id}}">
+                                                    <button type="button" class="btn btn-sm">
+                                                        <a href="/delete-comment/{{comment.id}}" class="dropdown-item">
+                                                            <span class="bi-trash"></span>
+                                                        </a>
+                                                    </button>
+                                                    {% if comment.status != 'Deleted' %}
+                                                    <button id="button{{comment.id}}" type="button" class="btn btn-sm"
+                                                        comment_id="{{comment.id}}"
+                                                        onclick="editComment('{{comment.id}}')">
+                                                        <span class="bi-pen" id="icon{{comment.id}}"></span>
+                                                    </button>
+                                                    {% endif %}
+                                                </div>
+                                                {% endif %}
+                                            </div>
+                                        </div>
+                                        <hr class="solid">
+                                        {% endfor %}
+                                    </div>
+                                </div>
+                            </div>
+                            <p class="card-text">
+                                {% if ticket.comments|length > 0 %}
+                                <a data-bs-toggle="collapse" href="#comments-{{ticket.id}}" role="button">
+                                    <small>View {{ticket.comments|length}} Comments</small>
+                                </a>
+                                {% else %}
+                                <small class="text-muted">No Comments</small>
+                                {% endif %}
+                            </p>
+                            {% if ticket.status != "Closed" %}
+                            <form class="input-group mb-3" method="POST" action="/create-comment/{{ticket.id}}">
+                                <textarea type="text" id="text" name="text" class="form-control"
+                                    placeholder="Comment here"></textarea>
+                                <button type="submit" class="btn btn-dark">Comment</button>
+                            </form>
                             {% endif %}
-                        {% endfor %}
-                    {% endfor %}
-                    </span>
                     </div>
-                    <div class="row" style="display: block; margin-left: -40px; margin-right: -20px;">
-                    <span class="people" style="display:block ;">
-                        <div style="font-size:17px; font-weight: bold; border: 1px solid grey; color: white; border-radius: 5px; background-color: #003E7F; padding: 7px; margin: -5px; margin-bottom: -15px;">Estimation details</div>
-                        <br>
-                    {% for ticketeffortmap in ticketeffortmaps %}
-                    {% for effort in efforts %}
-                        {% if effort.id == ticketeffortmap.effort_id %}
-                            <p><b>{{effort.effort}}:</b>{{ticketeffortmap.value}}</p>
-                        {% endif %}
-                    {% endfor %}
-                {% endfor %}
+
+                    <!-- <div class = "card-footer text-muted">
+                Created On: {{ticket.date_created}}
+                <br>
+                Last Modified: {{ticket.last_modified}}
+            </div> -->
+
+                </div>
                 </span>
-                </div>
-                </div>
-                
-                
-                <div class="row" style="display: block; margin-left: -40px; margin-right: -20px;">
-                    <span class="container people" style="display:block ; ">
-                        <div style="font-size:17px; font-weight: bold; border: 1px solid grey; color: white; border-radius: 5px; background-color: #003E7F; padding: 7px; margin: -5px; margin-bottom: -15px;">Attachments</div>
-                 <br>
-                    <form method="post" action= "/attach-image/{{ticket.id}}" enctype="multipart/form-data">
-                        <dl>
-                            <p>
+
+                <div class="row" style="display: block; margin-left: -50px; margin-right: -20px;">
+                    <a data-bs-toggle="collapse" data-bs-target="#collapseFour" aria-expanded="true"
+                        aria-controls="collapseFour">
+                        <div
+                            style="font-size:17px; font-weight: bold; border: 1px solid grey; color: white; border-radius: 5px; background-color: #003E7F; padding: 7px; margin: -5px; margin-bottom: -15px; width: 784px;">
+                            Attachments
+                            <i class="bi-chevron-down"
+                                        style="width:11px; height:11px; float: right; padding-top: 3px; margin-right: 7px; "></i>
+                        </div>
+                    </a>
+                    <span style="float:left;  margin-top: -10px; margin-left: -5px; width: 784px; margin-bottom: 30px;" id="collapseFour"
+                        class="collapse people container">
+                        <form method="post" action="/attach-image/{{ticket.id}}" enctype="multipart/form-data">
+                            <dl>
+                                <p>
                                 <div class="input-group mb-3">
                                     {% if ticket.status != "Closed" %}
                                     <input type="file" name="pic" class="form-control" autocomplete="off" required>
-                                    <div class="input-group-append"> 
+                                    <div class="input-group-append">
                                         <input type="submit" value="Submit" class="btn btn-info">
                                     </div>
                                     {% endif %}
                                 </div>
-                            </p>
-                        </dl>
-                    </form>
+                                </p>
+                            </dl>
+                        </form>
 
-                
-                    
-                    {% for image in images_list %}
+
+
+                        {% for image in images_list %}
                         <img width="200" height="200" src="data:image/png;base64, {{image.0}}" />
                         {% if ticket.status != "Closed" %}
                         <button type="button" class="btn btn-sm">
                             <a href="/delete-image/{{image.1}}" class="dropdown-item">
                                 <span class="bi-x-lg"></span>
                             </a>
-                        </button> 
+                        </button>
                         {% endif %}
-                    {% endfor %}
-                </span>
-            </div>
-                <div class="row" style="display: block; margin-left: -50px;">
-                <span class="people" style="float:left; width:890px;">
-                    <div style="font-size:17px; font-weight: bold; border: 1px solid grey; color: white; border-radius: 5px; background-color: #003E7F; padding: 7px; margin: -5px; margin-bottom: -15px;">Details</div>
-                 <br>
-                                <div class="collapse" id="comments-{{ticket.id}}" >
-                    <div class="card">
-                        <div class="card-body" id="comments-expanded-{{ticket.id}}">
-                            {% for comment in comments %}
-                            <div class="d-flex justify-content-between align-items-center">
-                                <div>
-                                    {% if comment.status == 'Edited' %}
-                                        <small>{{comment.User.username}} ({{comment.User.usertype}}) edited a comment - {{comment.date_created | humanize}} </small>
-                                        <pre contenteditable="false" id="comment{{comment.id}}">{{comment.text}}</pre>
-                                    {% else %}
-                                        <small>{{comment.User.username}} ({{comment.User.usertype}}) added a comment - {{comment.date_created | humanize}} </small>
-                                        {% if comment.status == 'Deleted' %}
-                                            <br>
-                                            <small><i>This message was deleted</i></small>
-                                        {% else %}
-                                            <pre contenteditable="false" id="comment{{comment.id}}">{{comment.text}}</pre>
-                                        {% endif %}
-                                    {% endif %}
-                                </div>
-                                <div>
-                                    {% if user.id == comment.author %}
-                                    <div class = "btn-group" id="buttongroup{{comment.id}}">
-                                        <button 
-                                            type="button" 
-                                            class="btn btn-sm" 
-                                        > 
-                                        <a href="/delete-comment/{{comment.id}}" class="dropdown-item">
-                                            <span class="bi-trash"></span>
-                                        </a>
-                                        </button>
-                                        {% if comment.status != 'Deleted' %}
-                                        <button
-                                            id="button{{comment.id}}"
-                                            type="button" 
-                                            class="btn btn-sm"
-                                            comment_id="{{comment.id}}"
-                                            onclick="editComment('{{comment.id}}')"
-                                        >
-                                        <span class="bi-pen" id="icon{{comment.id}}"></span>
-                                        </button>
-                                        {% endif %}
-                                    </div>
-                                    {% endif %}
-                                </div>
-                            </div>
-                            <hr class="solid">
-                            {% endfor %}
-                        </div>
-                    </div>
+                        {% endfor %}
+                    </span>
                 </div>
-                <p class ="card-text">
-                    {% if ticket.comments|length > 0 %}
-                    <a data-bs-toggle="collapse" href="#comments-{{ticket.id}}" role="button">
-                        <small>View {{ticket.comments|length}} Comments</small>
-                    </a>
-                    {% else %}
-                    <small class="text-muted">No Comments</small>
-                    {% endif %}
-                </p>    
-                {% if ticket.status != "Closed" %}
-                    <form class="input-group mb-3" method="POST" action="/create-comment/{{ticket.id}}">
-                        <textarea 
-                            type="text" 
-                            id="text" 
-                            name="text" 
-                            class="form-control" 
-                            placeholder="Comment here"
-                        ></textarea>
-                        <button type="submit" class="btn btn-dark">Comment</button>
-                    </form>
-                {% endif %}
             </div>
-            
-            <!-- <div class = "card-footer text-muted">
-                Created On: {{ticket.date_created}}
-                <br>
-                Last Modified: {{ticket.last_modified}}
-            </div> -->
+            <br>
+            <br>
+            <br>
+            <div class="column right">
 
-        </div>
-    </span>
-                </div>
-        <br>
-    
-    <div class="column right" >
-        
-        <div class="people" style="margin-left:15px; margin-right: -40px;">
-            <div style="font-size:17px; font-weight: bold; border: 1px solid grey; color: white; border-radius: 5px; background-color: #003E7F; padding: 7px; margin: -5px; margin-bottom: -15px;">People</div>
-                 <br>
-        <div class="ml-auto p-2">
-            <b>Reported by:</b><img src="https://img.icons8.com/material-sharp/24/000000/person-male.png" height="20px" style="opacity: 0.5;"/>{{ticket.author.username}}
-            <br>
-            <b> Assignee:</b><img src="https://img.icons8.com/material-sharp/24/000000/person-male.png" height="20px" style="opacity: 0.5;"/>{{ticket.assignee.username}}
-                    </a>
+                <div class="people" style="margin-left:15px; margin-right: -40px;">
+                    <div
+                        style="font-size:17px; font-weight: bold; border: 1px solid grey; color: white; border-radius: 5px; background-color: #003E7F; padding: 7px; margin: -5px; margin-bottom: -15px; margin-right: -6px; margin-left: -6px; margin-top: -6px;">
+                        People</div>
+
+                    <div class="ml-auto p-2" style="margin-top:10px">
+                        <b>Reported by:</b><img src="https://img.icons8.com/material-sharp/24/000000/person-male.png"
+                            height="20px" style="opacity: 0.5;" />{{ticket.author.username}}
+                        <br>
+                        <b> Assignee:</b><img src="https://img.icons8.com/material-sharp/24/000000/person-male.png"
+                            height="20px" style="opacity: 0.5;" />{{ticket.assignee.username}}
+                        </a>
                     </div>
                 </div>
-    
-    <div class="people" style="margin-top: 10px; margin-left:15px; margin-right: -40px;">
-        <div style="font-size:17px; font-weight: bold; border: 1px solid grey; color: white; border-radius: 5px; background-color: #003E7F; padding: 7px; margin: -5px; margin-bottom: -15px;">Dates</div>
-                 <br>
-    <div class="ml-auto p-2">
-        <b>Created on:</b> {{ticket.date_created}}
-            <br>
-            <b>Last Modified on:</b> {{ticket.last_modified}}
-                   </div>
-    </div>
-    </div>
+
+                <div class="people" style="margin-top: 10px; margin-left:15px; margin-right: -40px;">
+                    <div
+                        style="font-size:17px; font-weight: bold; border: 1px solid grey; color: white; border-radius: 5px; background-color: #003E7F; padding: 7px; margin: -5px; margin-bottom: -15px; margin-right: -6px; margin-left: -6px; margin-top: -6px;">
+                        Dates</div>
+
+                    <div class="ml-auto p-2" style="margin-top: 10px;">
+                        <b>Created on:</b> {{ticket.date_created}}
+                        <br>
+                        <b>Last Modified on:</b> {{ticket.last_modified}}
+                    </div>
+                </div>
+            </div>
         </div>
-    <script>
-        $(document).ready(function() {
-            $('#assignee-name').select2({
-            placeholder:{ id:"", text:'Select assignee'},
-            allowClear:true,
-            });
-            $("#assignee-name").val("")  
-            $("#assignee-name").trigger("change");
-            $('#assignee-name').on('select2:select', function (e) {
-                var data = e.params.data;
-                const s = JSON.stringify(data.text);
-                $.ajax({
-                    url:"/assign-assignee/{{ticket.id}}",
-                    type:"POST",
-                    contentType: "application/json",
-                    data: JSON.stringify(s)
+        <script>
+            $(document).ready(function () {
+                $('#assignee-name').select2({
+                    placeholder: { id: "", text: 'Select assignee' },
+                    allowClear: true,
                 });
-                window.location.reload()
-            });
-            $('#status-name').select2({
-            placeholder:{ id:"", text:'Select status'},
-            allowClear:true,
-            });
-            $("#status-name").val("")  
-            $("#status-name").trigger("change");
-            $('#status-name').on('select2:select', function (e) {
-                var data = e.params.data;
-                const s = JSON.stringify(data.text);
-                $.ajax({
-                    url:"/update-status/{{ticket.id}}",
-                    type:"POST",
-                    contentType: "application/json",
-                    data: JSON.stringify(s)
+                $("#assignee-name").val("")
+                $("#assignee-name").trigger("change");
+                $('#assignee-name').on('select2:select', function (e) {
+                    var data = e.params.data;
+                    const s = JSON.stringify(data.text);
+                    $.ajax({
+                        url: "/assign-assignee/{{ticket.id}}",
+                        type: "POST",
+                        contentType: "application/json",
+                        data: JSON.stringify(s)
+                    });
+                    window.location.reload()
                 });
-                location.reload();
-            });
-        });
-        function editComment(comment_id) 
-        {
-            var edittext = document.getElementById("comment"+comment_id);
-            var button = document.getElementById("button"+comment_id);
-            var icon = document.getElementById("icon"+comment_id);
-            var editmsg = document.getElementById("editmsg"+comment_id);
-            var editmsgflag = document.getElementById("editmsgflag"+comment_id);
-            var textbox = document.createElement("textarea");
-            var close = document.createElement("button");
-            var curr = document.createElement("pre");
-            var btngroup = document.getElementById("buttongroup"+comment_id);
-            var currtext = edittext.textContent;
-            close.innerHTML = "<span class='bi-x-lg'></span>";
-            icon.setAttribute("class","bi-save");
-            curr.innerHTML = currtext;
-            textbox.value=currtext;
-            edittext.parentNode.replaceChild(textbox, edittext);
-            btngroup.append(close);
-            close.onclick = function() {
-                icon.setAttribute("class","bi-pen");
-                textbox.parentNode.replaceChild(curr,textbox);
-                btngroup.removeChild(close);
-            };
-            button.onclick = function() {
-                icon.setAttribute("class","bi-pen");
-                var newtext = textbox.value;
-                edittext.innerHTML = newtext;
-                textbox.parentNode.replaceChild(edittext,textbox);
-                const dict_values = {comment_id, newtext};
-                const s = JSON.stringify(dict_values);
-                $.ajax({
-                    url:"/edit-comment/"+comment_id,
-                    type:"POST",
-                    contentType: "application/json",
-                    data: JSON.stringify(s)
+                $('#status-name').select2({
+                    placeholder: { id: "", text: 'Select status' },
+                    allowClear: true,
                 });
-                btngroup.removeChild(close);
-            };
-        }
-    </script>
-{% endblock %}
+                $("#status-name").val("")
+                $("#status-name").trigger("change");
+                $('#status-name').on('select2:select', function (e) {
+                    var data = e.params.data;
+                    const s = JSON.stringify(data.text);
+                    $.ajax({
+                        url: "/update-status/{{ticket.id}}",
+                        type: "POST",
+                        contentType: "application/json",
+                        data: JSON.stringify(s)
+                    });
+                    location.reload();
+                });
+            });
+            function editComment(comment_id) {
+                var edittext = document.getElementById("comment" + comment_id);
+                var button = document.getElementById("button" + comment_id);
+                var icon = document.getElementById("icon" + comment_id);
+                var editmsg = document.getElementById("editmsg" + comment_id);
+                var editmsgflag = document.getElementById("editmsgflag" + comment_id);
+                var textbox = document.createElement("textarea");
+                var close = document.createElement("button");
+                var curr = document.createElement("pre");
+                var btngroup = document.getElementById("buttongroup" + comment_id);
+                var currtext = edittext.textContent;
+                close.innerHTML = "<span class='bi-x-lg'></span>";
+                icon.setAttribute("class", "bi-save");
+                curr.innerHTML = currtext;
+                textbox.value = currtext;
+                edittext.parentNode.replaceChild(textbox, edittext);
+                btngroup.append(close);
+                close.onclick = function () {
+                    icon.setAttribute("class", "bi-pen");
+                    textbox.parentNode.replaceChild(curr, textbox);
+                    btngroup.removeChild(close);
+                };
+                button.onclick = function () {
+                    icon.setAttribute("class", "bi-pen");
+                    var newtext = textbox.value;
+                    edittext.innerHTML = newtext;
+                    textbox.parentNode.replaceChild(edittext, textbox);
+                    const dict_values = { comment_id, newtext };
+                    const s = JSON.stringify(dict_values);
+                    $.ajax({
+                        url: "/edit-comment/" + comment_id,
+                        type: "POST",
+                        contentType: "application/json",
+                        data: JSON.stringify(s)
+                    });
+                    btngroup.removeChild(close);
+                };
+            }
+        </script>
+        
+        {% endblock %}

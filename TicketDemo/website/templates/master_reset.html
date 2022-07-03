@@ -1,6 +1,13 @@
 {% extends "base.html" %}
 {% block title %} Master Effort Estimation Fields{% endblock %}
 {% block content %}
+<style>
+    .table>tbody>tr:nth-of-type(odd) {  
+     background-color:#C9E5EF;  
+  }  
+     
+      
+  </style>
 <body>
     <br>
     <div align='center'>
@@ -17,7 +24,7 @@
     <div class="container">
         <table class = "table" id="myTable">
             <thead class = "thead-light">
-                <tr>
+                <tr style="background-color: #003E7F; color: white;">
                     <th>ID</th>        
                     <th>Reset By</th>
                     <th>Reset On</th>

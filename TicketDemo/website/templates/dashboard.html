@@ -9,7 +9,18 @@
     
 </style>
 <br>
+
+{% if user.usertype == 'reporter' %}
+<div align="center">
+    <a href="/create-ticket">
+        <button type="button" class="btn btn-info lg" style="background-color: #003E7F; color: white;">
+            Create New Ticket
+        </button>
+    </a>
+</div>
+{% endif %}
 <br>
+<h2 align="center"><b>All Tickets</b></h2>
 <div class = "container">
     <table class = "table" id="myTable" class="table table-striped">
         <thead >
@@ -44,6 +55,7 @@
     </table>
 </div>
 <br>
+<h2 align="center"><b>Alert Audit</b></h2>
 <div class = "container">
     <table class = "table" id="myTable2">
         <thead >
@@ -79,14 +91,6 @@
   } );
 </script>
 {% block footer %}
-    {% if user.usertype == 'reporter' %}
-    <div align="center">
-        <a href="/create-ticket">
-            <button type="button" class="btn btn-info lg" style="background-color: #0d6efd;">
-                Create New Ticket
-            </button>
-        </a>
-    </div>
-    {% endif %}
+
     {% endblock %}
 {% endblock %}

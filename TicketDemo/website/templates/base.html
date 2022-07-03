@@ -21,7 +21,7 @@
     <link href="{{ url_for('static', filename='styles/style.css') }}" rel="stylesheet" type="text/css" >
     <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Lato:wght@900&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Lato:wght@400;900&display=swap" rel="stylesheet">
     <script 
         src="https://code.jquery.com/jquery-3.6.0.js" 
         integrity="sha256-H+K7U5CnXl1h5ywQfKtSj8PCmoN9aaq30gDh27Xc0jk=" 
@@ -35,7 +35,7 @@
 	<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
     <style>
         .dropbtn {
-          background-color: #3498DB;
+          background-color: #2980B9;
           color: white;
           padding: 16px;
           font-size: 16px;
@@ -54,8 +54,17 @@
 
         body{
             font-family: 'Assistant', sans-serif;
-        }
-        
+            background-color: white; /* For browsers that do not support gradients */
+  background-image: linear-gradient( rgb(233, 232, 232),#93cdf4);
+  min-height: 100%;
+  background-attachment: fixed;
+}
+   html{
+    min-height: 100%;
+   }     
+ footer{
+    background-color: white;
+ }       
         .dropdown-content {
           display: none;
           position: absolute;
@@ -83,14 +92,15 @@
     <title>{% block title %}{% endblock %}</title>
 </head>
 <body>
-    <nav class = "navbar navbar-expand-sm " style="height: 40px; background-color: #508bfc; font-family:'Lato', sans-serif;">
+    <nav class = "navbar navbar-expand-sm shadow" style="height: 40px; background-color: #045de9;
+    background-image: linear-gradient(45deg, #045de9 0%, #1bc0ee 74%);">
         <!-- <a class="navbar-brand" href=""> -->
             <img src="https://1000logos.net/wp-content/uploads/2021/04/Adobe-logo.png" width="107px" height="60px" class="d-inline-block align-top" alt="" style="padding-left: 9px;" >
         
         <!-- <h5 style="padding-top: 5px; padding-right: 3px; font-size: 17px; padding-left: 4px; color: white;">Adobe</h5> -->
         <div class="vl" style="border-left: 2px solid white;
         height: 25px;"></div>
-        <h5 style="color:white; padding-top: 9px; padding-left: 7px; font-size: 15px; font-family:'Lato', sans-serif;">ScoPortal</h5>
+        <h5 style="color:white; padding-top: 9px; padding-left: 7px; font-size: 15px; font-family: 'Lato', sans-serif; ">ScoPortal</h5>
         <div class = "container-fluid">
             <button 
                 class = "navbar-toggler" 
@@ -103,10 +113,10 @@
         </button>
         <div class = "collapse navbar-collapse" id = "navbar">
             <div class = "navbar-nav" style="font-size: 13px;">
-                <a class="nav-item nav-link" href ="/home" style="padding-left:25px; color: white;">Home</a>
+                <a class="nav-item nav-link" href ="/home" style="padding-left:25px; color: white; font-size: 15px;">Home</a>
         
         {% if user.usertype=="admin" %}
-                        <a class="nav-item nav-link" id="master" href ="/master" style="padding-left:25px; color: white;">Master Setup</a>
+                        <a class="nav-item nav-link" id="master" href ="/master" style="padding-left:25px; color: white; font-size: 15px;" >Master Setup</a>
                     {% endif %}
             </div>
       </div>
@@ -117,14 +127,14 @@
             </span>
             <span class="navbar-text">
             
-                <a class="nav-item nav-link" href ="/logout" style="color: white; font-size: 13px;">Logout</a>
+                <a class="nav-item nav-link" href ="/logout" style="color: white; font-size: 15px;">Logout</a>
                 </span>
             {% else %}
             <span class="navbar-text">
-                    <a class="nav-item nav-link" href ="/login" style="color: white; padding-left: 5px; font-size: 13px;">Login</a>
+                    <a class="nav-item nav-link" href ="/login" style="color: white; padding-left: 5px; font-size: 15px;">Login</a>
                 </span>
                 <span class="navbar-text">
-                    <a class="nav-item nav-link" href ="/signup" style="color: white; padding-right: 5px; font-size: 13px;">Signup</a>
+                    <a class="nav-item nav-link" href ="/signup" style="color: white; padding-right: 5px; font-size: 15px;">Signup</a>
                 </span>  
             {% endif %}
         </div>

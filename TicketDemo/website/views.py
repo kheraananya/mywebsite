@@ -1,12 +1,13 @@
 from unicodedata import category
 from flask import Blueprint, render_template, request,flash,redirect,url_for,jsonify
-from flask_login import login_required, current_user
+from flask_login import login_required, current_user,login_user
 from .models import ImageDB, MasterAlertConfig,MasterAlertAudit,MasterResetHistory, Question, Status, Ticket, User, Comment,TicketQuestionMap, Effort, TicketEffortMap
 from . import db
 from datetime import datetime
 import time
 import json
 from werkzeug.utils import secure_filename
+from werkzeug.security import generate_password_hash, check_password_hash
 
 
 views = Blueprint("views",__name__)
@@ -599,7 +600,22 @@ def master_reset():
     db.session.commit()
     return redirect('/master-reset-home')
 
-@views.route("/viewprofile",methods=['GET'])
+@views.route("/viewprofile",methods=['GET','POST'])
 @login_required
-def view_profile():
+def view_profile():   
+    if request.method == 'POST':
+        password1 = request.form.get("password1")
+        password2 = request.form.get("password2")
+        if password1 != password2:
+            flash('Passwords do not match',category='error')
+        elif len(password1) < 6:
+            flash('Password is too short',category='error')
+        else:
+            user=current_user
+            password = generate_password_hash(password1,method="sha256")
+            user.password=password
+            db.session.commit()
+            login_user(user,remember=True)
+            flash('Password changed successfully')
+            return redirect(url_for('views.home'))
     return render_template('viewprofile.html',user=current_user)

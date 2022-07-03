@@ -1,6 +1,13 @@
 {% extends "base.html" %}
 {% block title %} Master Effort Estimation Fields{% endblock %}
 {% block content %}
+<style>
+    .table>tbody>tr:nth-of-type(odd) {  
+     background-color:#C9E5EF;  
+  }  
+     
+      
+  </style>
 <body>
     <br>
     <div align='center'>
@@ -15,10 +22,10 @@
         <div class="form-group">  
              <form name="add_effort" id="add_effort">  
                   <div class="table-responsive">
-                       <table class="table" id="dynamic_field" style = "background-color: black; border-radius:15px;">  
+                       <table class="table" id="dynamic_field" style = "background-color: #08a5df; border-radius:15px;">  
                             <tr>  
                                 <td style="width:89%"><input type="text" name="effort" placeholder="Enter effort" class="form-control name_list"/></td>  
-                                <td><button type="button" name="add" id="add" class="btn btn-success">Add Field</button></td>  
+                                <td><button type="button" name="add" id="add" class="btn btn-success" style="background-color: #003E7F;">Add Field</button></td>  
                             </tr>  
                        </table>  
                   </div>  
@@ -28,7 +35,7 @@
     <div class="container">
         <table class = "table" id="myTable">
             <thead class = "thead-light">
-                <tr>
+                <tr style="background-color: #003E7F; color: white;">
                     <th>Effort ID</th>        
                     <th>Effort</th>
                     <th>Created On</th>

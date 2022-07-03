@@ -1,7 +1,13 @@
 {% extends "base.html" %}
 {% block title %} Master Ticket Statuses {% endblock %}
 {% block content %}
-
+<style>
+    .table>tbody>tr:nth-of-type(odd) {  
+     background-color:#C9E5EF;  
+  }  
+     
+      
+  </style>
 <body>
     <br>
     <div align='center'>
@@ -16,7 +22,7 @@
     <div class="container">
         <form method='POST'>
             <div align="right">
-                <button type="submit" class="btn btn-info">Create</button>
+                <button type="submit" class="btn btn-info" style="background-color: #003E7F; color: white;">Create</button>
             </div>
             <br>
         <div style="border: 1px solid grey; border-radius: 5px; background-color: #C9E5EF;">
@@ -55,7 +61,7 @@
     <div class="container">
         <table class="table" id="myTable">
             <thead class="thead-light">
-                <tr>
+                <tr style="background-color: #003E7F; color: white;">
                     <th>Ticket Status</th>
                     <th>Alert Body</th>
                     <th>Alert Subject</th>

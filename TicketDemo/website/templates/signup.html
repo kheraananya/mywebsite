@@ -5,29 +5,28 @@
     body{
         background-color: rgb(244, 244, 244);  
     }
-    hr{
-        border: 1px solid;
-    }
+  
 </style>
 <form method="POST">
-
-    <hr style="margin-top:0px; margin-left: -80px; margin-right: -80px; ">
-    <div align="center">
-        <h1 style="color:#C9E5EF"><b>ScoPortal</b></h1>
-        </div>
+<br>
+  
+  <div align="center">
+    <h1 style="font-family:'Lato', sans-serif; font-size: 60px; 
+    background: linear-gradient(225deg, #045de9 0%, #1bc0ee 74%);-webkit-text-fill-color: transparent;-webkit-background-clip:text"><b>ScoPortal</b></h1>
+    </div>
     
          <div class="container py-5 h-50">
            <div class="row d-flex justify-content-center align-items-center h-100">
-             <div class="col-9 col-md-6 col-lg-8 col-xl-10">
-               <div class="card shadow-2-strong" style="border-radius: 1rem; margin-top: -25px;">
+             <div class="col-9 col-md-6 col-lg-8 col-xl-10" style="margin-top: -27px">
+               <div class="card shadow" style="border-radius: 1rem; margin-top: -10px;">
                  <div class="card-body p-5 text-center">
        
-                   <h3 class="mb-5">Signup</h3>
+                  <h4 class="mb-5" style="margin-top:-25px;"><b>Signup to ScoPortal</b></h4>
        
-                   <div class="form-outline mb-4">
+                  <div class="form-outline mb-4" style="margin-top: -30px;">
                      
                     
-                     <label for="email">Email Address</label>
+                     <label for="email">Email Address<span style="color:red">*</span></label>
         <input 
             type="text" 
             id = "email" 
@@ -35,7 +34,7 @@
             class = "form-control"
             placeholder = "Enter Email"
         />
-        <label for="email" class="form-label">Username</label>
+        <label for="email" class="form-label">Username<span style="color:red">*</span></label>
         <input 
             type="text" 
             id = "username" 
@@ -43,7 +42,7 @@
             class = "form-control"
             placeholder = "Enter Username"
         />
-        <label for="password1" class="form-label">Password</label>
+        <label for="password1" class="form-label">Password<span style="color:red">*</span></label>
         <input 
             type="password" 
             id = "password1" 
@@ -51,7 +50,7 @@
             class = "form-control"
             placeholder = "Enter Password"
         />
-        <label for="password2" class="form-label">Password Again</label>
+        <label for="password2" class="form-label">Password Again<span style="color:red">*</span></label>
         <input 
             type="password" 
             id = "password2" 
@@ -59,7 +58,7 @@
             class = "form-control"
             placeholder = "Enter Password Again"
         />
-        <label for="usertype" class="form-label">User Type</label>
+        <label for="usertype" class="form-label">User Type<span style="color:red">*</span></label>
         <select class="form-select" id="usertype" name = "usertype">
             <option value="reporter">Reporter</option>
             <option value="admin">Admin</option>
@@ -70,8 +69,7 @@
                   
                    
        
-                   <button class="btn btn-primary btn-lg btn-block" type="submit">Sign up</button>
-       
+                   <button class="btn  btn-lg btn-block" style="background-color:#24A0ED; color: white;" type="submit">Signup</button>
                  
        
                  
