@@ -1,10 +1,7 @@
 {% extends "base.html" %}
 {% block title %} Edit Ticket {% endblock %}
 {% block content %}
-<br>
-<div align="left"><button onclick="javascript:history.back()" class="btn btn-secondary">&laquo; Back</button></div>
 
-<br>
 
 <form method='POST'>
 
@@ -29,22 +26,37 @@
             </div>
             <br>
         -->
-    <div align="right"><button class="btn btn-info"> Save</button></div>
+        <br>
+
+    <div class="original" style="float: left; margin-top: -18px;">
+
+        <button onclick="javascript:history.back()" class="btn btn-secondary">&laquo; Back</button>
+
+    </div>
+
+    <div class="right" style="float: right; margin-top: -18px;">
+
+        <button class="btn btn-info">Save</button>
+
+    </div>
+
     <br>
+    
+    
     <div style="border: 1px solid grey; border-radius: 5px; background-color: #C9E5EF;">
         <div style="border : 1px solid grey ;color: white; border-radius: 5px; background-color: #003E7F; padding:10px">
-            Main :
+            Main 
         </div>
         <div class="form-group" class="grid-container" style="display: grid;
         grid-template-columns: auto auto ; grid-gap: 30px; padding: 10px;">
-            <div><label for="custname">Customer Name :</label>
+            <div><label for="custname">Customer Name </label>
                 <input type="text" name="custname" value="{{ticket.custname}}"
                     class="form-control name_list" />
 
             </div>
 
             <div>
-                <label for="title">Reqirement Title:</label>
+                <label for="title">Reqirement Title</label>
                 <input type="text" name="title" value = "{{ticket.title}}""
                     class="form-control name_list" />
 
@@ -57,7 +69,7 @@
         <div style="border: 1px solid grey; border-radius: 5px; background-color: #C9E5EF;">
             <div
                 style="border : 1px solid grey ;color: white; border-radius: 5px; background-color: #003E7F; padding:10px">
-                Other Fields :
+                Other Fields 
             </div>
             <div class="form-group" class="grid-container" style="display: grid;
             grid-template-columns: auto auto ; grid-gap: 30px; padding: 10px; ">

@@ -17,7 +17,7 @@
     
          <div class="container py-5 h-50">
            <div class="row d-flex justify-content-center align-items-center h-100">
-             <div class="col-9 col-md-6 col-lg-8 col-xl-10" style="margin-top: -27px">
+             <div class="col-12 col-md-8 col-lg-6 col-xl-5" style="margin-top: -27px">
                <div class="card shadow" style="border-radius: 1rem; margin-top: -10px;">
                  <div class="card-body p-5 text-center">
        
@@ -25,7 +25,12 @@
        
                   <div class="form-outline mb-4" style="margin-top: -30px;">
                      
-                    
+                    <label for="usertype" class="form-label">User Type<span style="color:red">*</span></label>
+                    <select class="form-select" id="usertype" name = "usertype">
+                        <option value="reporter">Reporter</option>
+                        <option value="admin">Admin</option>
+                        <option value="assignee">Assignee</option>
+                    </select> 
                      <label for="email">Email Address<span style="color:red">*</span></label>
         <input 
             type="text" 
@@ -58,12 +63,7 @@
             class = "form-control"
             placeholder = "Enter Password Again"
         />
-        <label for="usertype" class="form-label">User Type<span style="color:red">*</span></label>
-        <select class="form-select" id="usertype" name = "usertype">
-            <option value="reporter">Reporter</option>
-            <option value="admin">Admin</option>
-            <option value="assignee">Assignee</option>
-        </select>
+        
                    </div>
        
                   

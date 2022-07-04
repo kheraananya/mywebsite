@@ -557,6 +557,8 @@ def alertmechanism(ticket_status, ticket_id):
     assignee = User.query.filter_by(id = assignee_id).first()
     if(assignee):
         assignee_email = assignee.email
+    else:
+        assignee_email = ""
     alertsub =  current.alert_subject
     alertbody = current.alert_body
     recipients = current.recipients
@@ -628,3 +630,24 @@ def view_profile():
             flash('Password changed successfully')
             return redirect(url_for('views.home'))
     return render_template('viewprofile.html',user=current_user)
+
+@views.route("/forgot-password",methods=['GET','POST'])
+@login_required
+def forgot_password(): 
+    if request.method == 'POST':
+        username=request.form.get("username")
+        password1 = request.form.get("password1")
+        password2 = request.form.get("password2")
+        if password1 != password2:
+            flash('Passwords do not match',category='error')
+        elif len(password1) < 6:
+            flash('Password is too short',category='error')
+        else:
+            user=User.query.filter_by(username=username).first()
+            password = generate_password_hash(password1,method="sha256")
+            user.password=password
+            db.session.commit()
+            login_user(user,remember=True)
+            flash('Password changed successfully')
+            return redirect(url_for('views.home'))
+    return render_template('forgotpassword.html',user=current_user)
