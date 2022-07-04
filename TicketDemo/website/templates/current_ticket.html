@@ -122,7 +122,7 @@
                 <span style="float: left; {% if user.usertype=='admin' %} margin-left:-820px;{% else %}margin-left: -670px;{% endif %}">
                     <select class="form-control" id="status-name" name="status-name">
                         {% for status in statuses %}
-                        <option value="{{status.status}}">{{status.status}}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</option>
+                        <option value="{{status.status}}">{{status.status}}</option>
                         {% endfor %}
                     </select>
                 </span>
@@ -157,7 +157,7 @@
                                 <p style="font-size:16px;" class="width-50"><b>Customer Name:</b>{{ticket.custname}}</p>
                                 <p class="width-50"><b>Requirement Title:</b> {{ticket.title}}</p>
                                 <p class="width-50"><b>Region:</b> {{ticket.region}}</p>
-                                <p class="width-50"><b>Current Status:</b> {{ticket.status}}</p>
+                                <p class="width-50"><b>Current Status:</b><b class="badge {% if ticket.status == 'Opened' %} bg-primary {% elif ticket.status == 'Closed' %} bg-success {% else %} bg-warning {% endif %}">{{ticket.status}}</b></p>
                             </span>
                         </div>
 

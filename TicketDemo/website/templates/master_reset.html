@@ -1,13 +1,12 @@
 {% extends "base.html" %}
-{% block title %} Master Effort Estimation Fields{% endblock %}
+{% block title %} Master Reset{% endblock %}
 {% block content %}
+<script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <style>
     .table>tbody>tr:nth-of-type(odd) {  
      background-color:#C9E5EF;  
   }  
-     
-      
-  </style>
+</style>
 <body>
     <br>
     <div align='center'>
@@ -19,7 +18,7 @@
     </div>
     <br>
     <div align = "center" class="container">   
-        <a href="/master-reset"><button type="button" class="btn btn-lg btn-danger">Reset Database</button></button></a>
+        <a href="/master-reset" id="deletebtn"><button type="button" class="btn btn-lg btn-danger">Reset Database</button></a>
     </div>
     <div class="container">
         <table class = "table" id="myTable">
@@ -49,6 +48,29 @@
    </div>
 </body>
 <script>  
+    $("#deletebtn").on('click',function(e){
+        e.preventDefault();
+        var self = $(this);
+        console.log(self.data('title'));
+        Swal.fire({
+            title: 'Are you sure?',
+            text: "You won't be able to revert this",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Reset'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                Swal.fire(
+                'Database Rest',
+                'Your Database has been reset.',
+                'success'
+                )
+                location.href = self.attr('href');
+            }
+        })
+    });
     $(document).ready(function(){ 
         $('#myTable').DataTable();  
     });

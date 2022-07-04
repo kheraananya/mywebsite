@@ -24,7 +24,7 @@
                   <div class="table-responsive">
                        <table class="table" id="dynamic_field"  style = " border-radius:15px;">  
                             <tr>  
-                                 <td style="width:84%"><input type="text" name="status" placeholder="Enter status" class="form-control name_list"/></td>  
+                                 <td style="width:84%"><input type="text" name="status" placeholder="Enter Status" class="form-control name_list"/></td>  
                                  <td><button type="button" name="add" id="add" class="btn btn-success" style="background-color: #003E7F;">Add Ticket Status</button></td>  
                             </tr>  
                        </table>  
@@ -50,7 +50,11 @@
                     <td>{{status.status}}</td>
                     <td>{{status.date_created}}</td>
                     <td>{{user.username}}</td>
-                    <td><a href="/delete-status/{{status.id}}"><button type="button" class="btn btn-danger">Delete</button></a></td>
+                    <td>
+                        {% if status.status != "Opened" and status.status != "Assigned" and status.status != "In-Review" and status.status != "Closed" %}
+                        <a href="/delete-status/{{status.id}}"><button type="button" class="btn btn-danger">Delete</button></a>
+                        {% endif %}
+                    </td>
                 </tr>
             {% endfor %}
         </tbody>  

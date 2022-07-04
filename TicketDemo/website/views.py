@@ -375,6 +375,8 @@ def master_question():
             if(str(ele["value"])!=""):
                 question = Question(question=str(ele["value"]),date_created=now,author_id=current_user.id)
                 db.session.add(question)
+            else:
+                flash("Please fill question field",category="error")
             db.session.commit()
     return redirect('/master')
 
@@ -382,6 +384,9 @@ def master_question():
 @login_required
 def delete_question(question_id):
     question = Question.query.filter_by(id=question_id).first()
+    if(TicketQuestionMap.query.filter_by(question_id=question.id).first()):
+        flash("This question cannot be deleted since some tickets are using it", category='error')
+        return redirect('/master-question-home')
     db.session.delete(question)
     db.session.commit()
     return redirect('/master-question-home')
@@ -451,7 +456,10 @@ def master_effort():
 @views.route("/delete-effort/<effort_id>",methods=['GET'])
 @login_required
 def delete_effort(effort_id):
-    effort = effort.query.filter_by(id=effort_id).first()
+    effort = Effort.query.filter_by(id=effort_id).first()
+    if(TicketEffortMap.query.filter_by(effort_id=effort.id).first()):
+        flash("This effort cannot be deleted since some tickets are using it", category='error')
+        return redirect('/master-effort-home')
     db.session.delete(effort)
     db.session.commit()
     return redirect('/master-effort-home')
@@ -539,6 +547,7 @@ def proc_image(images_raw,ticket_id):
 
 def alertmechanism(ticket_status, ticket_id):
     current = MasterAlertConfig.query.filter_by(ticket_status=ticket_status).first()
+    print(ticket_status)
     ticket = Ticket.query.filter_by(id = ticket_id ).first()
     admins = User.query.filter_by(usertype = "admin").all()
     reporter_id = ticket.author_id
@@ -568,7 +577,7 @@ def alertmechanism(ticket_status, ticket_id):
        
     recipients_email = recipients_email.strip(";")
 
-    emailaudit = MasterAlertAudit(ticket_status = ticket_status , alert_subject  = alertsub , alert_body = alertbody , recipients = recipients )
+    emailaudit = MasterAlertAudit(ticket_status = ticket_status , alert_subject  = alertsub , alert_body = alertbody , recipients = str(recipients_email) )
     db.session.add(emailaudit)
     db.session.commit()
 

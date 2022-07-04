@@ -28,7 +28,7 @@
         <div style="border: 1px solid grey; border-radius: 5px; background-color: #C9E5EF;">
             <div class="form-group" class="grid-container" style="display: grid;
             grid-template-columns: auto auto ; grid-gap: 30px; padding: 10px;">
-                <div><label for="ticket_status">Ticket Status:</label>
+                <div><label for="ticket_status">Ticket Status</label>
                     <select class="form-select" id="ticket_status" name = "ticket_status" placeholder="Enter Ticket Status">
                         {% for status in statuses %}
                             <option value="{{status.status}}">{{status.status}}</option>
@@ -36,22 +36,28 @@
                     </select>
                 </div>
                 <div>
-                    <label for="alert_subject">Alert Subject:</label>
+                    <label for="alert_subject">Alert Subject</label>
                     <input type="text" name="alert_subject" placeholder="Enter Alert Subject"
                         class="form-control name_list" />
 
                 </div>
                 <div>
-                    <label for="alert_body">Alert Body:</label>
-                    <input type="text" name="alert_body" placeholder="Enter Alert Body"
-                        class="form-control name_list" />
+                    <label for="alert_body">Alert Body</label>
+                    <textarea type="text" name="alert_body" placeholder="Enter Alert Body"
+                        class="form-control name_list" ></textarea>
 
                 </div>
                 <div>
-                    <label for="recipients">Recipients:</label>
-                    <input type="text" name="recipients" placeholder="Enter Recipients"
-                        class="form-control name_list" />
-
+                    <label for="recipients">Recipients</label>
+                    <select class="form-select" id="recipients" name = "recipients" placeholder="Enter Recipients">
+                        <option value="admin">Admin</option>
+                        <option value="reporter">Reporter</option>
+                        <option value="assignee">Assignee</option>
+                        <option value="assignee;reporter">Assignee;Reporter</option>
+                        <option value="assignee;admin">Assignee;Admin</option>
+                        <option value="admin;reporter">Admin;Reporter</option>
+                        <option value="admin;reporter;assignee">Admin;Reporter;Assignee</option>
+                    </select>
                 </div>
             </div>
         </div>
@@ -63,9 +69,9 @@
             <thead class="thead-light">
                 <tr style="background-color: #003E7F; color: white;">
                     <th>Ticket Status</th>
-                    <th>Alert Body</th>
-                    <th>Alert Subject</th>
                     <th>Recipients</th>
+                    <th>Alert Subject</th>
+                    <th style="width:50%">Alert Body</th>
                     <th></th>
                 </tr>
             </thead>
@@ -73,9 +79,9 @@
                 {% for alert in alerts %}
                 <tr>
                     <td>{{alert.ticket_status}}</a></td>
-                    <td>{{alert.alert_body}}</td>
-                    <td>{{alert.alert_subject}}</td>
                     <td>{{alert.recipients}}</td>
+                    <td>{{alert.alert_subject}}</td>
+                    <td>{{alert.alert_body}}</td>
                     <td><a href="/delete-alert/{{alert.id}}"><button type="button"
                                 class="btn btn-danger">Delete</button></a></td>
                 </tr>

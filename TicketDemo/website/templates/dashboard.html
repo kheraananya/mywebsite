@@ -27,11 +27,11 @@
             <tr style="background-color: #003E7F; color: white;" >
                 <th>Ticket ID</th>        
                 <th>Customer Name</th>
-                <th>Created By</th>
+                <th>Reporter Name</th>
+                <th>Current Status</th>
+                <th>Assignee</th>
                 <th>Created on</th>
                 <th>Last Modified</th>
-                <th>Assignee</th>
-                <th>Current Status</th>
             </tr>
         </thead>
         <tbody>
@@ -40,15 +40,15 @@
                   <td><a href="/tickets/{{ticket.id}}">{{ticket.id}}</a></td>
                   <td>{{ticket.custname}}</td>
                   <td>{{ticket.author.username}}</td>
+                  <td><b class="badge {% if ticket.status == 'Opened' %} bg-primary {% elif ticket.status == 'Closed' %} bg-success {% else %} bg-warning {% endif %}">{{ticket.status}}</b></td>
+                  <td>{% if ticket.assignee_id %}
+                    {{ticket.assignee.username}}
+                  {% else %}
+                    Not Assigned
+                  {% endif %}
+              </td>
                   <td>{{ticket.date_created}}</td>
                   <td>{{ticket.last_modified}}</td>
-                  <td>{% if ticket.assignee_id %}
-                        {{ticket.assignee.username}}
-                      {% else %}
-                        Not Assigned
-                      {% endif %}
-                  </td>
-                  <td>{{ticket.status}}</td>
               </tr>
           {% endfor %}
          </tbody>  
@@ -62,8 +62,6 @@
             <tr style="background-color: #003E7F; color: white;" >
                 <th>ID</th>        
                 <th>Ticket Status</th>
-                <th>Alert Subject</th>
-                <th>Alert Body</th>
                 <th>Recipients</th>
                 <th>Sent On</th>
             </tr>
@@ -73,8 +71,6 @@
                 <tr>
                     <td>{{alertaudit.id}}</td>
                     <td>{{alertaudit.ticket_status}}</td>
-                    <td>{{alertaudit.alert_subject}}</td>
-                    <td>{{alertaudit.alert_body}}</td>
                     <td>{{alertaudit.recipients}}</td>
                     <td>{{alertaudit.sent_on}}</td>
                 </tr>
