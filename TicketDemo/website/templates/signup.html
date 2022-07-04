@@ -1,91 +1,104 @@
-{% extends "base.html" %}
-{% block title %} Sign Up {% endblock %}
-{% block content %}
+{% extends "base.html" %} {% block title %} Sign Up {% endblock %} {% block
+content %}
 <style>
-    body{
-        background-color: rgb(244, 244, 244);  
-    }
-  
+	body {
+		background-color: rgb(244, 244, 244);
+	}
 </style>
 <form method="POST">
-<br>
-  
-  <div align="center">
-    <h1 style="font-family:'Lato', sans-serif; font-size: 60px; 
-    background: linear-gradient(225deg, #045de9 0%, #1bc0ee 74%);-webkit-text-fill-color: transparent;-webkit-background-clip:text"><b>ScoPortal</b></h1>
-    </div>
-    
-         <div class="container py-5 h-50">
-           <div class="row d-flex justify-content-center align-items-center h-100">
-             <div class="col-12 col-md-8 col-lg-6 col-xl-5" style="margin-top: -27px">
-               <div class="card shadow" style="border-radius: 1rem; margin-top: -10px;">
-                 <div class="card-body p-5 text-center">
-       
-                  <h4 class="mb-5" style="margin-top:-25px;"><b>Signup to ScoPortal</b></h4>
-       
-                  <div class="form-outline mb-4" style="margin-top: -30px;">
-                     
-                    <label for="usertype" class="form-label">User Type<span style="color:red">*</span></label>
-                    <select class="form-select" id="usertype" name = "usertype">
-                        <option value="reporter">Reporter</option>
-                        <option value="admin">Admin</option>
-                        <option value="assignee">Assignee</option>
-                    </select> 
-                     <label for="email">Email Address<span style="color:red">*</span></label>
-        <input 
-            type="text" 
-            id = "email" 
-            name = "email" 
-            class = "form-control"
-            placeholder = "Enter Email"
-        />
-        <label for="email" class="form-label">Username<span style="color:red">*</span></label>
-        <input 
-            type="text" 
-            id = "username" 
-            name = "username" 
-            class = "form-control"
-            placeholder = "Enter Username"
-        />
-        <label for="password1" class="form-label">Password<span style="color:red">*</span></label>
-        <input 
-            type="password" 
-            id = "password1" 
-            name = "password1" 
-            class = "form-control"
-            placeholder = "Enter Password"
-        />
-        <label for="password2" class="form-label">Password Again<span style="color:red">*</span></label>
-        <input 
-            type="password" 
-            id = "password2" 
-            name = "password2" 
-            class = "form-control"
-            placeholder = "Enter Password Again"
-        />
-        
-                   </div>
-       
-                  
-                   
-       
-                   <button class="btn  btn-lg btn-block" style="background-color:#24A0ED; color: white;" type="submit">Signup</button>
-                 
-       
-                 
-       
-                 </div>
-               </div>
-             </div>
-           </div>
-         </div>
-       
-    
- </form>
+	<br />
+
+	<div align="center">
+		<h1
+			style="
+				font-family: 'Lato', sans-serif;
+				font-size: 60px;
+				background: linear-gradient(225deg, #045de9 0%, #1bc0ee 74%);
+				-webkit-text-fill-color: transparent;
+				-webkit-background-clip: text;
+			"
+		>
+			<b>ScoPortal</b>
+		</h1>
+	</div>
+
+	<div class="container py-5 h-50">
+		<div class="row d-flex justify-content-center align-items-center h-100">
+			<div class="col-12 col-md-8 col-lg-6 col-xl-5" style="margin-top: -27px">
+				<div class="card shadow" style="border-radius: 1rem; margin-top: -10px">
+					<div class="card-body p-5 text-center">
+						<h4 class="mb-5" style="margin-top: -25px">
+							<b>Signup to ScoPortal</b>
+						</h4>
+
+						<div class="form-outline mb-4" style="margin-top: -30px">
+							<label for="usertype" class="form-label"
+								>User Type<span style="color: red">*</span></label
+							>
+							<select class="form-select" id="usertype" name="usertype">
+								<option value="reporter">Reporter</option>
+								<option value="admin">Admin</option>
+								<option value="assignee">Assignee</option>
+							</select>
+							<label for="email"
+								>Email Address<span style="color: red">*</span></label
+							>
+							<input
+								type="text"
+								id="email"
+								name="email"
+								class="form-control"
+								placeholder="Enter Email"
+							/>
+							<label for="email" class="form-label"
+								>Username<span style="color: red">*</span></label
+							>
+							<input
+								type="text"
+								id="username"
+								name="username"
+								class="form-control"
+								placeholder="Enter Username"
+							/>
+							<label for="password1" class="form-label"
+								>Password<span style="color: red">*</span></label
+							>
+							<input
+								type="password"
+								id="password1"
+								name="password1"
+								class="form-control"
+								placeholder="Enter Password"
+							/>
+							<label for="password2" class="form-label"
+								>Password Again<span style="color: red">*</span></label
+							>
+							<input
+								type="password"
+								id="password2"
+								name="password2"
+								class="form-control"
+								placeholder="Enter Password Again"
+							/>
+						</div>
+
+						<button
+							class="btn btn-lg btn-block"
+							style="background-color: #24a0ed; color: white"
+							type="submit"
+						>
+							Signup
+						</button>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</form>
 <script>
-    $(document).ready(function() {
-        var x = document.getElementById("signup");
-        x.setAttribute("class","nav-item nav-link active");
-    });
+	$(document).ready(function () {
+		var x = document.getElementById("signup");
+		x.setAttribute("class", "nav-item nav-link active");
+	});
 </script>
 {% endblock %}

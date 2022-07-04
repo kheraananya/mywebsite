@@ -1,0 +1,67 @@
+{% extends "base.html" %} {% block title %} All Tickets {% endblock %} {% block
+content %}
+<style>
+	.table > tbody > tr:nth-of-type(odd) {
+		background-color: #c9e5ef;
+	}
+</style>
+<br />
+
+{% if user.usertype == 'reporter' %}
+<div align="center">
+	<a href="/create-ticket">
+		<button
+			type="button"
+			class="btn btn-info lg"
+			style="background-color: #003e7f; color: white"
+		>
+			Create New Ticket
+		</button>
+	</a>
+</div>
+{% endif %}
+<br />
+<h2 align="center"><b>All Tickets</b></h2>
+<div class="container">
+	<table class="table" id="myTable" class="table table-striped">
+		<thead>
+			<tr style="background-color: #003e7f; color: white">
+				<th>Ticket ID</th>
+				<th>Customer Name</th>
+				<th>Reporter Name</th>
+				<th>Current Status</th>
+				<th>Assignee</th>
+				<th>Created On</th>
+				<th>Last Modified On</th>
+			</tr>
+		</thead>
+		<tbody>
+			{% for ticket in tickets %}
+			<tr>
+				<td><a href="/tickets/{{ticket.id}}">{{ticket.id}}</a></td>
+				<td>{{ticket.custname}}</td>
+				<td>{{ticket.author.username}}</td>
+				<td>
+					<b
+						class="badge {% if ticket.status == 'Opened' %} bg-primary {% elif ticket.status == 'Closed' %} bg-success {% else %} bg-warning {% endif %}"
+						>{{ticket.status}}</b
+					>
+				</td>
+				<td>
+					{% if ticket.assignee_id %} {{ticket.assignee.username}} {% else %}
+					Not Assigned {% endif %}
+				</td>
+				<td>{{ticket.date_created}}</td>
+				<td>{{ticket.last_modified}}</td>
+			</tr>
+			{% endfor %}
+		</tbody>
+	</table>
+</div>
+<br />
+<script>
+	$(document).ready(function () {
+		$("#myTable").DataTable();
+	});
+</script>
+{% block footer %}{% endblock %} {% endblock %}

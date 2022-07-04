@@ -16,12 +16,24 @@ views = Blueprint("views",__name__)
 @views.route("/home")
 @login_required
 def home():
-    alertaudits = MasterAlertAudit.query.all()
+    return render_template("dashboard.html",user=current_user)
+
+@views.route("/")
+@views.route("/all-tickets")
+@login_required
+def all_tickets():
     if current_user.usertype == 'assignee':
         tickets = Ticket.query.filter_by(assignee_id=current_user.id).all()
     else:
         tickets = Ticket.query.all()
-    return render_template("dashboard.html",user=current_user,tickets=tickets,alertaudits=alertaudits)
+    return render_template("all_tickets.html",user=current_user,tickets=tickets)
+
+@views.route("/")
+@views.route("/alert-audit")
+@login_required
+def alert_audit():
+    alertaudits = MasterAlertAudit.query.all()
+    return render_template("alert_audit.html",user=current_user,alertaudits=alertaudits)
 
 
 @views.route("/create-ticket",methods=['GET','POST'])

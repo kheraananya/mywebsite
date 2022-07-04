@@ -2,77 +2,74 @@
 {% block title %} View/Edit Profile {% endblock %}
 {% block content %}
 <style>
-     .people{
-        
+    .people {
+
         border-radius: 10px;
         padding: 5px;
         margin: 5px;
-        border: 1px solid grey; 
+        border: 1px solid grey;
         border-radius: 5px;
-         background-color: #C9E5EF; 
-         
-      }
-      .center {
-  margin: auto;
-  width: 62%;
-  
-  padding: 10px;
-}
+        background-color: #C9E5EF;
 
+    }
+
+    .center {
+        margin: auto;
+        width: 62%;
+
+        padding: 10px;
+    }
 </style>
 <br>
 <br>
 <div class="center ">
-<span class="people shadow" style="width: 600px;">  
-                            
-    <div align="center" style="font-size:17px; font-weight: bold; border: 1px solid grey; color: white; border-radius: 5px; background-color: #003E7F; padding: 7px; margin: -5px; margin-bottom: -15px; margin-right: -6px;">User profile</div>
-   <br>
-    <b>Username:</b> {{user.username}}
-    <br>
-    <b>Email:</b> {{user.email}}
-    <br>
-    <b>Usertype:</b> {{user.usertype|capitalize}}
-    <br>
-    <b>Account created on:</b> {{user.date_created}}
-    <br>
-    <br>
+    <span class="people shadow" style="width: 600px;">
 
-                <div style="margin-bottom: 10px;">
-        <a data-bs-toggle="collapse" data-bs-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
-    <form method='POST'>
-       
-        <div style="font-size:13px; font-weight: bold; border: 1px solid grey; color: white; border-radius: 5px; background-color: #003E7F;padding: 5px; padding-bottom: 5px; margin-bottom: -10px; width: 140px; height: 30px;">
-            Change Password
-            <i class="bi-chevron-down"
-            style="width:11px; height:11px; float: right; padding-top: 3px; margin-right: 7px; "></i>
-        </div></a>
-        
-        
-        <span style="float:left; margin-top: -10px; margin-left: -1px; margin-right: -5px; padding-right: 10px; width: 350px; margin-top: 12px;" id="collapseTwo" class="collapse people">  
-           
-            <label for="password2" class="form-label" >Password</label>
-        <input 
-            type="password" 
-            id = "password1" 
-            name = "password1" 
-            class = "form-control"
-            placeholder = "Enter New Password"
-        />
-        <label for="password2" class="form-label" >Password Again</label>
-        <input 
-            type="password" 
-            id = "password2" 
-            name = "password2" 
-            class = "form-control"
-            placeholder = "Enter New Password Again"
-        />
-       
-     <span style="margin-top: 10px; float: left; height: 40px;">
-        <button class="btn btn-info" type="submit">Update Password</button>
-        </span>
-        </span>
-    </form>
-                </div>
+        <div align="center"
+            style="font-size:17px; font-weight: bold; border: 1px solid grey; color: white; border-radius: 5px; background-color: #003E7F; padding: 7px; margin: -5px; margin-bottom: -15px; margin-right: -6px;">
+            User profile</div>
+        <br>
+        <b>Username:</b> {{user.username}}
+        <br>
+        <b>Email:</b> {{user.email}}
+        <br>
+        <b>Usertype:</b> {{user.usertype|capitalize}}
+        <br>
+        <b>Account created on:</b> {{user.date_created}}
+        <br>
+        <br>
 
-    
-{% endblock %}
+        <div style="margin-bottom: 10px;">
+            <a data-bs-toggle="collapse" data-bs-target="#collapseTwo" aria-expanded="false"
+                aria-controls="collapseTwo">
+                <form method='POST'>
+
+                    <div
+                        style="font-size:13px; font-weight: bold; border: 1px solid grey; color: white; border-radius: 5px; background-color: #003E7F;padding: 5px; padding-bottom: 5px; margin-bottom: -10px; width: 140px; height: 30px;">
+                        Change Password
+                        <i class="bi-chevron-down"
+                            style="width:11px; height:11px; float: right; padding-top: 3px; margin-right: 7px; "></i>
+                    </div>
+            </a>
+
+
+            <span
+                style="float:left; margin-top: -10px; margin-left: -1px; margin-right: -5px; padding-right: 10px; width: 350px; margin-top: 12px;"
+                id="collapseTwo" class="collapse people">
+
+                <label for="password2" class="form-label">Password</label>
+                <input type="password" id="password1" name="password1" class="form-control"
+                    placeholder="Enter New Password" />
+                <label for="password2" class="form-label">Password Again</label>
+                <input type="password" id="password2" name="password2" class="form-control"
+                    placeholder="Enter New Password Again" />
+
+                <span style="margin-top: 10px; float: left; height: 40px;">
+                    <button class="btn btn-info" type="submit">Update Password</button>
+                </span>
+            </span>
+            </form>
+        </div>
+
+
+        {% endblock %}

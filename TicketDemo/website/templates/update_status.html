@@ -1,17 +1,16 @@
-{% extends "base.html" %}
-{% block title %} Update Status {% endblock %}
-{% block content %}
+{% extends "base.html" %} {% block title %} Update Status {% endblock %} {%
+block content %}
 <h1 align="center">Update Status</h1>
-<form method='POST'>
-    <div align='center' class="form-group">
-        <label for="status">Update Status</label>
-        <select class="form-select" id="status" name = "status">
-        {% for status in statuses %}
-            <option value="{{status.status}}">{{status.status}}</option>
-        {% endfor %}
-        </select>
-        <br>
-        <button type="submit" class="btn btn-lg btn-dark">Update</button>
-    </div>
+<form method="POST">
+	<div align="center" class="form-group">
+		<label for="status">Update Status</label>
+		<select class="form-select" id="status" name="status">
+			{% for status in statuses %}
+			<option value="{{status.status}}">{{status.status}}</option>
+			{% endfor %}
+		</select>
+		<br />
+		<button type="submit" class="btn btn-lg btn-dark">Update</button>
+	</div>
 </form>
 {% endblock %}

@@ -1,20 +1,33 @@
-{% extends "base.html" %}
-{% block title %} Master Setup {% endblock %}
-{% block content %}
+{% extends "base.html" %} {% block title %} Master Setup {% endblock %} {% block
+content %}
 <body>
-    <br>
-    <div align='center'>
-        <a href="/master-question-home"><button type="button" class="btn btn-primary">Questionaires</button></a>
-        <a href="/master-status-home"><button type="button" class="btn btn-primary">Ticket Statuses</button></a>
-        <a href="/master-effort-home"><button type="button" class="btn btn-primary">Effort Estimation Fields</button></a>
-        <a href="/master-alert-home"><button type="button" class="btn btn-primary">Alert Configuration</button></a>
-        <a href="/master-reset-home"><button type="button" class="btn btn-primary">Reset Database</button></a>
-    </div>
+	<br />
+	<div align="center">
+		<a href="/master-question-home"
+			><button type="button" class="btn btn-primary">Questionaires</button></a
+		>
+		<a href="/master-status-home"
+			><button type="button" class="btn btn-primary">Ticket Statuses</button></a
+		>
+		<a href="/master-effort-home"
+			><button type="button" class="btn btn-primary">
+				Effort Estimation Fields
+			</button></a
+		>
+		<a href="/master-alert-home"
+			><button type="button" class="btn btn-primary">
+				Alert Configuration
+			</button></a
+		>
+		<a href="/master-reset-home"
+			><button type="button" class="btn btn-primary">Reset Database</button></a
+		>
+	</div>
 </body>
 <script>
-    $(document).ready(function() {
-        var x = document.getElementById("master");
-        x.setAttribute("class","nav-item nav-link active");
-    });
+	$(document).ready(function () {
+		var x = document.getElementById("master");
+		x.setAttribute("class", "nav-item nav-link active");
+	});
 </script>
 {% endblock %}

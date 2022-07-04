@@ -1,73 +1,68 @@
-{% extends "base.html" %}
-{% block title %} Login {% endblock %}
-{% block content %}
+{% extends "base.html" %} {% block title %} Login {% endblock %} {% block
+content %}
 <style>
-    body{
-        background-color: rgb(244, 244, 244);  
-    }
-   
+	body {
+		background-color: rgb(244, 244, 244);
+	}
 </style>
 <form method="POST">
-   <br>
-   <!-- <section style="background-color: #508bfc; height: 510px; width: 650px; margin-left: 250px; "> -->
-    <div align="center">
-      <h1 style="font-family:'Lato', sans-serif; font-size: 60px; 
-      background: linear-gradient(225deg, #045de9 0%, #1bc0ee 74%);-webkit-text-fill-color: transparent;-webkit-background-clip:text"><b>ScoPortal</b></h1>
-    </div>
-        <div class="container py-5 h-50 ">
-          <div class="row d-flex justify-content-center align-items-center h-100">
-            <div class="col-12 col-md-8 col-lg-6 col-xl-5" style="margin-top: -40px;">
-              <div class="card shadow" style="border-radius: 1rem;">
-                <div class="card-body p-5 text-center">
-      
-                  <h4 class="mb-5"><b>Login to ScoPortal</b></h4>
-      
-                  <div class="form-outline mb-4" style="margin-top: -30px;">
-                    
-                   
-                    <label class="form-label" for="email">Email</label>
-                    <input 
-                    type="text" 
-                    id = "email" 
-                    name = "email" 
-                    class = "form-control"
-                    
-                />
-                  </div>
-      
-                  <div class="form-outline mb-4">
-                    <label for="password" class="form-label">Password</label>
-                    <input 
-                        type="password" 
-                        id = "password" 
-                        name = "password" 
-                        class = "form-control"
-                        
-                    />
-                  </div>
-      
-                 
-                  
-     
-                  <button class="btn  btn-lg btn-block" style="background-color:#24A0ED; color: white;" type="submit">Login</button>
-                  <br>
-                  <a href="/forgot-password">Forgot Password?</a>
-                
-      
-                
-      
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      <!-- </section> -->
-   
+	<br />
+	<!-- <section style="background-color: #508bfc; height: 510px; width: 650px; margin-left: 250px; "> -->
+	<div align="center">
+		<h1
+			style="
+				font-family: 'Lato', sans-serif;
+				font-size: 60px;
+				background: linear-gradient(225deg, #045de9 0%, #1bc0ee 74%);
+				-webkit-text-fill-color: transparent;
+				-webkit-background-clip: text;
+			"
+		>
+			<b>ScoPortal</b>
+		</h1>
+	</div>
+	<div class="container py-5 h-50">
+		<div class="row d-flex justify-content-center align-items-center h-100">
+			<div class="col-12 col-md-8 col-lg-6 col-xl-5" style="margin-top: -40px">
+				<div class="card shadow" style="border-radius: 1rem">
+					<div class="card-body p-5 text-center">
+						<h4 class="mb-5"><b>Login to ScoPortal</b></h4>
+
+						<div class="form-outline mb-4" style="margin-top: -30px">
+							<label class="form-label" for="email">Email</label>
+							<input type="text" id="email" name="email" class="form-control" />
+						</div>
+
+						<div class="form-outline mb-4">
+							<label for="password" class="form-label">Password</label>
+							<input
+								type="password"
+								id="password"
+								name="password"
+								class="form-control"
+							/>
+						</div>
+
+						<button
+							class="btn btn-lg btn-block"
+							style="background-color: #24a0ed; color: white"
+							type="submit"
+						>
+							Login
+						</button>
+						<br />
+						<a href="/forgot-password">Forgot Password?</a>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<!-- </section> -->
 </form>
 <script>
-    $(document).ready(function() {
-        var x = document.getElementById("login");
-        x.setAttribute("class","nav-item nav-link active");
-    });
+	$(document).ready(function () {
+		var x = document.getElementById("login");
+		x.setAttribute("class", "nav-item nav-link active");
+	});
 </script>
 {% endblock %}
