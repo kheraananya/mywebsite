@@ -23,9 +23,11 @@ class User(db.Model, UserMixin):
 class Ticket(db.Model):
     __tablename__ = 'Ticket'
     id = db.Column(db.Integer, primary_key=True)
+    ticket_code = db.Column(db.String(200))
     custname = db.Column(db.String(2000))
     title = db.Column(db.String(2000))
     region = db.Column(db.String(200))
+    startdate = db.Column(db.Date)
     date_created = db.Column(db.DateTime, default = time.strftime("%d/%B/%Y %H:%M:%S"))
     last_modified = db.Column(db.DateTime, default = time.strftime("%d/%B/%Y %H:%M:%S"))
     author_id = db.Column(db.Integer, db.ForeignKey('User.id',ondelete="CASCADE"),nullable=False)
@@ -66,21 +68,24 @@ class Question(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     question = db.Column(db.String(2000),nullable=False)
     date_created = db.Column(db.DateTime, default = time.strftime("%d/%B/%Y %H:%M:%S"))
-    author_id = db.Column(db.Integer, db.ForeignKey('User.id',ondelete="CASCADE"),nullable=False)
+    author_id = db.Column(db.Integer, db.ForeignKey('User.id',ondelete="CASCADE"),nullable=True)
+    author = db.relationship("User",foreign_keys=[author_id])
 
 class Effort(db.Model):
     __tablename__ = 'Effort'
     id = db.Column(db.Integer, primary_key=True)
     effort = db.Column(db.String(2000),nullable=False)
     date_created = db.Column(db.DateTime, default = time.strftime("%d/%B/%Y %H:%M:%S"))
-    author_id = db.Column(db.Integer, db.ForeignKey('User.id',ondelete="CASCADE"),nullable=False)
+    author_id = db.Column(db.Integer, db.ForeignKey('User.id',ondelete="CASCADE"),nullable=True)
+    author = db.relationship("User",foreign_keys=[author_id])
 
 class Status(db.Model):
     __tablename__ = 'Status'
     id = db.Column(db.Integer, primary_key=True)
     status = db.Column(db.String(2000),nullable=False)
     date_created = db.Column(db.DateTime, default = time.strftime("%d/%B/%Y %H:%M:%S"))
-    author_id = db.Column(db.Integer, db.ForeignKey('User.id',ondelete="CASCADE"),nullable=False)
+    author_id = db.Column(db.Integer, db.ForeignKey('User.id',ondelete="CASCADE"),nullable=True)
+    author = db.relationship("User",foreign_keys=[author_id])
 
 class MasterAlertConfig(db.Model):
     __tablename__ = 'MasterAlertConfig'
@@ -113,3 +118,8 @@ class MasterResetHistory(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     reset_by = db.Column(db.Integer, db.ForeignKey('User.id',ondelete="CASCADE"),nullable=False)
     reset_on = db.Column(db.DateTime, default = time.strftime("%d/%B/%Y %H:%M:%S"))
+
+class MasterTicketCode(db.Model):
+    __tablename__ = 'MasterTicketCode'
+    id = db.Column(db.Integer, primary_key=True)
+    code = db.Column(db.String(100))

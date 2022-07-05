@@ -1,0 +1,37 @@
+{% extends "base.html" %}
+{% block title %} Master Ticket Code {% endblock %}
+{% block content %}
+<style>
+    .table>tbody>tr:nth-of-type(odd) {  
+     background-color:#C9E5EF;  
+  }  
+  </style>
+<body>
+    <br>
+    <div align='center'>
+		    <a href="/master-ticketcode-home"><button type="button" class="btn btn-success" style="background-color: #003E7F;">Ticket Code</button></a>
+        <a href="/master-question-home"><button type="button" class="btn btn-primary">Questionaires</button></a>
+        <a href="/master-status-home"><button type="button" class="btn btn-primary">Ticket Statuses</button></a>
+        <a href="/master-effort-home"><button type="button" class="btn btn-primary">Effort Estimation Fields</button></a>
+        <a href="/master-alert-home"><button type="button" class="btn btn-primary">Alert Configuration</button></a>
+        <a href="/master-reset-home"><button type="button" class="btn btn-primary">Reset Database</button></a>
+    </div>
+    <br>
+    <div class="container">
+        <form method="POST">
+			<div class="table-responsive">
+				<table class="table" style = "border-radius:15px;">  
+					<tr>  
+						<td style="width:84%"><input type="text" name="ticketcode" placeholder="Enter Ticket Code" class="form-control name_list"/></td>
+						<td><button type="submit" class="btn btn-success" style="background-color: #003E7F;">Set Ticket Code</button></td>
+					</tr> 
+				</table>
+			</div>
+        </form>
+	</div>  
+    <div align="center" class="container">
+		<h2>Ticket Code: <div class="badge bg-secondary">{{ticket_code}}</div></h2>
+    </div>
+    <br>
+</body>
+{% endblock %}   

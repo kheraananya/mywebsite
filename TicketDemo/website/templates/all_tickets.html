@@ -6,22 +6,36 @@ content %}
 	}
 </style>
 <br />
-
-{% if user.usertype == 'reporter' %}
-<div align="center">
-	<a href="/create-ticket">
-		<button
-			type="button"
-			class="btn btn-info lg"
-			style="background-color: #003e7f; color: white"
-		>
-			Create New Ticket
-		</button>
-	</a>
+<div class="container-fluid">
+	{% if user.usertype == 'reporter' %}
+	<div style="position: absolute; left: 90px">
+		<a href="/create-ticket">
+			<button
+				type="button"
+				class="btn btn-info lg"
+				style="background-color: #003e7f; color: white"
+			>
+				Create New Ticket
+			</button>
+		</a>
+	</div>
+	{% endif %}
+	<h2 style="position: absolute; left: 580px;"><b>All Tickets</b></h2>
+	<div style="position: absolute; right: 90px;">
+		<a href="/export-alltickets">
+			<button
+				type="button"
+				class="btn btn-info lg"
+				style="background-color: #003e7f; color: white"
+			>
+				Export
+			</button>
+		</a>
+	</div>
 </div>
-{% endif %}
 <br />
-<h2 align="center"><b>All Tickets</b></h2>
+<br />
+<br />
 <div class="container">
 	<table class="table" id="myTable" class="table table-striped">
 		<thead>

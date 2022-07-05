@@ -11,8 +11,9 @@
 <body>
     <br>
     <div align='center'>
+        <a href="/master-ticketcode-home"><button type="button" class="btn btn-primary">Ticket Code</button></a>
         <a href="/master-question-home"><button type="button" class="btn btn-primary">Questionaires</button></a>
-        <a href="/master-status-home"><button type="button" class="btn btn-success">Ticket Statuses</button></a>
+        <a href="/master-status-home"><button type="button" class="btn btn-success" style="background-color: #003E7F;">Ticket Statuses</button></a>
         <a href="/master-effort-home"><button type="button" class="btn btn-primary">Effort Estimation Fields</button></a>
         <a href="/master-alert-home"><button type="button" class="btn btn-primary">Alert Configuration</button></a>
         <a href="/master-reset-home"><button type="button" class="btn btn-primary">Reset Database</button></a>
@@ -49,10 +50,10 @@
                     <td>{{status.id}}</a></td>
                     <td>{{status.status}}</td>
                     <td>{{status.date_created}}</td>
-                    <td>{{user.username}}</td>
+                    <td>{% if status.author_id %} {{ status.author.username}} {%else%} Default {%endif%}</td>
                     <td>
                         {% if status.status != "Opened" and status.status != "Assigned" and status.status != "In-Review" and status.status != "Closed" %}
-                        <a href="/delete-status/{{status.id}}"><button type="button" class="btn btn-danger">Delete</button></a>
+                        <a href="/delete-status/{{status.id}}"><button type="button" class="btn btn-danger"><span class="bi-trash"></span></button></a>
                         {% endif %}
                     </td>
                 </tr>

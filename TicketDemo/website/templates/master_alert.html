@@ -10,10 +10,11 @@
 <body>
     <br>
     <div align='center'>
+        <a href="/master-ticketcode-home"><button type="button" class="btn btn-primary">Ticket Code</button></a>
         <a href="/master-question-home"><button type="button" class="btn btn-primary">Questionaires</button></a>
         <a href="/master-status-home"><button type="button" class="btn btn-primary">Ticket Statuses</button></a>
-        <a href="/master-effort-home"><button type="button" class="btn btn-primary">Effort EstimationFields</button></a>
-        <a href="/master-alert-home"><button type="button" class="btn btn-success">Alert Configuration</button></a>
+        <a href="/master-effort-home"><button type="button" class="btn btn-primary">Effort Estimation Fields</button></a>
+        <a href="/master-alert-home"><button type="button" class="btn btn-success" style="background-color: #003E7F;">Alert Configuration</button></a>
         <a href="/master-reset-home"><button type="button" class="btn btn-primary">Reset Database</button></a>
     </div>
     <br>
@@ -69,7 +70,7 @@
                                 <select class="form-select" id="recipients" name="recipients" placeholder="Enter Recipients">
                                     <option value="admin">Admin</option>
                                     <option value="reporter">Reporter</option>
-                                   <option value="assignee">Assignee</option>
+                                    <option value="assignee">Assignee</option>
                                     <option value="assignee;reporter">Assignee;Reporter</option>
                                     <option value="assignee;admin">Assignee;Admin</option>
                                     <option value="admin;reporter">Admin;Reporter</option>
@@ -105,11 +106,11 @@
                 {% for alert in alerts %}
                 <tr>
                     <td>{{alert.ticket_status}}</a></td>
-                    <td>{{alert.recipients}}</td>
+                    <td>{{alert.recipients|capitalize}}</td>
                     <td>{{alert.alert_subject}}</td>
                     <td>{{alert.alert_body}}</td>
                     <td><a href="/delete-alert/{{alert.id}}"><button type="button"
-                                class="btn btn-danger">Delete</button></a></td>
+                                class="btn btn-danger"><span class="bi-trash"></span></button></a></td>
                 </tr>
                 {% endfor %}
             </tbody>

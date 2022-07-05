@@ -5,13 +5,10 @@
     * {
         box-sizing: border-box;
     }
-
-    /* Create two unequal columns that floats next to each other */
     .column {
         float: left;
         padding: 10px;
         height: 300px;
-        /* Should be removed. Only for demonstration */
     }
 
     .left {
@@ -69,7 +66,7 @@
             {% if ticket.status != "Closed" %}
             <div class="btn-group">
                 <button type="button" class="btn btn-sm"
-                    style="background-color: #C9E5EF; position: absolute; left:160px; top:1px; border: 2px solid; ">
+                    style="background-color: #C9E5EF; position: absolute; {%if user.usertype=='reporter'%}left:630px;{%else%}left:340px;{%endif%}border: 2px solid; ">
                     <a href="/edit-ticket/{{ticket.id}}" class="dropdown-item">
                         <span class="bi-pen">Edit Ticket</span>
                     </a>
@@ -86,7 +83,7 @@
             {% endif %}
             {% if user.usertype == 'admin' %}
             <div>
-                <span style="float: left; left: 666px; top: 51px; position: absolute;">
+                <span style="float: left; left: 530px; top: 50px; position: absolute;">
                     <select class="form-select" id="assignee-name" name="assignee-name">
                         <option></option>
                         <optgroup label="Available &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;">
@@ -111,7 +108,7 @@
             {% if user.usertype == 'assignee' %}
             <div>
                 <button type="button" class="btn btn-sm"
-                    style="position: absolute; left:666px; background-color: #C9E5EF; border: 2px solid">
+                    style="position: absolute; left:530px; background-color: #C9E5EF; border: 2px solid">
                     <a href="/estimated-details/{{ticket.id}}" class="dropdown-item">
                         <span class="bi-pen">Effort Estimation</span>
                     </a>
@@ -119,7 +116,7 @@
             </div>
             {% endif %}
             <div>
-                <span style="position: absolute; left:470px;top:51px">
+                <span style="position: absolute; left:705px;top:50px">
                     <select class="form-control" id="status-name" name="status-name">
                         {% for status in statuses %}
                         <option value="{{status.status}}">{{status.status}}</option>

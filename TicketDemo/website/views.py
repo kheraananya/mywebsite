@@ -1,7 +1,8 @@
 from unicodedata import category
-from flask import Blueprint, render_template, request,flash,redirect,url_for,jsonify,send_file
+from flask import Blueprint, render_template, request,flash,redirect,url_for,jsonify,send_file,Response
 from flask_login import login_required, current_user,login_user
-from .models import File, MasterAlertConfig,MasterAlertAudit,MasterResetHistory, Question, Status, Ticket, User, Comment,TicketQuestionMap, Effort, TicketEffortMap
+from sqlalchemy import null
+from .models import File, MasterAlertConfig,MasterAlertAudit,MasterResetHistory, MasterTicketCode, Question, Status, Ticket, User, Comment,TicketQuestionMap, Effort, TicketEffortMap
 from . import db
 from datetime import datetime
 import time
@@ -25,6 +26,27 @@ def home():
 @views.route("/all-tickets")
 @login_required
 def all_tickets():
+    now = time.strftime("%d/%B/%Y %H:%M:%S")
+    if(Status.query.all()):
+        pass
+    else:
+        status1 = Status(status="Opened",date_created=now)
+        status2 = Status(status="Assigned",date_created=now)
+        status3 = Status(status="In-Review",date_created=now)
+        status4 = Status(status="Closed",date_created=now)
+        db.session.add(status1)
+        db.session.add(status2)
+        db.session.add(status3)
+        db.session.add(status4)
+        db.session.commit()
+    if(Effort.query.all()):
+        pass
+    else:
+        effort1 = Effort(effort="Total Effort(Hours)",date_created=now)
+        effort2 = Effort(effort="Total Cost(Dollars)",date_created=now)
+        db.session.add(effort1)
+        db.session.add(effort2)
+        db.session.commit()
     if current_user.usertype == 'assignee':
         tickets = Ticket.query.filter_by(assignee_id=current_user.id).all()
     else:
@@ -44,6 +66,7 @@ def alert_audit():
 def create_ticket():
     questions = Question.query.all()
     masteralertconfig = MasterAlertConfig.query.all()
+    masterticketcode = MasterTicketCode.query.first()
     if(questions and masteralertconfig):
         if request.method == "POST":
             now = time.strftime("%d/%B/%Y %H:%M:%S")
@@ -52,9 +75,12 @@ def create_ticket():
             custname = request.form.get("custname")
             title = request.form.get("title")
             region = request.form.get("region")
+            startdate = request.form.get("startdate")
             ticket.custname = custname
             ticket.title = title
             ticket.region = region
+            ticket.startdate = startdate
+            ticket.ticket_code = masterticketcode.code
             db.session.add(ticket)
             db.session.commit()
             for question in questions:
@@ -364,16 +390,6 @@ def reopen_ticket(ticket_id):
     return redirect('/tickets/'+str(ticket_id))
 
 
-@views.route("/master",methods=['GET'])
-@login_required
-def master():
-    if(current_user.usertype!="admin"):
-        flash("You do not have admin access to this page", category='error')
-        return redirect('/home')
-    return render_template('master.html',user=current_user)
-
-    
-
 @views.route("/master-question-home",methods=['GET','POST'])
 @login_required
 def master_question_home():
@@ -510,6 +526,48 @@ def delete_alert(alert_id):
     db.session.commit()
     return redirect('/master-alert-home')
 
+@views.route("/master-reset-home",methods=['GET'])
+@login_required
+def master_reset_home():
+    admins = User.query.filter_by(usertype = "admin").all()
+    resets = MasterResetHistory.query.all()
+    return render_template('master_reset.html',resets=resets,user=current_user,admins=admins)
+
+@views.route("/master-reset",methods=['GET'])
+@login_required
+def master_reset():
+    now = time.strftime("%d/%B/%Y %H:%M:%S")
+    MasterAlertConfig.query.delete()
+    MasterAlertAudit.query.delete()
+    Comment.query.delete()
+    File.query.delete()
+    TicketEffortMap.query.delete()
+    TicketQuestionMap.query.delete()
+    Effort.query.delete()
+    Question.query.delete()
+    Status.query.delete()
+    Ticket.query.delete()
+    User.query.filter_by(usertype="reporter").delete()
+    User.query.filter_by(usertype="assignee").delete()
+    newreset = MasterResetHistory(reset_by=current_user.id,reset_on=now)
+    db.session.add(newreset)
+    db.session.commit()
+    return redirect('/master-reset-home')
+
+@views.route("/master-ticketcode-home",methods=['GET','POST'])
+@login_required
+def master_ticketcode_home():
+    masterticketcode = MasterTicketCode.query.first()
+    if(masterticketcode):
+        pass
+    else:
+        masterticketcode = MasterTicketCode()
+        db.session.add(masterticketcode)
+    if request.method == 'POST':
+        ticketcode = request.form.get('ticketcode')
+        masterticketcode.code = ticketcode
+        db.session.commit()
+    return render_template('master_ticketcode.html',user=current_user,ticket_code=masterticketcode.code)
 
 import PIL.Image as Image
 import io
@@ -630,34 +688,6 @@ def alertmechanism(ticket_status, ticket_id):
     db.session.add(emailaudit)
     db.session.commit()
 
-@views.route("/master-reset-home",methods=['GET'])
-@login_required
-def master_reset_home():
-    admins = User.query.filter_by(usertype = "admin").all()
-    resets = MasterResetHistory.query.all()
-    return render_template('master_reset.html',resets=resets,user=current_user,admins=admins)
-
-@views.route("/master-reset",methods=['GET'])
-@login_required
-def master_reset():
-    now = time.strftime("%d/%B/%Y %H:%M:%S")
-    MasterAlertConfig.query.delete()
-    MasterAlertAudit.query.delete()
-    Comment.query.delete()
-    File.query.delete()
-    TicketEffortMap.query.delete()
-    TicketQuestionMap.query.delete()
-    Effort.query.delete()
-    Question.query.delete()
-    Status.query.delete()
-    Ticket.query.delete()
-    User.query.filter_by(usertype="reporter").delete()
-    User.query.filter_by(usertype="assignee").delete()
-    newreset = MasterResetHistory(reset_by=current_user.id,reset_on=now)
-    db.session.add(newreset)
-    db.session.commit()
-    return redirect('/master-reset-home')
-
 @views.route("/viewprofile",methods=['GET','POST'])
 @login_required
 def view_profile():   
@@ -725,3 +755,102 @@ def emailbysmtp(recipients_email , alertsub , alertbody , body_type):
             server.sendmail(
                 sender_email, receiver_email, message.as_string()
             )
+
+
+import xlwt
+
+@views.route("/export-audit",methods=['GET','POST'])
+@login_required
+def export_audit():
+    audits = MasterAlertAudit.query.all()
+    output = io.BytesIO()
+    workbook = xlwt.Workbook()
+    sh = workbook.add_sheet('Alert Audit')
+    sh.write(0, 0, 'Id')
+    sh.write(0, 1, 'Ticket Status')
+    sh.write(0, 2, 'Alert Subject')
+    sh.write(0, 3, 'Alert Body')
+    sh.write(0, 4, 'Recipients')
+    sh.write(0, 5, 'Sent On')
+
+    idx = 0
+    for audit in audits:
+        sh.write(idx+1, 0, str(audit.id))
+        sh.write(idx+1, 1, audit.ticket_status)
+        sh.write(idx+1, 2, audit.alert_subject)
+        sh.write(idx+1, 3, audit.alert_body)
+        sh.write(idx+1, 4, audit.recipients)
+        sh.write(idx+1, 5, str(audit.sent_on))
+        idx += 1
+    
+    workbook.save(output)
+    output.seek(0)
+    return Response(output, mimetype="application/ms-excel", headers={"Content-Disposition":"attachment;filename=alert_audit.xls"})
+
+
+
+
+@views.route("/export-alltickets",methods=['GET','POST'])
+@login_required
+def export_alltickets():
+    tickets = Ticket.query.all()
+    questions = Question.query.all()
+    efforts = Effort.query.all()
+    ticketquestionmaps = TicketQuestionMap.query.all()
+    ticketeffortmaps = TicketEffortMap.query.all()
+    output = io.BytesIO()
+    workbook = xlwt.Workbook()
+    sh = workbook.add_sheet('All Tickets')
+    sh.write(0, 0, 'Ticket Number')
+    sh.write(0, 1, 'Customer Name')
+    sh.write(0, 2, 'Reporter Name')
+    sh.write(0, 3, 'Current Status')
+    sh.write(0, 4, 'Assignee Name')
+    sh.write(0, 5, 'Requirement Title')
+    sh.write(0, 6, 'Region')
+    sh.write(0, 7, 'Approx Start Date')
+    sh.write(0, 8, 'Created On')
+    sh.write(0, 9, 'Last Modified On')
+    i=10
+    for question in questions:
+        sh.write(0,i,question.question)
+        i=i+1
+    for effort in efforts:
+        sh.write(0,i,effort.effort)
+        i=i+1
+    idx = 0
+    for ticket in tickets:
+        sh.write(idx+1, 0, str(ticket.ticket_code)+str(ticket.id))
+        sh.write(idx+1, 1, ticket.custname)
+        sh.write(idx+1, 2, ticket.author.username)
+        sh.write(idx+1, 3, ticket.status)
+        if(ticket.assignee_id):
+            sh.write(idx+1, 4, ticket.assignee.username)
+        else:
+            sh.write(idx+1, 4, "Not Assigned")
+        sh.write(idx+1, 5, ticket.title)
+        sh.write(idx+1, 6, ticket.region)
+        sh.write(idx+1, 7, str(ticket.startdate))
+        sh.write(idx+1, 8, str(ticket.date_created))
+        sh.write(idx+1, 9, str(ticket.last_modified))
+        j=10
+        for question in questions:
+            ticketquestionmap = TicketQuestionMap.query.filter_by(ticket_id=ticket.id,question_id=question.id).first()
+            if(ticketquestionmap):
+                sh.write(idx+1, j, ticketquestionmap.value)
+            else:
+                sh.write(idx+1, j, "null")
+            j=j+1
+        
+        for effort in efforts:
+            ticketeffortmap = TicketEffortMap.query.filter_by(ticket_id=ticket.id,effort_id=effort.id).first()
+            if(ticketeffortmap):
+                sh.write(idx+1, j, ticketeffortmap.value)
+            else:
+                sh.write(idx+1, j, "null")
+            j=j+1
+        idx += 1
+    
+    workbook.save(output)
+    output.seek(0)
+    return Response(output, mimetype="application/ms-excel", headers={"Content-Disposition":"attachment;filename=all_tickets.xls"})
