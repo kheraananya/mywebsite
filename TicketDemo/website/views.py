@@ -5,6 +5,9 @@ from .models import ImageDB, MasterAlertConfig,MasterAlertAudit,MasterResetHisto
 from . import db
 from datetime import datetime
 import time
+import smtplib, ssl
+from email.mime.text import MIMEText
+from email.mime.multipart import MIMEMultipart
 import json
 from werkzeug.utils import secure_filename
 from werkzeug.security import generate_password_hash, check_password_hash
@@ -486,11 +489,12 @@ def master_alert_home():
         ticket_status = request.form.get('ticket_status')
         alert_subject = request.form.get('alert_subject')
         alert_body = request.form.get('alert_body')
+        body_type = request.form['body_type']
         recipients = request.form.get('recipients')
         if(MasterAlertConfig.query.filter_by(ticket_status=ticket_status).first()):
             flash("Status already exists",category="error")
             return redirect('/master-alert-home')
-        alert = MasterAlertConfig(ticket_status=ticket_status,alert_subject=alert_subject,alert_body=alert_body,recipients=recipients)
+        alert = MasterAlertConfig(ticket_status=ticket_status,alert_subject=alert_subject,alert_body=alert_body,body_type=body_type,recipients=recipients)
         db.session.add(alert)
         db.session.commit()
         return redirect('/master-alert-home')
@@ -573,6 +577,7 @@ def alertmechanism(ticket_status, ticket_id):
         assignee_email = ""
     alertsub =  current.alert_subject
     alertbody = current.alert_body
+    body_type = current.body_type
     recipients = current.recipients
     arr = recipients.split(";")
     recipients_email = ""
@@ -592,6 +597,7 @@ def alertmechanism(ticket_status, ticket_id):
     recipients_email = recipients_email.strip(";")
 
     emailaudit = MasterAlertAudit(ticket_status = ticket_status , alert_subject  = alertsub , alert_body = alertbody , recipients = str(recipients_email) )
+    emailbysmtp(recipients_email , alertsub , alertbody , body_type)
     db.session.add(emailaudit)
     db.session.commit()
 
@@ -663,3 +669,30 @@ def forgot_password():
             flash('Password changed successfully')
             return redirect(url_for('views.home'))
     return render_template('forgotpassword.html',user=current_user)
+
+def emailbysmtp(recipients_email , alertsub , alertbody , body_type):
+    arr = recipients_email.split(";")
+    sender_email = "ananyakhera5@gmail.com"
+    password = "dcajgflhsyjexsvq"
+    for i in arr :
+        receiver_email = str(i)
+    
+        message = MIMEMultipart("alternative")
+        message["Subject"] = alertsub
+        message["From"] = sender_email
+        message["To"] = receiver_email
+        if(body_type == 'HTML'):
+            html = alertbody
+            part1 = MIMEText(html, "html")
+            message.attach(part1)
+        else:
+            text = alertbody
+            part2 = MIMEText(text, "text")
+            message.attach(part2)
+
+        context = ssl.create_default_context()
+        with smtplib.SMTP_SSL("smtp.gmail.com", 465, context=context) as server:
+            server.login(sender_email, password)
+            server.sendmail(
+                sender_email, receiver_email, message.as_string()
+            )

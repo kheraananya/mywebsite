@@ -1,22 +1,17 @@
 {% extends "base.html" %} {% block title %} Create Ticket {% endblock %} {%
 block content %}
-<br />
-<div align="left">
-	<button onclick="javascript:history.back()" class="btn btn-secondary">
-		&laquo; Back
-	</button>
-</div>
-<br />
+<br>
 <form method="POST">
-	<div align="right">
-		<button type="submit" class="btn btn-info">Save</button>
+	<br>
+	<div class="original" style="float: left; margin-top: -18px;">
+		<button onclick="javascript:history.back()" class="btn btn-secondary">&laquo; Back</button>
 	</div>
-	<br />
+	<div class="right" style="float: right; margin-top: -18px;">
+		<button class="btn btn-info">Save</button>
+	</div>
+	<br>
 	<div>
-		<div
-			class="form-group"
-			class="grid-container"
-			style="
+		<div class="form-group" class="grid-container" style="
 				display: grid;
 				grid-template-columns: auto auto;
 				grid-gap: 30px;
@@ -24,40 +19,20 @@ block content %}
 				border-radius: 5px;
 				background-color: #c9e5ef;
 				padding: 20px;
-			"
-		>
+			">
 			<div>
-				<label for="custname"
-					>Customer Name:<span style="color: red">*</span></label
-				>
-				<input
-					type="text"
-					id="custname"
-					name="custname"
-					class="form-control name_list"
-					placeholder="Enter Customer Name"
-				/>
+				<label for="custname">Customer Name<span style="color: red">*</span></label>
+				<input type="text" id="custname" name="custname" class="form-control name_list"
+					placeholder="Enter Customer Name" />
 			</div>
 			<div>
-				<label for="title"
-					>Requirement Title:<span style="color: red">*</span></label
-				>
-				<input
-					type="text"
-					id="title"
-					name="title"
-					class="form-control name_list"
-					placeholder="Enter Requirement Title"
-				/>
+				<label for="title">Requirement Title<span style="color: red">*</span></label>
+				<input type="text" id="title" name="title" class="form-control name_list"
+					placeholder="Enter Requirement Title" />
 			</div>
 			<div>
-				<label for="region">Region:<span style="color: red">*</span></label>
-				<select
-					name="region"
-					id="region"
-					class="form-control name_list"
-					placeholder="Enter Region"
-				>
+				<label for="region">Region<span style="color: red">*</span></label>
+				<select name="region" id="region" class="form-control name_list" placeholder="Enter Region">
 					<option value="NA">North America</option>
 					<option value="EMEA">EMEA</option>
 					<option value="APAC">APAC</option>
@@ -70,36 +45,27 @@ block content %}
 		<!-- <button type="button" class="btn btn-danger">Questionnaire</button>
            -->
 		<br />
-		<div
-			style="
+		<div style="
 				border: 1px solid grey;
 				border-radius: 5px;
 				background-color: #c9e5ef;
 				padding: 10px;
-			"
-		>
-			<div
-				style="
+			">
+			<div style="
 					border: 1px solid grey;
 					color: white;
 					border-radius: 5px;
 					background-color: #003e7f;
 					padding: 10px;
-				"
-			>
-				Questionnaire:
+				">
+				Questionnaire
 			</div>
 			<br />
 			<div>
 				{% for question in questions %}
 				<label for="q{{question.id}}">{{question.question}}</label>
-				<input
-					type="text"
-					id="q{{question.id}}"
-					name="q{{question.id}}"
-					class="form-control"
-					placeholder="{{question.question}}"
-				/>
+				<input type="text" id="q{{question.id}}" name="q{{question.id}}" class="form-control"
+					placeholder="{{question.question}}" />
 				{% endfor %}
 			</div>
 		</div>

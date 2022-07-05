@@ -2,12 +2,11 @@
 {% block title %} Master Ticket Statuses {% endblock %}
 {% block content %}
 <style>
-    .table>tbody>tr:nth-of-type(odd) {  
-     background-color:#C9E5EF;  
-  }  
-     
-      
-  </style>
+    .table>tbody>tr:nth-of-type(odd) {
+        background-color: #C9E5EF;
+    }
+</style>
+
 <body>
     <br>
     <div align='center'>
@@ -19,51 +18,78 @@
     </div>
     <br>
     <br>
-    <div class="container">
-        <form method='POST'>
-            <div align="right">
-                <button type="submit" class="btn btn-info" style="background-color: #003E7F; color: white;">Create</button>
+    <div class="row" style="display: block; margin-left: -50px; margin-top: -20px;">
+        <a data-bs-toggle="collapse" data-bs-target="#collapseTwo" aria-expanded="false"
+            aria-controls="collapseTwo">
+
+
+            <div align = "right"
+                style="font-size:17px; font-weight: bold; border: 1px solid grey; color: white; border-radius: 5px; background-color: #003E7F; padding: 7px; margin: -5px; margin-bottom: -15px; width: 125px; margin-left: 1030px;">
+                + Add Status
+                <i class="bi-chevron-down"
+                    style="width:11px; height:11px; float: right; padding-top: 3px; margin-right: 7px; "></i>
+
             </div>
             <br>
-        <div style="border: 1px solid grey; border-radius: 5px; background-color: #C9E5EF;">
-            <div class="form-group" class="grid-container" style="display: grid;
-            grid-template-columns: auto auto ; grid-gap: 30px; padding: 10px;">
-                <div><label for="ticket_status">Ticket Status</label>
-                    <select class="form-select" id="ticket_status" name = "ticket_status" placeholder="Enter Ticket Status">
-                        {% for status in statuses %}
-                            <option value="{{status.status}}">{{status.status}}</option>
-                        {% endfor %}
-                    </select>
-                </div>
-                <div>
-                    <label for="alert_subject">Alert Subject</label>
-                    <input type="text" name="alert_subject" placeholder="Enter Alert Subject"
-                        class="form-control name_list" />
-
-                </div>
-                <div>
-                    <label for="alert_body">Alert Body</label>
-                    <textarea type="text" name="alert_body" placeholder="Enter Alert Body"
-                        class="form-control name_list" ></textarea>
-
-                </div>
-                <div>
-                    <label for="recipients">Recipients</label>
-                    <select class="form-select" id="recipients" name = "recipients" placeholder="Enter Recipients">
-                        <option value="admin">Admin</option>
-                        <option value="reporter">Reporter</option>
-                        <option value="assignee">Assignee</option>
-                        <option value="assignee;reporter">Assignee;Reporter</option>
-                        <option value="assignee;admin">Assignee;Admin</option>
-                        <option value="admin;reporter">Admin;Reporter</option>
-                        <option value="admin;reporter;assignee">Admin;Reporter;Assignee</option>
-                    </select>
-                </div>
+        </a>
+        <br>
+        <span
+            style="float:left; margin-top: -10px; margin-left: 5px; margin-right: -5px; padding-right: 10px;"
+            id="collapseTwo" class="collapse people">
+            <div class="container">
+                <form method='POST'>
+                    <div style="border: 1px solid grey; border-radius: 5px; background-color: #C9E5EF;">
+                        <div class="form-group" class="grid-container" style="display: grid;
+                    grid-template-columns: auto auto ; grid-gap: 30px; padding: 10px;">
+                            <div><label for="ticket_status">Ticket Status</label>
+                                <select class="form-select" id="ticket_status" name="ticket_status"
+                                    placeholder="Enter Ticket Status">
+                                    {% for status in statuses %}
+                                    <option value="{{status.status}}">{{status.status}}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                            <div>
+                                <label for="alert_subject">Alert Subject</label>
+                                <input type="text" name="alert_subject" placeholder="Enter Alert Subject"
+                                    class="form-control name_list" />
+        
+                            </div>
+                            <div>
+                                <label for="alert_body">Alert Body</label>
+                                <input type="radio" id="HTML" name ="body_type" value="HTML">
+                                <label for="html">HTML</label>
+                                <input type="radio" id="text" name ="body_type" value="text">
+                                <label for="text">Text Only</label>
+                                <textarea type="text" name="alert_body" placeholder="Enter Alert Body"
+                                    class="form-control name_list"></textarea>
+                            </div>
+                            <div>
+                                <label for="recipients">Recipients</label>
+                                <select class="form-select" id="recipients" name="recipients" placeholder="Enter Recipients">
+                                    <option value="admin">Admin</option>
+                                    <option value="reporter">Reporter</option>
+                                   <option value="assignee">Assignee</option>
+                                    <option value="assignee;reporter">Assignee;Reporter</option>
+                                    <option value="assignee;admin">Assignee;Admin</option>
+                                    <option value="admin;reporter">Admin;Reporter</option>
+                                    <option value="admin;reporter;assignee">Admin;Reporter;Assignee</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <br>
+                    <div align="center">
+                        <button type="submit" class="btn btn-info" style="background-color: #003E7F; color: white;">
+                            Create
+                    </div>
+                </form>
             </div>
-        </div>
-            <br>
-        </form>
+        </span>
     </div>
+
+   
+
     <div class="container">
         <table class="table" id="myTable">
             <thead class="thead-light">

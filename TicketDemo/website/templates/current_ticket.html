@@ -182,7 +182,7 @@
                                 {% for question in questions %}
                                 {% if question.id == ticketquestionmap.question_id %}
 
-                                <p><b>{{question.question}}:</b>{{ticketquestionmap.value}}</p>
+                                <p><b>{{question.question}}</b>{{ticketquestionmap.value}}</p>
 
                                 {% endif %}
                                 {% endfor %}
@@ -206,7 +206,7 @@
                                 {% for ticketeffortmap in ticketeffortmaps %}
                                 {% for effort in efforts %}
                                 {% if effort.id == ticketeffortmap.effort_id %}
-                                <p><b>{{effort.effort}}:</b>{{ticketeffortmap.value}}</p>
+                                <p><b>{{effort.effort}}</b>{{ticketeffortmap.value}}</p>
                                 {% endif %}
                                 {% endfor %}
                                 {% endfor %}

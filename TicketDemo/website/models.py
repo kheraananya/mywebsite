@@ -88,6 +88,7 @@ class MasterAlertConfig(db.Model):
     ticket_status = db.Column(db.String(200))
     alert_subject = db.Column(db.String(500))
     alert_body = db.Column(db.String(5000))
+    body_type =  db.Column(db.String(100))
     recipients = db.Column(db.String(200))
 
 class MasterAlertAudit(db.Model):
