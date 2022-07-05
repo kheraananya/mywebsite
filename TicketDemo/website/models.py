@@ -100,10 +100,10 @@ class MasterAlertAudit(db.Model):
     recipients = db.Column(db.String(200))
     sent_on = db.Column(db.DateTime, default = time.strftime("%d/%B/%Y %H:%M:%S"))
 
-class ImageDB(db.Model):
-    __tablename__ = 'ImageDB'
+class File(db.Model):
+    __tablename__ = 'File'
     id = db.Column(db.Integer, primary_key=True)
-    img = db.Column(db.LargeBinary)
+    data = db.Column(db.LargeBinary)
     name = db.Column(db.Text, nullable=False)
     mimetype = db.Column(db.Text, nullable=False)
     ticket_id = db.Column(db.Integer, db.ForeignKey('Ticket.id', ondelete="CASCADE"),nullable=False)

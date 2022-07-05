@@ -306,12 +306,12 @@
                     </a>
                     <span style="float:left;  margin-top: -10px; margin-left: -5px; width: 784px; margin-bottom: 30px;" id="collapseFour"
                         class="collapse people container">
-                        <form method="post" action="/attach-image/{{ticket.id}}" enctype="multipart/form-data">
+                        <form method="post" action="/attach-file/{{ticket.id}}" enctype="multipart/form-data">
                             <dl>
                                 <p>
                                 <div class="input-group mb-3">
                                     {% if ticket.status != "Closed" %}
-                                    <input type="file" name="pic" class="form-control" autocomplete="off" required>
+                                    <input type="file" name="upload" class="form-control" autocomplete="off" required>
                                     <div class="input-group-append">
                                         <input type="submit" value="Submit" class="btn btn-info">
                                     </div>
@@ -323,16 +323,44 @@
 
 
 
-                        {% for image in images_list %}
-                        <img width="200" height="200" src="data:image/png;base64, {{image.0}}" />
+                        {% for file in files_list %}
+                        {% if file.2 =="image/jpeg" %}
+                        <a href = "/display-image/{{file.1}}"><img width="200" height="200" id= "image{{file.1}}" src="data:image/png;base64, {{file.0}}"/></a>
                         {% if ticket.status != "Closed" %}
                         <button type="button" class="btn btn-sm">
-                            <a href="/delete-image/{{image.1}}" class="dropdown-item">
+                            <a href="/delete-file/{{file.1}}" class="dropdown-item">
                                 <span class="bi-x-lg"></span>
                             </a>
                         </button>
                         {% endif %}
+                        <button type="button" class="btn btn-sm">
+                            <a href="/download-file/{{file.1}}" class="dropdown-item">
+                                <span class="bi-download"></span>
+                            </a>
+                        </button>
+                        {% endif %}
                         {% endfor %}
+                        <br>
+
+                        {% for file in files_list %}
+                        {% if file.2 !="image/jpeg" %}
+                        {{file.0}}
+                        {% if ticket.status != "Closed" %}
+                        <button type="button" class="btn btn-sm">
+                            <a href="/delete-file/{{file.1}}" class="dropdown-item">
+                                <span class="bi-x-lg"></span>
+                            </a>
+                        </button>
+                        {% endif %}
+                        <button type="button" class="btn btn-sm">
+                            <a href="/download-file/{{file.1}}" class="dropdown-item">
+                                <span class="bi-download"></span>
+                            </a>
+                        </button>
+                        {% endif %}
+                        {% endfor %}
+                        <br>
+
                     </span>
                 </div>
             </div>

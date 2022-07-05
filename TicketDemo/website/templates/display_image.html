@@ -1,0 +1,6 @@
+{% extends "base.html" %}
+{% block title %} Display Image {% endblock %}
+{% block content %}
+<button onclick="javascript:history.back()" class="btn btn-secondary" style="position:absolute;top:50px;">&laquo; Back</button>
+<div align="center"><img src="data:image/png;base64, {{imgsrc}}" style="width:1000px;height:565px;object-fit: contain;"/></div>
+{% endblock %}

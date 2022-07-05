@@ -9,7 +9,7 @@ db = SQLAlchemy()
 def create_app():
     app = Flask(__name__)
     app.config['SECRET_KEY'] = "hariharan"
-    app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://postgres:252001@localhost/TicketDemo'
+    app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://postgres:5416@localhost/TicketDemo'
     app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
     db.init_app(app)
 
@@ -67,6 +67,6 @@ def create_app():
 
 def create_database(app):
     if not path.exists("website/TicketDemo"):
-       # db.drop_all(app=app)
+        #db.drop_all(app=app)
         db.create_all(app=app)
         #print("Created database")

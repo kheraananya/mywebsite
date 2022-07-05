@@ -1,7 +1,7 @@
 from unicodedata import category
-from flask import Blueprint, render_template, request,flash,redirect,url_for,jsonify
+from flask import Blueprint, render_template, request,flash,redirect,url_for,jsonify,send_file
 from flask_login import login_required, current_user,login_user
-from .models import ImageDB, MasterAlertConfig,MasterAlertAudit,MasterResetHistory, Question, Status, Ticket, User, Comment,TicketQuestionMap, Effort, TicketEffortMap
+from .models import File, MasterAlertConfig,MasterAlertAudit,MasterResetHistory, Question, Status, Ticket, User, Comment,TicketQuestionMap, Effort, TicketEffortMap
 from . import db
 from datetime import datetime
 import time
@@ -118,14 +118,14 @@ def tickets(ticket_id):
     ticketeffortmaps = TicketEffortMap.query.filter_by(ticket_id=ticket_id).all()
     questions = Question.query.all()
     statuses = Status.query.all()
-    images_raw = ImageDB.query.all()
-    images_list = proc_image(images_raw,ticket_id)
+    files_raw = File.query.all()
+    files_list = proc_files(files_raw,ticket_id)
     ticket = Ticket.query.filter_by(id=ticket_id).first()
     comments = Comment.query.filter(Comment.ticket_id==ticket_id).order_by(Comment.id.asc()).all()
     if not ticket:
         flash("Invalid ticket ID",category='error')
         return redirect(url_for('views.home'))
-    return render_template("current_ticket.html",user=current_user,ticket=ticket,comments=comments,ticketquestionmaps=ticketquestionmaps,questions=questions,ticketeffortmaps=ticketeffortmaps,efforts=efforts,assignees=assignees,statuses=statuses,images_list=images_list)
+    return render_template("current_ticket.html",user=current_user,ticket=ticket,comments=comments,ticketquestionmaps=ticketquestionmaps,questions=questions,ticketeffortmaps=ticketeffortmaps,efforts=efforts,assignees=assignees,statuses=statuses,files_list=files_list)
 
 
 @views.route("/assign-assignee/<ticket_id>",methods=['GET','POST'])
@@ -517,38 +517,64 @@ import base64
 import numpy as np
 import cv2
 
-@views.route("/attach-image/<ticket_id>",methods=['POST'])
+@views.route("/attach-file/<ticket_id>",methods=['POST'])
 @login_required
-def attach_image(ticket_id):
-    pic = request.files['pic']
-    if not pic:
+def attach_file(ticket_id):
+    upload = request.files['upload']
+    if not upload:
         return 'No pic uploaded!', 400
 
-    filename = secure_filename(pic.filename)
-    mimetype = pic.mimetype
+    filename = secure_filename(upload.filename)
+    mimetype =upload.mimetype
     if not filename or not mimetype:
         return 'Bad upload!', 400
 
-    img = ImageDB(img=pic.read(), name=filename, mimetype=mimetype,ticket_id=ticket_id)
-    db.session.add(img)
+    file = File(data=upload.read(), name=filename, mimetype=mimetype,ticket_id=ticket_id)
+    db.session.add(file)
     db.session.commit()
     return redirect('/tickets/'+str(ticket_id))
 
 
-@views.route("/delete-image/<image_id>",methods=['GET'])
+@views.route("/delete-file/<file_id>",methods=['GET'])
 @login_required
-def delete_image(image_id):
-    img = ImageDB.query.filter_by(id=image_id).first()
-    ticket_id = img.ticket_id
-    db.session.delete(img)
+def delete_file(file_id):
+    file = File.query.filter_by(id=file_id).first()
+    ticket_id = file.ticket_id
+    db.session.delete(file)
     db.session.commit()
     return redirect('/tickets/'+str(ticket_id))
 
-def proc_image(images_raw,ticket_id):
-    images_list=[]
-    for image_raw in images_raw:
-        if(str(image_raw.ticket_id) == str(ticket_id)):
-            npimg = np.fromstring(image_raw.img, np.uint8)
+@views.route("/download-file/<file_id>",methods=['GET'])
+@login_required
+def download_file(file_id):
+    file = File.query.filter_by(id=file_id).first()
+    ticket_id = file.ticket_id
+    if(file):
+        return send_file(io.BytesIO(file.data),attachment_filename=file.name,as_attachment=True)
+    else:
+        flash("File not found",category="error")
+        return redirect('/tickets/'+str(ticket_id))
+
+@views.route("/display-image/<file_id>",methods=['GET'])
+@login_required
+def display_image(file_id):
+    file = File.query.filter_by(id=file_id).first()
+    npimg = np.fromstring(file.data, np.uint8)
+    img = cv2.imdecode(npimg,cv2.IMREAD_COLOR)
+    img = Image.fromarray(img.astype("uint8"))
+    rawBytes = io.BytesIO()
+    img.save(rawBytes, "JPEG")
+    rawBytes.seek(0)
+    img_base64 = base64.b64encode(rawBytes.read())
+    img_base64 = str(img_base64).lstrip('b')
+    img_base64 = str(img_base64).strip("'")
+    return render_template("display_image.html",user=current_user,imgsrc=img_base64)
+
+def proc_files(files_raw,ticket_id):
+    files_list=[]
+    for file_raw in files_raw:
+        if(str(file_raw.ticket_id) == str(ticket_id) and file_raw.mimetype=="image/jpeg"):
+            npimg = np.fromstring(file_raw.data, np.uint8)
             img = cv2.imdecode(npimg,cv2.IMREAD_COLOR)
             img = Image.fromarray(img.astype("uint8"))
             rawBytes = io.BytesIO()
@@ -557,9 +583,12 @@ def proc_image(images_raw,ticket_id):
             img_base64 = base64.b64encode(rawBytes.read())
             img_base64 = str(img_base64).lstrip('b')
             img_base64 = str(img_base64).strip("'")
-            imgtuple = (img_base64,image_raw.id)
-            images_list.append(imgtuple)
-    return images_list
+            imgtuple = (img_base64,file_raw.id,file_raw.mimetype)
+            files_list.append(imgtuple)
+        else:
+            filetuple = (file_raw.name,file_raw.id,file_raw.mimetype)
+            files_list.append(filetuple)
+    return files_list
 
 def alertmechanism(ticket_status, ticket_id):
     current = MasterAlertConfig.query.filter_by(ticket_status=ticket_status).first()
@@ -597,7 +626,7 @@ def alertmechanism(ticket_status, ticket_id):
     recipients_email = recipients_email.strip(";")
 
     emailaudit = MasterAlertAudit(ticket_status = ticket_status , alert_subject  = alertsub , alert_body = alertbody , recipients = str(recipients_email) )
-    emailbysmtp(recipients_email , alertsub , alertbody , body_type)
+    #emailbysmtp(recipients_email , alertsub , alertbody , body_type)
     db.session.add(emailaudit)
     db.session.commit()
 
@@ -615,7 +644,7 @@ def master_reset():
     MasterAlertConfig.query.delete()
     MasterAlertAudit.query.delete()
     Comment.query.delete()
-    ImageDB.query.delete()
+    File.query.delete()
     TicketEffortMap.query.delete()
     TicketQuestionMap.query.delete()
     Effort.query.delete()
@@ -672,8 +701,8 @@ def forgot_password():
 
 def emailbysmtp(recipients_email , alertsub , alertbody , body_type):
     arr = recipients_email.split(";")
-    sender_email = "ananyakhera5@gmail.com"
-    password = "dcajgflhsyjexsvq"
+    sender_email = ""
+    password = ""
     for i in arr :
         receiver_email = str(i)
     
