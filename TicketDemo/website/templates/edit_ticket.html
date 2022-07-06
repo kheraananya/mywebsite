@@ -10,7 +10,7 @@
 
     <div class="original" style="float: left; margin-top: -18px;">
 
-        <button onclick="javascript:history.back()" class="btn btn-secondary">&laquo; Back</button>
+        <button onclick="javascript:history.back()" type="button" class="btn btn-secondary">&laquo; Back</button>
 
     </div>
 
@@ -34,14 +34,24 @@
                     class="form-control name_list" />
 
             </div>
-
+            <div>
+				<label for="region">Region<span style="color: red">*</span></label>
+				<select name="region" id="region" class="form-control name_list" placeholder="Enter Region">
+					<option value="NA">North America</option>
+					<option value="EMEA">EMEA</option>
+					<option value="APAC">APAC</option>
+				</select>
+			</div>
             <div>
                 <label for="title">Requirement Title</label>
                 <input type="text" name="title" value = "{{ticket.title}}""
                     class="form-control name_list" />
-
             </div>
-
+			<div>
+				<label for="startdate">Approx Start Date:</label>
+				<br>
+  				<input type="date" id="startdate" name="startdate">
+			</div>
         </div>
     </div>
     <br>

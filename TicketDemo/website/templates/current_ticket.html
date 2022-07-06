@@ -54,7 +54,7 @@
     <div>
         <div class="card-header d-flex justify-content-between align-items-center">
             <div class="ml-auto p-2"
-                style=" font-size: 17px;  font-family: Verdana, Geneva, Tahoma, sans-serif; position: absolute; left: 10px; top:40px;">
+                style=" font-size: 17px;  font-family: Verdana, Geneva, Tahoma, sans-serif; position: absolute; left: 10px; top:47px;">
                 <b style="font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif ; font-size: 23px;">Ticket
                     #{{ticket.ticket_code}}{{ticket.id}}</b>
                 <br>
@@ -66,7 +66,7 @@
             {% if ticket.status != "Closed" %}
             <div class="btn-group">
                 <button type="button" class="btn btn-sm"
-                    style="background-color: #C9E5EF; position: absolute; {%if user.usertype=='reporter'%}left:630px;{%else%}left:340px;{%endif%}border: 2px solid; ">
+                    style="background-color: #C9E5EF; position: absolute;top:2px; {%if user.usertype=='reporter'%}left:630px;{%else%}left:340px;{%endif%}border: 2px solid; ">
                     <a href="/edit-ticket/{{ticket.id}}" class="dropdown-item">
                         <span class="bi-pen">Edit Ticket</span>
                     </a>
@@ -74,7 +74,7 @@
             </div>
             {% if user.id == ticket.author_id %}
             <div class="btn-group">
-                <button type="button" class="btn btn-sm" style="position: absolute;">
+                <button type="button" class="btn btn-sm" style="position: absolute;top:2px;">
                     <a href="/delete-ticket/{{ticket.id}}" class="dropdown-item">
                         <span class="bi-trash"></span>
                     </a>
@@ -83,7 +83,7 @@
             {% endif %}
             {% if user.usertype == 'admin' %}
             <div>
-                <span style="float: left; left: 530px; top: 50px; position: absolute;">
+                <span style="float: left; left: 530px; top: 58px; position: absolute;">
                     <select class="form-select" id="assignee-name" name="assignee-name">
                         <option></option>
                         <optgroup label="Available &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;">
@@ -108,7 +108,7 @@
             {% if user.usertype == 'assignee' %}
             <div>
                 <button type="button" class="btn btn-sm"
-                    style="position: absolute; left:530px; background-color: #C9E5EF; border: 2px solid">
+                    style="position: absolute; left:530px; top:58px; background-color: #C9E5EF; border: 2px solid">
                     <a href="/estimated-details/{{ticket.id}}" class="dropdown-item">
                         <span class="bi-pen">Effort Estimation</span>
                     </a>
@@ -116,7 +116,7 @@
             </div>
             {% endif %}
             <div>
-                <span style="position: absolute; left:705px;top:50px">
+                <span style="position: absolute; left:705px;top:58px">
                     <select class="form-control" id="status-name" name="status-name">
                         {% for status in statuses %}
                         <option value="{{status.status}}">{{status.status}}</option>
@@ -127,7 +127,7 @@
 
             {% endif %}
             {% else %}
-            <button type="button" class="btn btn-sm">
+            <button type="button" class="btn btn-sm" style="position:absolute;right: 33 px;top:56px;">
                 <a href="/reopen-ticket/{{ticket.id}}" class="dropdown-item">
                     <span class="bi-door-open"></span> Reopen
                 </a>

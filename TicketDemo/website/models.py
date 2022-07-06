@@ -30,6 +30,7 @@ class Ticket(db.Model):
     startdate = db.Column(db.Date)
     date_created = db.Column(db.DateTime, default = time.strftime("%d/%B/%Y %H:%M:%S"))
     last_modified = db.Column(db.DateTime, default = time.strftime("%d/%B/%Y %H:%M:%S"))
+    date_assigned = db.Column(db.DateTime)
     author_id = db.Column(db.Integer, db.ForeignKey('User.id',ondelete="CASCADE"),nullable=False)
     assignee_id = db.Column(db.Integer, db.ForeignKey('User.id',ondelete="CASCADE"),nullable=True)
     author = db.relationship("User",foreign_keys=[author_id])

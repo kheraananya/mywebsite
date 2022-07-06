@@ -3,8 +3,14 @@ from . import db
 from .models import User
 from flask_login import login_user, logout_user, login_required, current_user
 from werkzeug.security import generate_password_hash, check_password_hash
+from configparser import ConfigParser
 
 auth = Blueprint("auth",__name__)
+
+file = 'devconfig.ini'
+config = ConfigParser()
+config.read(file)
+logopath = ''+str(config['logo']['path'])+''
 
 @auth.route("/login", methods=['GET','POST'])
 def login():
@@ -21,7 +27,7 @@ def login():
                 flash('Password is incorrect',category='error')
         else:
             flash('Email does not exist',category='error')
-    return render_template("login.html",user=current_user)
+    return render_template("login.html",user=current_user,logopath=logopath)
 
 @auth.route("/signup", methods=['GET','POST'])
 def signup():
@@ -56,7 +62,7 @@ def signup():
             flash('User successfully created')
             return redirect(url_for('views.home'))
 
-    return render_template("signup.html",user=current_user)
+    return render_template("signup.html",user=current_user,logopath=logopath)
 
 @auth.route("/logout")
 @login_required

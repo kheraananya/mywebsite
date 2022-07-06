@@ -171,6 +171,7 @@ def assign_assignee(ticket_id):
             assignee_id = assignee.id
             ticket.assignee_id = assignee_id
             ticket.status = "Assigned"
+            ticket.date_assigned = now
             ticket.last_modified = now
             assignee.status = "Occupied"
             db.session.commit()
@@ -204,7 +205,7 @@ def update_status(ticket_id):
             status = str(result)
             if(status=="Closed"):
                 if(ticketeffortmap):
-                    pass
+                    ticket.assignee.status = "Available"
                 else:
                     flash("Please do effort estimation before closing ticket",category="error")
                     return redirect('/tickets/'+str(ticket_id))
@@ -293,7 +294,7 @@ def estimated_details(ticket_id):
             db.session.commit()
         else:
             flash("Please complete Master Setup first",category="error")
-        return redirect(url_for("views.home"))
+        return redirect('/tickets/'+str(ticket_id))
     if(TicketEffortMap.query.filter_by(ticket_id=ticket_id).first()):
         reason = "So that duplicate mapping not created" 
     else:
@@ -322,24 +323,44 @@ def edit_ticket(ticket_id):
             if(current_user.usertype=='reporter'):
                 custname = request.form.get('custname')
                 title = request.form.get('title')
+                region = request.form.get('region')
+                startdate = request.form.get('startdate')
                 ticket.custname=custname
                 ticket.title=title
+                ticket.region=region
+                ticket.startdate=startdate
                 ticket.last_modified = now
+                if(custname and title and region and startdate):    
+                    db.session.commit()
+                else:
+                    flash("Enter required details",category="error")
+                    return redirect('/edit-ticket/'+str(ticket_id))
                 for question in questions:
                     answer = request.form.get("q"+str(question.id))
                     map = TicketQuestionMap.query.filter_by(ticket_id=ticket.id,question_id=question.id).first()
                     if(map):
                         map.value = str(answer)
-                db.session.commit()
+                if(custname and title and region and startdate):    
+                    db.session.commit()
+                else:
+                    flash("Enter required details",category="error")
+                    return redirect('/edit-ticket/'+str(ticket_id))
 
             elif(current_user.usertype=='assignee'):
                 custname = request.form.get('custname')
                 title = request.form.get('title')
-                status = request.form.get('status')
+                region = request.form.get('region')
+                startdate = request.form.get('startdate')
                 ticket.custname=custname
                 ticket.title=title
-                ticket.status = status
+                ticket.region=region
+                ticket.startdate=startdate
                 ticket.last_modified = now
+                if(custname and title and region and startdate):    
+                    db.session.commit()
+                else:
+                    flash("Enter required details",category="error")
+                    return redirect('/edit-ticket/'+str(ticket_id))
                 for question in questions:
                     qanswer = request.form.get("q"+str(question.id))
                     qmap = TicketQuestionMap.query.filter_by(ticket_id=ticket.id,question_id=question.id).first()
@@ -350,15 +371,26 @@ def edit_ticket(ticket_id):
                     emap = TicketEffortMap.query.filter_by(ticket_id=ticket.id,effort_id=effort.id).first()
                     if(emap):
                         emap.value = str(eanswer)
-                db.session.commit()
+                if(custname and title and region and startdate):    
+                    db.session.commit()
+                else:
+                    flash("Enter required details",category="error")
+                    return redirect('/edit-ticket/'+str(ticket_id))
             else:
                 custname = request.form.get('custname')
                 title = request.form.get('title')
-                status = request.form.get('status')
+                region = request.form.get('region')
+                startdate = request.form.get('startdate')
                 ticket.custname=custname
                 ticket.title=title
-                ticket.status = status
+                ticket.region=region
+                ticket.startdate=startdate
                 ticket.last_modified = now
+                if(custname and title and region and startdate):    
+                    db.session.commit()
+                else:
+                    flash("Enter required details",category="error")
+                    return redirect('/edit-ticket/'+str(ticket_id))
                 for question in questions:
                     qanswer = request.form.get("q"+str(question.id))
                     qmap = TicketQuestionMap.query.filter_by(ticket_id=ticket.id,question_id=question.id).first()
@@ -369,7 +401,11 @@ def edit_ticket(ticket_id):
                     emap = TicketEffortMap.query.filter_by(ticket_id=ticket.id,effort_id=effort.id).first()
                     if(emap):
                         emap.value = str(eanswer)
-                db.session.commit()
+                if(custname and title and region and startdate):    
+                    db.session.commit()
+                else:
+                    flash("Enter required details",category="error")
+                    return redirect('/edit-ticket/'+str(ticket_id))
             return redirect('/tickets/'+str(ticket_id))
 
     return render_template('edit_ticket.html',user=current_user,logopath=logopath,assignees = assignees,ticket=ticket,efforts=efforts,statuses=statuses,questions=questions,ticketquestionmaps=ticketquestionmaps,ticketeffortmaps=ticketeffortmaps)
@@ -429,18 +465,6 @@ def master_status():
     if request.method == "POST":
         output = request.get_json()
         for ele in output:
-            if(Status.query.all()):
-                pass
-            else:
-                status1 = Status(status="Opened",date_created=now,author_id=current_user.id)
-                status2 = Status(status="Assigned",date_created=now,author_id=current_user.id)
-                status3 = Status(status="In-Review",date_created=now,author_id=current_user.id)
-                status4 = Status(status="Closed",date_created=now,author_id=current_user.id)
-                db.session.add(status1)
-                db.session.add(status2)
-                db.session.add(status3)
-                db.session.add(status4)
-                db.session.commit()
             status = Status(status=str(ele["value"]),date_created=now,author_id=current_user.id)
             db.session.add(status)
             db.session.commit()
@@ -568,7 +592,7 @@ def master_ticketcode_home():
         pass
     else:
         effort1 = Effort(effort="Total Effort(Hours)",date_created=now)
-        effort2 = Effort(effort="Total Cost(Dollars)",date_created=now)
+        effort2 = Effort(effort="Total Cost($)",date_created=now)
         db.session.add(effort1)
         db.session.add(effort2)
         db.session.commit()
@@ -723,7 +747,6 @@ def view_profile():
     return render_template('viewprofile.html',logopath=logopath,user=current_user)
 
 @views.route("/forgot-password",methods=['GET','POST'])
-@login_required
 def forgot_password(): 
     if request.method == 'POST':
         username=request.form.get("username")
