@@ -12,7 +12,12 @@ from email.mime.multipart import MIMEMultipart
 import json
 from werkzeug.utils import secure_filename
 from werkzeug.security import generate_password_hash, check_password_hash
+from configparser import ConfigParser
 
+file = 'devconfig.ini'
+config = ConfigParser()
+config.read(file)
+logopath = ''+str(config['logo']['path'])+''
 
 views = Blueprint("views",__name__)
 
@@ -20,7 +25,7 @@ views = Blueprint("views",__name__)
 @views.route("/home")
 @login_required
 def home():
-    return render_template("dashboard.html",user=current_user)
+    return render_template("dashboard.html",user=current_user,logopath=logopath)
 
 @views.route("/")
 @views.route("/all-tickets")
@@ -51,14 +56,14 @@ def all_tickets():
         tickets = Ticket.query.filter_by(assignee_id=current_user.id).all()
     else:
         tickets = Ticket.query.all()
-    return render_template("all_tickets.html",user=current_user,tickets=tickets)
+    return render_template("all_tickets.html",user=current_user,tickets=tickets,logopath=logopath)
 
 @views.route("/")
 @views.route("/alert-audit")
 @login_required
 def alert_audit():
     alertaudits = MasterAlertAudit.query.all()
-    return render_template("alert_audit.html",user=current_user,alertaudits=alertaudits)
+    return render_template("alert_audit.html",user=current_user,alertaudits=alertaudits,logopath=logopath)
 
 
 @views.route("/create-ticket",methods=['GET','POST'])
@@ -82,23 +87,25 @@ def create_ticket():
             ticket.startdate = startdate
             ticket.ticket_code = masterticketcode.code
             db.session.add(ticket)
-            db.session.commit()
+            if(custname and title and startdate and region):
+                db.session.commit()
+            else:
+                flash("Enter required details",category="error")
+                return redirect(url_for("views.create_ticket"))
             for question in questions:
                 ticketquestionmap = TicketQuestionMap(ticket_id=ticket.id,question_id=question.id)
                 db.session.add(ticketquestionmap)
-            db.session.commit()
+                db.session.commit()
             for question in questions:
                 answer = request.form.get("q"+str(question.id))
                 map = TicketQuestionMap.query.filter_by(ticket_id=ticket.id,question_id=question.id).first()
                 map.value = str(answer)
-            if(custname and title):
                 db.session.commit()
                 alertmechanism("Opened", ticket.id)
             else:
                 flash("Enter required details",category="error")
-            return redirect(url_for("views.home"))
-
-        return render_template("create_ticket.html",questions=questions,user=current_user)
+            return redirect(url_for("views.all_tickets"))
+        return render_template("create_ticket.html",questions=questions,user=current_user,logopath=logopath)
 
     else:
         flash("Please complete Master Setup first",category="error")
@@ -132,7 +139,7 @@ def ticketsby(username):
         return redirect(url_for('views.home'))
 
     tickets = Ticket.query.filter_by(author_id=user.id).all()
-    return render_template("ticketsby.html",user=current_user,tickets=tickets,username=username)
+    return render_template("ticketsby.html",user=current_user,tickets=tickets,username=username,logopath=logopath)
 
 
 @views.route("/tickets/<ticket_id>")
@@ -151,7 +158,7 @@ def tickets(ticket_id):
     if not ticket:
         flash("Invalid ticket ID",category='error')
         return redirect(url_for('views.home'))
-    return render_template("current_ticket.html",user=current_user,ticket=ticket,comments=comments,ticketquestionmaps=ticketquestionmaps,questions=questions,ticketeffortmaps=ticketeffortmaps,efforts=efforts,assignees=assignees,statuses=statuses,files_list=files_list)
+    return render_template("current_ticket.html",user=current_user,logopath=logopath,ticket=ticket,comments=comments,ticketquestionmaps=ticketquestionmaps,questions=questions,ticketeffortmaps=ticketeffortmaps,efforts=efforts,assignees=assignees,statuses=statuses,files_list=files_list)
 
 
 @views.route("/assign-assignee/<ticket_id>",methods=['GET','POST'])
@@ -307,7 +314,7 @@ def estimated_details(ticket_id):
             ticketeffortmap = TicketEffortMap(ticket_id=ticket_id,effort_id=effort.id)
             db.session.add(ticketeffortmap)
         db.session.commit()
-    return render_template("estimate_details.html",ticket=ticket,efforts=efforts,user=current_user)
+    return render_template("estimate_details.html",ticket=ticket,efforts=efforts,user=current_user,logopath=logopath)
 
 
 @views.route("/edit-ticket/<ticket_id>",methods=['GET','POST'])
@@ -378,7 +385,7 @@ def edit_ticket(ticket_id):
                 db.session.commit()
             return redirect('/tickets/'+str(ticket_id))
 
-    return render_template('edit_ticket.html',user=current_user,assignees = assignees,ticket=ticket,efforts=efforts,statuses=statuses,questions=questions,ticketquestionmaps=ticketquestionmaps,ticketeffortmaps=ticketeffortmaps)
+    return render_template('edit_ticket.html',user=current_user,logopath=logopath,assignees = assignees,ticket=ticket,efforts=efforts,statuses=statuses,questions=questions,ticketquestionmaps=ticketquestionmaps,ticketeffortmaps=ticketeffortmaps)
 
 
 @views.route("/reopen-ticket/<ticket_id>",methods=['GET'])
@@ -394,7 +401,7 @@ def reopen_ticket(ticket_id):
 @login_required
 def master_question_home():
     questions = Question.query.all()
-    return render_template('master_question.html',user=current_user,questions=questions)
+    return render_template('master_question.html',user=current_user,logopath=logopath,questions=questions)
 
 @views.route("/master-question",methods=['POST'])
 @login_required
@@ -426,7 +433,7 @@ def delete_question(question_id):
 @login_required
 def master_status_home():
     statuses = Status.query.all()
-    return render_template('master_status.html',user=current_user,statuses=statuses)
+    return render_template('master_status.html',user=current_user,logopath=logopath,statuses=statuses)
 
 @views.route("/master-status",methods=['POST'])
 @login_required
@@ -469,7 +476,7 @@ def delete_status(status_id):
 @login_required
 def master_effort_home():
     efforts = Effort.query.all()
-    return render_template('master_effort.html',user=current_user,efforts=efforts)
+    return render_template('master_effort.html',logopath=logopath,user=current_user,efforts=efforts)
 
 @views.route("/master-effort",methods=['POST'])
 @login_required
@@ -515,7 +522,7 @@ def master_alert_home():
         db.session.commit()
         return redirect('/master-alert-home')
 
-    return render_template('master_alert.html',user=current_user,alerts=alerts,statuses=statuses)
+    return render_template('master_alert.html',user=current_user,logopath=logopath,alerts=alerts,statuses=statuses)
 
 
 @views.route("/delete-alert/<alert_id>",methods=['GET'])
@@ -531,7 +538,7 @@ def delete_alert(alert_id):
 def master_reset_home():
     admins = User.query.filter_by(usertype = "admin").all()
     resets = MasterResetHistory.query.all()
-    return render_template('master_reset.html',resets=resets,user=current_user,admins=admins)
+    return render_template('master_reset.html',resets=resets,logopath=logopath,user=current_user,admins=admins)
 
 @views.route("/master-reset",methods=['GET'])
 @login_required
@@ -567,7 +574,7 @@ def master_ticketcode_home():
         ticketcode = request.form.get('ticketcode')
         masterticketcode.code = ticketcode
         db.session.commit()
-    return render_template('master_ticketcode.html',user=current_user,ticket_code=masterticketcode.code)
+    return render_template('master_ticketcode.html',user=current_user,logopath=logopath,ticket_code=masterticketcode.code)
 
 import PIL.Image as Image
 import io
@@ -626,7 +633,7 @@ def display_image(file_id):
     img_base64 = base64.b64encode(rawBytes.read())
     img_base64 = str(img_base64).lstrip('b')
     img_base64 = str(img_base64).strip("'")
-    return render_template("display_image.html",user=current_user,imgsrc=img_base64)
+    return render_template("display_image.html",user=current_user,logopath=logopath,imgsrc=img_base64)
 
 def proc_files(files_raw,ticket_id):
     files_list=[]
@@ -650,7 +657,6 @@ def proc_files(files_raw,ticket_id):
 
 def alertmechanism(ticket_status, ticket_id):
     current = MasterAlertConfig.query.filter_by(ticket_status=ticket_status).first()
-    print(ticket_status)
     ticket = Ticket.query.filter_by(id = ticket_id ).first()
     admins = User.query.filter_by(usertype = "admin").all()
     reporter_id = ticket.author_id
@@ -706,7 +712,7 @@ def view_profile():
             login_user(user,remember=True)
             flash('Password changed successfully')
             return redirect(url_for('views.home'))
-    return render_template('viewprofile.html',user=current_user)
+    return render_template('viewprofile.html',logopath=logopath,user=current_user)
 
 @views.route("/forgot-password",methods=['GET','POST'])
 @login_required
@@ -727,12 +733,12 @@ def forgot_password():
             login_user(user,remember=True)
             flash('Password changed successfully')
             return redirect(url_for('views.home'))
-    return render_template('forgotpassword.html',user=current_user)
+    return render_template('forgotpassword.html',user=current_user,logopath=logopath)
 
 def emailbysmtp(recipients_email , alertsub , alertbody , body_type):
     arr = recipients_email.split(";")
-    sender_email = ""
-    password = ""
+    sender_email = ''+str(config['email']['sendermail'])+''
+    password = ''+str(config['email']['senderpwd'])+''
     for i in arr :
         receiver_email = str(i)
     
@@ -796,8 +802,6 @@ def export_alltickets():
     tickets = Ticket.query.all()
     questions = Question.query.all()
     efforts = Effort.query.all()
-    ticketquestionmaps = TicketQuestionMap.query.all()
-    ticketeffortmaps = TicketEffortMap.query.all()
     output = io.BytesIO()
     workbook = xlwt.Workbook()
     sh = workbook.add_sheet('All Tickets')

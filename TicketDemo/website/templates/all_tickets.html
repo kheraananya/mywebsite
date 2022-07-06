@@ -52,7 +52,7 @@ content %}
 		<tbody>
 			{% for ticket in tickets %}
 			<tr>
-				<td><a href="/tickets/{{ticket.id}}">{{ticket.id}}</a></td>
+				<td><a href="/tickets/{{ticket.id}}">{{ticket.ticket_code}}{{ticket.id}}</a></td>
 				<td>{{ticket.custname}}</td>
 				<td>{{ticket.author.username}}</td>
 				<td>

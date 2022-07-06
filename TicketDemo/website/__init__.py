@@ -3,13 +3,17 @@ from flask_sqlalchemy import SQLAlchemy
 from os import path
 from flask_login import LoginManager
 from datetime import datetime
+from configparser import ConfigParser
 
+file = 'devconfig.ini'
+config = ConfigParser()
+config.read(file)
 db = SQLAlchemy()
 
 def create_app():
     app = Flask(__name__)
     app.config['SECRET_KEY'] = "hariharan"
-    app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://postgres:5416@localhost/TicketDemo'
+    app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://postgres:'+str(config['database']['URI_pwd'])+'@localhost/'+str(config['database']['URI_DB_name'])
     app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
     db.init_app(app)
 
