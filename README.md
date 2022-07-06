@@ -8,6 +8,7 @@ Python Modules to be installed:
 - psycopg2
 - pillow
 - opencv
+- xlwt
 
 ## Libraries Used
 
