@@ -25,33 +25,18 @@ views = Blueprint("views",__name__)
 @views.route("/home")
 @login_required
 def home():
-    return render_template("dashboard.html",user=current_user,logopath=logopath)
+    statuses = Status.query.all()
+    count_vs_status = []
+    for status in statuses :
+        count = Ticket.query.filter_by(status = status.status).count()
+        stat_tuple = (count,status.status)
+        count_vs_status.append(stat_tuple)
+    return render_template("dashboard.html",user=current_user,logopath=logopath,count_vs_status=json.dumps(count_vs_status))
 
 @views.route("/")
 @views.route("/all-tickets")
 @login_required
 def all_tickets():
-    now = time.strftime("%d/%B/%Y %H:%M:%S")
-    if(Status.query.all()):
-        pass
-    else:
-        status1 = Status(status="Opened",date_created=now)
-        status2 = Status(status="Assigned",date_created=now)
-        status3 = Status(status="In-Review",date_created=now)
-        status4 = Status(status="Closed",date_created=now)
-        db.session.add(status1)
-        db.session.add(status2)
-        db.session.add(status3)
-        db.session.add(status4)
-        db.session.commit()
-    if(Effort.query.all()):
-        pass
-    else:
-        effort1 = Effort(effort="Total Effort(Hours)",date_created=now)
-        effort2 = Effort(effort="Total Cost(Dollars)",date_created=now)
-        db.session.add(effort1)
-        db.session.add(effort2)
-        db.session.commit()
     if current_user.usertype == 'assignee':
         tickets = Ticket.query.filter_by(assignee_id=current_user.id).all()
     else:
@@ -100,10 +85,12 @@ def create_ticket():
                 answer = request.form.get("q"+str(question.id))
                 map = TicketQuestionMap.query.filter_by(ticket_id=ticket.id,question_id=question.id).first()
                 map.value = str(answer)
+            if(custname and title and startdate and region):
                 db.session.commit()
                 alertmechanism("Opened", ticket.id)
             else:
                 flash("Enter required details",category="error")
+                return redirect(url_for("views.create_ticket"))
             return redirect(url_for("views.all_tickets"))
         return render_template("create_ticket.html",questions=questions,user=current_user,logopath=logopath)
 
@@ -564,6 +551,27 @@ def master_reset():
 @views.route("/master-ticketcode-home",methods=['GET','POST'])
 @login_required
 def master_ticketcode_home():
+    now = time.strftime("%d/%B/%Y %H:%M:%S")
+    if(Status.query.all()):
+        pass
+    else:
+        status1 = Status(status="Opened",date_created=now)
+        status2 = Status(status="Assigned",date_created=now)
+        status3 = Status(status="In-Review",date_created=now)
+        status4 = Status(status="Closed",date_created=now)
+        db.session.add(status1)
+        db.session.add(status2)
+        db.session.add(status3)
+        db.session.add(status4)
+        db.session.commit()
+    if(Effort.query.all()):
+        pass
+    else:
+        effort1 = Effort(effort="Total Effort(Hours)",date_created=now)
+        effort2 = Effort(effort="Total Cost(Dollars)",date_created=now)
+        db.session.add(effort1)
+        db.session.add(effort2)
+        db.session.commit()
     masterticketcode = MasterTicketCode.query.first()
     if(masterticketcode):
         pass

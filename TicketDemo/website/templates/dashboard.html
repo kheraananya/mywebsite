@@ -1,7 +1,45 @@
-{% extends "base.html" %}
-{% block title %} Dashboard {% endblock %}
-{% block content %}
-<br>
+{% extends "base.html" %} {% block title %} Dashboard {% endblock %} {% block
+content %}
+<br />
 <h2 align="center"><b>Dashboard</b></h2>
-{% block footer %}{% endblock %}
+<div class="col-xs-10 col-sm-6 col-md-6">
+	<div class="card card-style mb-2">
+		<div class="card-body">
+			<div class="chart-container" style="position: relative">
+				<canvas id="myChart" width="400" height="400"></canvas>
+			</div>
+		</div>
+	</div>
+</div>
+<script>
+	    count_vs_status = JSON.parse( {{count_vs_status|tojson}} );
+        statuses =[];
+        counts=[];
+        for(ele of count_vs_status)
+        {
+            statuses.push(ele[1]);
+            counts.push(ele[0]);
+        }
+	    const ctx = document.getElementById('myChart').getContext('2d');
+	    const myChart = new Chart(ctx, {
+	    type: 'bar',
+	    data: {
+	        labels: statuses,
+	        datasets: [{
+	            label: '# of Tickets',
+	            data: counts,
+	            borderWidth: 1,
+                backgroundColor: '#003e7f'
+	        }]
+	    },
+	    options: {
+	        scales: {
+	            y: {
+	                beginAtZero: true
+	            }
+	        }
+	    }
+	});
+</script>
+
 {% endblock %}
