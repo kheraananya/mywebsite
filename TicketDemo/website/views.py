@@ -1,10 +1,11 @@
+from asyncio.windows_events import NULL
 from unicodedata import category
 from flask import Blueprint, render_template, request,flash,redirect,url_for,jsonify,send_file,Response
 from flask_login import login_required, current_user,login_user
 from sqlalchemy import null
 from .models import File, MasterAlertConfig,MasterAlertAudit,MasterResetHistory, MasterTicketCode, Question, Status, Ticket, User, Comment,TicketQuestionMap, Effort, TicketEffortMap
 from . import db
-from datetime import datetime
+from datetime import datetime,timedelta
 import time
 import smtplib, ssl
 from email.mime.text import MIMEText
@@ -25,13 +26,21 @@ views = Blueprint("views",__name__)
 @views.route("/home")
 @login_required
 def home():
+    yearago = str(datetime.today() - timedelta(days=365)).split(" ")[0]
+    assignees = User.query.filter_by(usertype="assignee").all()
+    reporters = User.query.filter_by(usertype="reporter").all()
     statuses = Status.query.all()
+    tickets = Ticket.query.filter(Ticket.date_created>yearago).all()
+    tickets_date_created = []
+    for ticket in tickets:
+        date_tuple = (str(ticket.date_created),1)
+        tickets_date_created.append(date_tuple)
     count_vs_status = []
     for status in statuses :
         count = Ticket.query.filter_by(status = status.status).count()
         stat_tuple = (count,status.status)
         count_vs_status.append(stat_tuple)
-    return render_template("dashboard.html",user=current_user,logopath=logopath,count_vs_status=json.dumps(count_vs_status))
+    return render_template("dashboard.html",user=current_user,logopath=logopath,count_vs_status=json.dumps(count_vs_status),tickets_date_created=json.dumps(tickets_date_created),assignees=assignees,reporters=reporters,prevstartdate=null,prevenddate=null,prevassignee=null,prevreporter=null,prevdatetype="created")
 
 @views.route("/")
 @views.route("/all-tickets")
@@ -206,6 +215,7 @@ def update_status(ticket_id):
             if(status=="Closed"):
                 if(ticketeffortmap):
                     ticket.assignee.status = "Available"
+                    ticket.date_closed = now
                 else:
                     flash("Please do effort estimation before closing ticket",category="error")
                     return redirect('/tickets/'+str(ticket_id))
@@ -416,6 +426,7 @@ def edit_ticket(ticket_id):
 def reopen_ticket(ticket_id):
     ticket = Ticket.query.filter_by(id=ticket_id).first()
     ticket.status = "Opened"
+    ticket.date_closed = None
     db.session.commit()
     return redirect('/tickets/'+str(ticket_id))
 
@@ -889,3 +900,70 @@ def export_alltickets():
     workbook.save(output)
     output.seek(0)
     return Response(output, mimetype="application/ms-excel", headers={"Content-Disposition":"attachment;filename=all_tickets.xls"})
+
+
+@views.route("/graph-settings",methods=['GET','POST'])
+@login_required
+def graph_settings():
+    yearago = str(datetime.today() - timedelta(days=365)).split(" ")[0]
+    assignees = User.query.filter_by(usertype="assignee").all()
+    reporters = User.query.filter_by(usertype="reporter").all()
+    statuses = Status.query.all()
+    count_vs_status = []
+    for status in statuses :
+        count = Ticket.query.filter_by(status = status.status).count()
+        stat_tuple = (count,status.status)
+        count_vs_status.append(stat_tuple)
+    tickets_dates = []
+    datetype = request.form.get("datebox")
+    startdate = request.form.get('startdate')
+    enddate = request.form.get('enddate')
+    reporter = request.form.get('reporters')
+    assignee = request.form.get('assignees')
+    if(str(datetype)=="assigned"):
+        if(startdate and enddate):
+            tickets = Ticket.query.filter(Ticket.date_assigned>startdate,Ticket.date_assigned<enddate,Ticket.date_assigned>yearago).all()
+        else:
+            tickets = Ticket.query.filter(Ticket.date_assigned>yearago).all()
+        for ticket in tickets:
+            if(reporter and assignee):
+                if(ticket.assignee):
+                    if(ticket.author.username==reporter and ticket.assignee.username==assignee):
+                        date_tuple = (str(ticket.date_assigned),1)
+                        tickets_dates.append(date_tuple)
+            elif(reporter):
+                if(ticket.author.username==reporter):
+                    date_tuple = (str(ticket.date_assigned),1)
+                    tickets_dates.append(date_tuple)
+            elif(assignee):
+                if(ticket.assignee):
+                    if(ticket.assignee.username==assignee):
+                        date_tuple = (str(ticket.date_assigned),1)
+                        tickets_dates.append(date_tuple)
+            else:
+                date_tuple = (str(ticket.date_assigned),1)
+                tickets_dates.append(date_tuple)
+    else:
+        if(startdate and enddate):
+            tickets = Ticket.query.filter(Ticket.date_created>startdate,Ticket.date_created<enddate,Ticket.date_created>yearago).all()
+        else:
+            tickets = Ticket.query.filter(Ticket.date_created>yearago).all()
+        for ticket in tickets:
+            if(reporter and assignee):
+                if(ticket.assignee):
+                    if(ticket.author.username==reporter and ticket.assignee.username==assignee):
+                        date_tuple = (str(ticket.date_created),1)
+                        tickets_dates.append(date_tuple)
+            elif(reporter):
+                if(ticket.author.username==reporter):
+                    date_tuple = (str(ticket.date_created),1)
+                    tickets_dates.append(date_tuple)
+            elif(assignee):
+                if(ticket.assignee):
+                    if(ticket.assignee.username==assignee):
+                        date_tuple = (str(ticket.date_created),1)
+                        tickets_dates.append(date_tuple)
+            else:
+                date_tuple = (str(ticket.date_created),1)
+                tickets_dates.append(date_tuple)
+    return render_template("dashboard.html",user=current_user,logopath=logopath,count_vs_status=json.dumps(count_vs_status),tickets_date_created=json.dumps(tickets_dates),assignees=assignees,reporters=reporters,prevstartdate=startdate,prevenddate=enddate,prevassignee=assignee,prevreporter=reporter,prevdatetype=datetype)
