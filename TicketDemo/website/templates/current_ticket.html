@@ -179,7 +179,7 @@
                                 {% for question in questions %}
                                 {% if question.id == ticketquestionmap.question_id %}
 
-                                <p><b>{{question.question}}</b>{{ticketquestionmap.value}}</p>
+                                <pre style="white-space:pre-wrap;font-family: 'Assistant', sans-serif;"><b>{{question.question}}</b>{{ticketquestionmap.value}}</pre>
 
                                 {% endif %}
                                 {% endfor %}
@@ -203,7 +203,7 @@
                                 {% for ticketeffortmap in ticketeffortmaps %}
                                 {% for effort in efforts %}
                                 {% if effort.id == ticketeffortmap.effort_id %}
-                                <p><b>{{effort.effort}}</b>{{ticketeffortmap.value}}</p>
+                                <pre style="white-space:pre-wrap;font-family: 'Assistant', sans-serif;"><b>{{effort.effort}}:<br></b>{{ticketeffortmap.value}}</pre>
                                 {% endif %}
                                 {% endfor %}
                                 {% endfor %}
@@ -227,7 +227,7 @@
                                                 <small>{{comment.User.username}} ({{comment.User.usertype}}) edited a
                                                     comment - {{comment.date_created | humanize}} </small>
                                                 <pre contenteditable="false"
-                                                    id="comment{{comment.id}}">{{comment.text}}</pre>
+                                                    id="comment{{comment.id}}" style="white-space:pre-wrap;font-family: 'Assistant', sans-serif;">{{comment.text}}</pre>
                                                 {% else %}
                                                 <small>{{comment.User.username}} ({{comment.User.usertype}}) added a
                                                     comment - {{comment.date_created | humanize}} </small>
@@ -236,7 +236,7 @@
                                                 <small><i>This message was deleted</i></small>
                                                 {% else %}
                                                 <pre contenteditable="false"
-                                                    id="comment{{comment.id}}">{{comment.text}}</pre>
+                                                    id="comment{{comment.id}}" style="white-space:pre-wrap;font-family: 'Assistant', sans-serif;">{{comment.text}}</pre>
                                                 {% endif %}
                                                 {% endif %}
                                             </div>
@@ -310,7 +310,7 @@
                                     {% if ticket.status != "Closed" %}
                                     <input type="file" name="upload" class="form-control" autocomplete="off" required>
                                     <div class="input-group-append">
-                                        <input type="submit" value="Submit" class="btn btn-info">
+                                        <input style="background-color: #003E7F; color:white;" type="submit" value="Submit" class="btn btn-info">
                                     </div>
                                     {% endif %}
                                 </div>
@@ -321,7 +321,7 @@
 
 
                         {% for file in files_list %}
-                        {% if file.2 =="image/jpeg" %}
+                        {% if file.2 =="image/jpeg" or file.2=="image/png" %}
                         <a href = "/display-image/{{file.1}}"><img width="200" height="200" id= "image{{file.1}}" src="data:image/png;base64, {{file.0}}"/></a>
                         {% if ticket.status != "Closed" %}
                         <button type="button" class="btn btn-sm">
@@ -340,7 +340,7 @@
                         <br>
 
                         {% for file in files_list %}
-                        {% if file.2 !="image/jpeg" %}
+                        {% if file.2 !="image/jpeg" and file.2 != "image/png" %}
                         {{file.0}}
                         {% if ticket.status != "Closed" %}
                         <button type="button" class="btn btn-sm">
@@ -389,7 +389,14 @@
                     <div class="ml-auto p-2" style="margin-top: 10px;">
                         <b>Created On:</b> {{ticket.date_created}}
                         <br>
+                        <b>Assigned On:</b> {{ticket.date_assigned}}
+                        <br>
+                        {% if ticket.status == "Closed" %}
+                        <b>Closed On:</b> {{ticket.date_closed}}
+                        <br>
+                        {% endif %}
                         <b>Last Modified On:</b> {{ticket.last_modified}}
+
                     </div>
                 </div>
             </div>

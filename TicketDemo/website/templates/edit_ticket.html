@@ -50,7 +50,7 @@
 			<div>
 				<label for="startdate">Approx Start Date:</label>
 				<br>
-  				<input type="date" id="startdate" name="startdate">
+  				<input type="date" id="startdate" name="startdate" value="{{ticket.startdate}}">
 			</div>
         </div>
     </div>
@@ -68,8 +68,8 @@
                     {% for question in questions %}
                     {% if question.id == ticketquestionmap.question_id %}
                     <label for="q{{question.id}}">{{question.question}}</label>
-                    <input type="text" id="q{{question.id}}" name="q{{question.id}}" class="form-control"
-                        value="{{ticketquestionmap.value}}" />
+                    <textarea type="text" id="q{{question.id}}" name="q{{question.id}}" class="form-control"
+                        value="{{ticketquestionmap.value}}">{{ticketquestionmap.value}}</textarea>
                     {% endif %}
                     {% endfor %}
                     {% endfor %}
@@ -80,8 +80,8 @@
                     {% for effort in efforts %}
                     {% if effort.id == ticketeffortmap.effort_id %}
                     <label for="e{{effort.id}}">{{effort.effort}}</label>
-                    <input type="text" id="e{{effort.id}}" name="e{{effort.id}}" class="form-control"
-                        value="{{ticketeffortmap.value}}" />
+                    <textarea type="text" id="e{{effort.id}}" name="e{{effort.id}}" class="form-control"
+                        value="{{ticketeffortmap.value}}">{{ticketeffortmap.value}}</textarea>
 
                     {% endif %}
 

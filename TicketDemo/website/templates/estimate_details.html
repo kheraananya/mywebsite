@@ -12,13 +12,14 @@
             Estimation Field:
         </div>
         <br>
-        {% for effort in efforts %}
-        <label for="e{{effort.id}}">{{effort.effort}}</label>
-        <input type="text" id="e{{effort.id}}" name="e{{effort.id}}" class="form-control"
-            placeholder="{{effort.effort}}" />
-        
+        {% for ticketeffortmap in ticketeffortmaps %}
+            {% for effort in efforts %}
+                {% if effort.id == ticketeffortmap.effort_id %}
+                    <label for="e{{effort.id}}">{{effort.effort}}</label>
+                    <textarea type="text" id="e{{effort.id}}" name="e{{effort.id}}" class="form-control">{{ticketeffortmap.value}}</textarea>
+                {% endif %}
+            {% endfor %}
         {% endfor %}
-
     </div>
 
     </div>
