@@ -30,11 +30,10 @@ def home():
     assignees = User.query.filter_by(usertype="assignee").all()
     reporters = User.query.filter_by(usertype="reporter").all()
     statuses = Status.query.all()
-    tickets = Ticket.query.filter(Ticket.date_created>yearago).all()
+    tickets = Ticket.query.filter(Ticket.date_created>yearago).order_by(Ticket.date_created.asc()).all()
     tickets_date_created = []
     for ticket in tickets:
-        date_tuple = (str(ticket.date_created),1)
-        tickets_date_created.append(date_tuple)
+        tickets_date_created.append(str(ticket.date_created))
     count_vs_status = []
     for status in statuses :
         count = Ticket.query.filter_by(status = status.status).count()
@@ -922,9 +921,9 @@ def graph_settings():
     assignee = request.form.get('assignees')
     if(str(datetype)=="assigned"):
         if(startdate and enddate):
-            tickets = Ticket.query.filter(Ticket.date_assigned>startdate,Ticket.date_assigned<enddate,Ticket.date_assigned>yearago).all()
+            tickets = Ticket.query.filter(Ticket.date_assigned>startdate,Ticket.date_assigned<enddate,Ticket.date_assigned>yearago).order_by(Ticket.date_created.asc()).all()
         else:
-            tickets = Ticket.query.filter(Ticket.date_assigned>yearago).all()
+            tickets = Ticket.query.filter(Ticket.date_assigned>yearago).order_by(Ticket.date_created.asc()).all()
         for ticket in tickets:
             if(reporter and assignee):
                 if(ticket.assignee):
@@ -945,9 +944,9 @@ def graph_settings():
                 tickets_dates.append(date_tuple)
     else:
         if(startdate and enddate):
-            tickets = Ticket.query.filter(Ticket.date_created>startdate,Ticket.date_created<enddate,Ticket.date_created>yearago).all()
+            tickets = Ticket.query.filter(Ticket.date_created>startdate,Ticket.date_created<enddate,Ticket.date_created>yearago).order_by(Ticket.date_created.asc()).all()
         else:
-            tickets = Ticket.query.filter(Ticket.date_created>yearago).all()
+            tickets = Ticket.query.filter(Ticket.date_created>yearago).order_by(Ticket.date_created.asc()).all()
         for ticket in tickets:
             if(reporter and assignee):
                 if(ticket.assignee):

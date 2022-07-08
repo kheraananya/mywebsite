@@ -6,6 +6,7 @@ content %}
 ></script>
 <script src="https://cdn.jsdelivr.net/npm/luxon@2.3.1/build/global/luxon.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-luxon@1.1.0/dist/chartjs-adapter-luxon.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-date-fns/dist/chartjs-adapter-date-fns.bundle.min.js"></script>
 <h2 align="center" style="margin-top: 10px"><b>Dashboard</b></h2>
 <div class>
 	<div class="card card-style mb-2">
@@ -94,7 +95,8 @@ content %}
 	            'rgba(255, 206, 86, 0.8)',
 	            'rgba(75, 192, 192, 0.8)',
 	            'rgba(153, 102, 255, 0.8)',
-	            'rgba(255, 159, 64, 0.8)'
+	            'rgba(255, 159, 64, 0.8)',
+				'rgba(255, 99, 132, 0.8)'
 	          	],
 			barPercentage: 0.5
 	       }]
@@ -104,6 +106,7 @@ content %}
 			legend: {
 				position: "right",
 				labels: {
+					boxWidth:12,
 				generateLabels: (chart) => {
 					const datasets = chart.data.datasets;
 					return datasets[0].data.map((data, i) => ({
@@ -126,7 +129,10 @@ content %}
 		y: {
 			title: {
 	        			display: true,
-	        			text: 'Ticket Count'
+	        			text: 'Ticket Count',
+						font: {
+                        weight: 'bold'
+                    	}
 	     	 		},
 			min: 0,
 			grace: '20%',
@@ -138,7 +144,10 @@ content %}
 		x:{
 			title: {
 	        			display: true,
-	        			text: 'Status'
+	        			text: 'Status',
+						font: {
+                        weight: 'bold'
+                    	}
 	     	 		}
 		}
 	},
@@ -149,39 +158,53 @@ content %}
 
 <script>
 	tickets_date_created = JSON.parse( {{tickets_date_created|tojson}} );
-	dates =[];
-	for(ele of tickets_date_created)
+	var s = document.getElementById("startdate");
+	var e = document.getElementById("enddate");
+	now = moment().format('YYYY/MM/DD');
+	yearago = moment().subtract(1,'years').format('YYYY/MM/DD')
+	dateStart=moment(yearago, 'YYYY/MM/DD');
+	dateEnd=moment(now, 'YYYY/MM/DD');
+	if(e.value != "")
 	{
-		onlydate = ele[0].split(" ");
-		date={x:onlydate[0],y:1};
-	    dates.push(date);
+		dateEnd = moment(e.value, 'YYYY/MM/DD');
+	}
+	if(s.value != "")
+	{
+		dateStart = moment(s.value, 'YYYY/MM/DD');
+	}
+	datelen = tickets_date_created.length;
+	var monthRange = [];
+	while (dateEnd > dateStart || dateStart.format('M') === dateEnd.format('M')) 
+	{
+		monthRange.push(dateStart.format('MMM/YY'));
+		dateStart.add(1,'month');
+	}
+	monthHeights=[]
+	for(month of monthRange)
+	{
+		count=0;
+		month = moment(month,'MMM/YY').format('MMM/YY');
+		strmonth = String(month);
+		for(ele of tickets_date_created)
+		{
+			temp = moment(ele, 'YYYY/MM/DD').format('MMM/YY');
+			strtemp = String(temp);
+			if(strtemp.localeCompare(strmonth)==0)
+			{
+				count = count+1;
+			}
+		}
+		monthHeights.push(count);
 	}
 	const ctx2 = document.getElementById("myChart2");
-	let updatedData =[];
-	let tempDateCollection =[];
-	minchart = moment().subtract(365, "days").format("DD/MM/YYYY");
-	dates.map((yData , index)=> {
-		yData.x = moment(yData.x, 'YYYY/MM/DD').format('DD/MM/YYYY');
-		const formatedDate = moment(yData.x, 'DD/MM/YYYY').format('MMM/YYYY');
-		if(tempDateCollection.includes(formatedDate))
-		{
-			const index = tempDateCollection.indexOf(formatedDate);
-			const element = updatedData[index];
-			updatedData[index] = {...element, y: element.y + yData.y}
-		}
-		else
-		{
-			tempDateCollection.push(formatedDate);
-			updatedData.push(yData);
-		}
-	})
 	const testsChart = new Chart(ctx2, {
-		type: "bar",
+		type: "line",
 		data: {
+			labels: monthRange,
 			datasets: [
 				{
 					label: '# of Tickets Created',
-					data:updatedData,
+					data: monthHeights,
 					backgroundColor: [
 	            'rgba(255, 99, 132, 0.8)',
 	            'rgba(54, 162, 235, 0.8)',
@@ -194,24 +217,35 @@ content %}
 	            'rgba(255, 206, 86, 0.8)',
 	            'rgba(75, 192, 192, 0.8)',
 	            'rgba(153, 102, 255, 0.8)',
-	            'rgba(255, 159, 64, 0.8)'
+	            'rgba(255, 159, 64, 0.8)',
+				'rgba(255, 99, 132, 0.8)'
 	          		],
 				},
 			],
 		},
 		options: {
+			animations: {
+      			tension: {
+					duration: 10000,
+					easing: 'linear',
+					from: 0.3,
+					to: 0,
+					loop: true
+      			}
+			},
 			plugins:{
 				legend: {
 				position: "right",
 				labels: {
+				boxWidth:12,
 				generateLabels: (chart) => {
 					const datasets = chart.data.datasets;
 					return datasets[0].data.map((data, i) => ({
-					text: `${moment(data.x, 'DD/MM/YYYY').format('MMM/YYYY')} - ${data.y}`,
+					text: `${chart.data.labels[i]} - ${data}`,
 					fillStyle: datasets[0].backgroundColor[i],
-					}))
-				}
-			}
+							}))
+						}
+					}
 	    		},
 				title: {
 	              display: true,
@@ -221,22 +255,29 @@ content %}
 			maintainAspectRatio: true,
 			aspectRatio: 3,
 			scales: {
-				x: {
-					type: "time",
-					time: {
-						parser: "dd/MM/yyyy",
-						unit: "month",
-						tooltipFormat: "MM",
-						round: 'month',
-					},
-				},
 				y: {
 					grace: '10%',
 					ticks: {
-						maxTicksLimit: 6,
-    					precision: 0
+    					precision: 0,
 					},
+					min:0,
+					title: {
+	        			display: true,
+	        			text: 'Ticket Count',
+						font: {
+                        weight: 'bold'
+                    	}
+	     	 		},
 				},
+				x:{
+					title: {
+	        			display: true,
+	        			text: 'Months',
+						font: {
+                        weight: 'bold'
+                    	}
+	     	 		},
+				}
 			},
 		},
 	})
