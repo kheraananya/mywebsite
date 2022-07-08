@@ -41,6 +41,7 @@ def home():
         count_vs_status.append(stat_tuple)
     return render_template("dashboard.html",user=current_user,logopath=logopath,count_vs_status=json.dumps(count_vs_status),tickets_date_created=json.dumps(tickets_date_created),assignees=assignees,reporters=reporters,prevstartdate=null,prevenddate=null,prevassignee=null,prevreporter=null,prevdatetype="created")
 
+
 @views.route("/")
 @views.route("/all-tickets")
 @login_required
