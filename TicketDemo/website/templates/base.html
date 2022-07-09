@@ -1,165 +1,206 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <link 
-        href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/css/bootstrap.min.css" 
-        rel="stylesheet" 
-        integrity="sha384-0evHe/X+R7YkIZDRvuzKMRqM+OrBnVFBL6DOitfPri4tjfHxaWutUpFmBp4vmVor" 
-        crossorigin="anonymous"
-    />
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-0evHe/X+R7YkIZDRvuzKMRqM+OrBnVFBL6DOitfPri4tjfHxaWutUpFmBp4vmVor" crossorigin="anonymous" />
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-     <link href="https://fonts.googleapis.com/css2?family=Assistant&display=swap" rel="stylesheet">
-    <link 
-        rel="stylesheet" 
-        href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.5.0/font/bootstrap-icons.css"
-    />
-    <link href="{{ url_for('static', filename='styles/style.css') }}" rel="stylesheet" type="text/css" >
+    <link href="https://fonts.googleapis.com/css2?family=Assistant&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.5.0/font/bootstrap-icons.css" />
+    <link href="{{ url_for('static', filename='styles/style.css') }}" rel="stylesheet" type="text/css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Lato:wght@400;900&display=swap" rel="stylesheet">
-    <script 
-        src="https://code.jquery.com/jquery-3.6.0.js" 
-        integrity="sha256-H+K7U5CnXl1h5ywQfKtSj8PCmoN9aaq30gDh27Xc0jk=" 
-        crossorigin="anonymous">
-    </script>
-    <link 
-        rel="stylesheet" 
-        href="https://cdn.datatables.net/1.12.1/css/jquery.dataTables.min.css">
+    <script src="https://code.jquery.com/jquery-3.6.0.js"
+        integrity="sha256-H+K7U5CnXl1h5ywQfKtSj8PCmoN9aaq30gDh27Xc0jk=" crossorigin="anonymous">
+        </script>
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.12.1/css/jquery.dataTables.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css">
-    <script src = "https://cdn.datatables.net/1.12.1/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.datatables.net/1.12.1/js/jquery.dataTables.min.js"></script>
     <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
-	<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js@3.8.0/dist/chart.min.js"></script>
     <style>
         .dropbtn {
-          background-color: #2980B9;
-          color: white;
-          padding: 16px;
-          font-size: 16px;
-          border: none;
-          cursor: pointer;
-        }
-        
-        .dropbtn:hover, .dropbtn:focus {
-          background-color: #2980B9;
-        }
-        
-        .dropdown {
-          position: relative;
-          display: inline-block;
+            background-color: #2980B9;
+            color: white;
+            padding: 16px;
+            font-size: 16px;
+            border: none;
+            cursor: pointer;
         }
 
-        body{
+        .dropbtn:hover,
+        .dropbtn:focus {
+            background-color: #2980B9;
+        }
+
+        .dropdown {
+            position: relative;
+            display: inline-block;
+        }
+
+        body {
             font-family: 'Assistant', sans-serif;
-            background-color: white; /* For browsers that do not support gradients */
-            background-image: linear-gradient( rgb(233, 232, 232),#93cdf4);
+            background-color: white;
+            /* For browsers that do not support gradients */
+            background-image: linear-gradient(rgb(233, 232, 232), #93cdf4);
             min-height: 100%;
             background-attachment: fixed;
-            }
-   html{
-    min-height: 100%;
-   }     
- footer{
-    background-color: white;
- }       
-        .dropdown-content {
-          display: none;
-          position: absolute;
-          background-color: #2081e3;
-          min-width: 160px;
-          overflow: auto;
-          box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
-          z-index: 1;
         }
-        
-        .dropdown-content a {
-          color: black;
-          padding: 12px 16px;
-          text-decoration: none;
-          display: block;
-        }
-        
-        .dropdown a:hover {background-color: #ddd;}
-        
-        .show {display: block;}
-        span {
-  float: right;
-}
 
-        </style>
+        html {
+            min-height: 100%;
+        }
+
+        footer {
+            background-color: white;
+        }
+        
+
+        .dropdown-content {
+            display: none;
+            position: absolute;
+            background-color: #2081e3;
+            min-width: 160px;
+            overflow: auto;
+            box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
+            z-index: 1;
+        }
+
+        .dropdown-content a {
+            color: black;
+            padding: 12px 16px;
+            text-decoration: none;
+            display: block;
+        }
+
+        .sticky {
+            position: fixed;
+        }
+
+        .sticky + .content {
+            padding-top: 60px;
+        }
+
+        .dropdown a:hover {
+            background-color: #ddd;
+        }
+
+        .show {
+            display: block;
+        }
+
+        span {
+            float: right;
+        }
+    </style>
     <title>{% block title %}{% endblock %}</title>
 </head>
+
 <body>
-    <nav class="navbar navbar-expand-lg py-1 shadow" style="background-color: #045de9; background-image: linear-gradient(45deg, #045de9 0%, #1bc0ee 74%);">
-        <div class="container-fluid">
-            <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/8/8d/Adobe_Corporate_Logo.png/1200px-Adobe_Corporate_Logo.png" width="95px" height="25px" >
-            <img src = {{logopath}} width="107px" height="35px" style="padding-left:5px;">
-            <div class="vl py-0" style="border-left: 2px solid white;height: 25px;"></div>
-            <h5 class="nav-item mb-lg-0" style="color:white; padding-left:5px;font-size: 17px; font-family: 'Lato', sans-serif;font-weight: 400; ">ScoPortal</h5>
-            
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+    <nav class="navbar sticky-top navbar-expand-lg py-1 shadow" 
+        style="background-color: #045de9; background-image: linear-gradient(45deg, #045de9 0%, #1bc0ee 74%);">
+        <div class="container-fluid" >
+            <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/8/8d/Adobe_Corporate_Logo.png/1200px-Adobe_Corporate_Logo.png"
+                width="95px" height="25px">
+            <img src={{logopath}} width="107px" height="35px" style="padding-left:5px;">
+            <div class="vl py-0"  style="border-left: 2px solid white;height: 25px;"></div>
+            <h5 class="nav-item mb-lg-0"
+                style="color:white; padding-left:5px;font-size: 17px; font-family: 'Lato', sans-serif;font-weight: 400; ">
+                ScoPortal</h5>
+
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
+                data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false"
+                aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
             </button>
-        <div class="collapse navbar-collapse" id="navbarSupportedContent">
-            <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-                <li class="nav-item">
-                    <a class="nav-link" href ="/home" style="padding-left:25px; color: white; font-size: 16px;">Home</a>
-                </li>
+            <div class="collapse navbar-collapse">
+                <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                    <li class="nav-item">
+                        <a class="nav-link" href="/home"
+                            style="padding-left:25px; color: white;white-space:pre-wrap;font-family: 'Assistant', sans-serif; font-size: 16px;">Home</a>
+                    </li>
                     {% if user.is_authenticated %}
-                        <a class="nav-link" href ="/all-tickets" style="padding-left:25px; color: white; font-size: 16px;">All Tickets</a>
-                        <a class="nav-link" href ="/alert-audit" style="padding-left:25px; color: white; font-size: 16px;">Alert Audit</a>
+                    <a class="nav-link" href="/all-tickets"
+                        style="padding-left:25px; color: white;font-family: 'Assistant', sans-serif; font-size: 16px;">All Tickets</a>
+                    <a class="nav-link" href="/alert-audit"
+                        style="padding-left:25px; color: white;font-family: 'Assistant', sans-serif; font-size: 16px;">Alert Audit</a>
                     {% endif %}
                     {% if user.usertype=="admin" %}
-                        <a class="nav-link" id="master" href ="/master-ticketcode-home" style="padding-left:25px; color: white; font-size: 16px;" >Master Setup</a>
+                    <a class="nav-link" id="master" href="/master-ticketcode-home"
+                        style="padding-left:25px; color: white;font-family: 'Assistant', sans-serif; font-size: 16px;">Master Setup</a>
                     {% endif %}
-                </li>
-            </ul>
-            <div class="d-flex">
-                {% if user.is_authenticated %}
-                    <a class="nav-item nav-link" href ="/logout" style="color: white;font-size: 16px;padding-left:25px;">Logout</a>
-                    <a class="nav-item nav-link" id="profile" href ="/viewprofile" style="color: white; padding-left:10px;padding-right: 5px; font-size: 13px;"><img src="https://img.icons8.com/ios-glyphs/30/000000/test-account.png" height="20px" style="padding-left:5px;"/></a>
-                {% else %}
-                    <a class="nav-item nav-link" href ="/login" style="color: white; padding-left:25px;font-size: 16px;">Login</a>
-                    <a class="nav-item nav-link " href ="/signup" style="color: white; padding-left:25px;font-size: 16px;">Signup</a>
-                {% endif %}
+                    </li>
+                </ul>
+                <div class="d-flex" >
+                    {% if user.is_authenticated %}
+                    <a class="nav-item nav-link" href="/logout"
+                        style="color: white;font-family: 'Assistant', sans-serif;font-size: 16px;padding-left:25px;">Logout</a>
+                    <a class="nav-item nav-link" id="profile" href="/viewprofile"
+                        style="color: white; padding-left:10px;padding-right: 5px; font-size: 13px;"><img
+                            src="https://img.icons8.com/ios-glyphs/30/000000/test-account.png" height="20px"
+                            style="padding-left:5px;" /></a>
+                    {% else %}
+                    <a class="nav-item nav-link" href="/login"
+                        style="color: white; padding-left:25px;font-family: 'Assistant', sans-serif; font-size: 16px;">Login</a>
+                    <a class="nav-item nav-link "  href="/signup"
+                        style="color: white; padding-left:25px;font-family: 'Assistant', sans-serif; font-size: 16px;">Signup</a>
+                    {% endif %}
+                </div>
             </div>
-          </div>
         </div>
-      </nav>
+    </nav>
 
     {% with messages = get_flashed_messages(with_categories=True) %}
-        {%if messages %}
-            {% for category,message in messages %}
-                {%if category == "error" %}
-                    <div align = "center" class = "alert alert-danger alert-dismissable fade show" role="alert">
-                        {{message}}
-                        <button type = "button" class="btn-close" data-bs-dismiss="alert"></button>
-                    </div>
-                {% else %}
-                    <div align = "center" class = "alert alert-success alert-dismissable fade show" role="alert">
-                        {{message}}
-                        <button type = "button" class="btn-close" data-bs-dismiss="alert"></button>
-                    </div>
-                {% endif%}
-            {%endfor%}
-        {% endif %}
+    {%if messages %}
+    {% for category,message in messages %}
+    {%if category == "error" %}
+    <div align="center" class="alert alert-danger alert-dismissable fade show" role="alert">
+        {{message}}
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+    {% else %}
+    <div align="center" class="alert alert-success alert-dismissable fade show" role="alert">
+        {{message}}
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+    {% endif%}
+    {%endfor%}
+    {% endif %}
     {% endwith %}
-    <div class = "container">
+    <div class="container" >
         {% block content %}{% endblock %}
     </div>
-    <script 
-        src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/js/bootstrap.bundle.min.js" 
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/js/bootstrap.bundle.min.js"
         integrity="sha384-pprn3073KE6tl6bjs2QrFaJGz5/SUsLqktiwsUTF55Jfv3qYSDhgCecCxMW52nD2"
-        crossorigin="anonymous"
-    ></script>
-    
+        crossorigin="anonymous"></script>
+
+    <script>
+        window.onscroll = function () { myFunction() };
+
+        var navbar = document.getElementById("navbar");
+        var sticky = navbar.offsetTop;
+
+        function myFunction() {
+            if (window.pageYOffset >= sticky) {
+                navbar.classList.add("sticky")
+            } else {
+                navbar.classList.remove("sticky");
+            }
+        }
+    </script>
+
     <style>
-        html { overflow-y: scroll; }
+        html {
+            overflow-y: scroll;
+        }
     </style>
 </body>
+
 </html>
