@@ -1,13 +1,57 @@
 {% extends "base.html" %} {% block title %} Dashboard {% endblock %} {% block
 content %}
-<script type="text/JavaScript" src=" https://MomentJS.com/downloads/moment.js"></script>
+<script
+	type="text/JavaScript"
+	src=" https://MomentJS.com/downloads/moment.js"
+></script>
 <script src="https://cdn.jsdelivr.net/npm/luxon@2.3.1/build/global/luxon.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-luxon@1.1.0/dist/chartjs-adapter-luxon.min.js"></script>
-<script
-	src="https://cdn.jsdelivr.net/npm/chartjs-adapter-date-fns/dist/chartjs-adapter-date-fns.bundle.min.js"></script>
-<h2 align="center" style="margin-top: 10px"><b>Dashboard</b></h2>
+<script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-date-fns/dist/chartjs-adapter-date-fns.bundle.min.js"></script>
+<script src="https://unpkg.com/chart.js-plugin-labels-dv/dist/chartjs-plugin-labels.min.js"></script>
+<br>
+<br>
+{% if user.usertype != 'reporter' %}
 <div class>
 	<div class="card card-style mb-2">
+		<div class="card-header">
+			<div align="left" style="float: left;">
+				<i class="fa-solid fa-chart-pie"></i> Assignee Report
+			</div>
+			<div align="right">
+				<form method="POST" action="/piegraph-settings">
+					<select id="pie_assignees" name="pie_assignees" style="font-size: 15px;">
+						{% if user.usertype == 'assignee' %}
+							<option value="{{user.username}}" selected>{{user.username}}</option>
+						{% else %}
+							<option value="" selected>All Assignees</option>
+							{% for assignee in assignees %}
+								<option value="{{assignee.username}}" {% if assignee.username == prevpie %} selected {% endif %}>{{assignee.username}}</option>
+							{% endfor %}
+						{% endif %}
+					</select>
+					&nbsp;
+					<button {% if user.usertype == 'assignee' %} disabled {% endif %} style="font-size: 15px;border-radius: 8px;">Apply</button>
+				</form>
+			</div>
+		</div>
+		<div class="card-body shadow">
+			<div class="chartBox">
+				<div class="chart-container" style="position: relative; height: 330px;">
+					<canvas id="myChart3"></canvas>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+{% endif %}
+<br>
+<div class>
+	<div class="card card-style mb-2">
+		<div class="card-header">
+			<div align="left" style="float: left;">
+				<i class="fa-solid fa-chart-column"></i> Status Report
+			</div>
+		</div>
 		<div class="card-body shadow">
 			<div class="chart-container" style="position: relative">
 				<canvas id="myChart1" width="400" height="400"></canvas>
@@ -17,201 +61,188 @@ content %}
 </div>
 <div class>
 	<div class="card card-style mb-2">
-		<div class="card-body shadow">
-			<div class="chart-container" style="position: relative">
+		<div class="card-header">
+			<div align="left" style="float: left;">
+				<i class="fa-solid fa-chart-line"></i> Ticket Timeline
+			</div>
+			<div align="right">
 				<form method="POST" action="/graph-settings">
 					<select name="datebox" id="datebox">
-						<option value="created" {% if prevdatetype=="created" %} selected {% endif %}>Date Created
-						</option>
-						<option value="assigned" {% if prevdatetype=="assigned" %} selected {% endif %}>Date Assigned
-						</option>
+						<option value="created"{% if prevdatetype == "created" %} selected {% endif %}>Date Created</option>
+						<option value="assigned"{% if prevdatetype == "assigned" %} selected {% endif %}>Date Assigned</option>
 					</select>
 					&emsp;
 					<label for="startdate">Start</label>
-					<input type="date" id="startdate" name="startdate" value="{{prevstartdate}}" />
+					<input type="date" id="startdate" name="startdate" value="{{prevstartdate}}"/>
 					&emsp;
 					<label for="enddate">End</label>
-					<input type="date" id="enddate" name="enddate" value="{{prevenddate}}" />
+					<input type="date" id="enddate" name="enddate" value="{{prevenddate}}"/>
 					&emsp;
 					<select id="assignees" name="assignees" value="{{prevassignee}}">
 						{% if user.usertype == 'assignee' %}
-						<option value="{{user.username}}" selected>{{user.username}}</option>
+							<option value="{{user.username}}" selected>{{user.username}}</option>
 						{% else %}
-						<option value="" selected>All Assignees</option>
-						{% for assignee in assignees %}
-						<option value="{{assignee.username}}" {% if assignee.username==prevassignee %} selected {% endif
-							%}>{{assignee.username}}</option>
-						{% endfor %}
+							<option value="" selected>All Assignees</option>
+							{% for assignee in assignees %}
+								<option value="{{assignee.username}}" {% if assignee.username == prevassignee %} selected {% endif %}>{{assignee.username}}</option>
+							{% endfor %}
 						{% endif %}
 					</select>
 					&emsp;
 					<select id="reporters" name="reporters">
 						{% if user.usertype == 'reporter' %}
-						<option value="{{user.username}}" selected>{{user.username}}</option>
+							<option value="{{user.username}}" selected>{{user.username}}</option>
 						{% else %}
 						<option value="" selected>All Reporters</option>
-						{% for reporter in reporters %}
-						<option value="{{reporter.username}}" {% if reporter.username==prevreporter %} selected {% endif
-							%}>{{reporter.username}}</option>
-						{% endfor %}
+							{% for reporter in reporters %}
+								<option value="{{reporter.username}}"{% if reporter.username == prevreporter %} selected {% endif %}>{{reporter.username}}</option>
+							{% endfor %}
 						{% endif %}
 					</select>
 					&emsp;
-					<button style="background-color: #003E7F; color: white;">Refresh</button>
+					<button style="font-size: 15px;border-radius: 8px;">Apply</button>
 				</form>
-				<br>
+			</div>
+		</div>
+		<div class="card-body shadow">
+			<div class="chart-container" style="position: relative">
 				<canvas id="myChart2" width="400" height="400"></canvas>
 			</div>
 		</div>
 	</div>
 </div>
-<div class>
-	<div class="card card-style mb-2">
-		<div class="card-body shadow">
-			<div class="chart-container" style="position: relative">
-				<form method="POST" action="/graph-settings">
-					<select id="assignees" name="assignees" value="{{prevassignee}}">
-						{% if user.usertype == 'assignee' %}
-						<option value="{{user.username}}" selected>{{user.username}}</option>
-						{% else %}
-						<option value="" selected>All Assignees</option>
-						{% for assignee in assignees %}
-						<option value="{{assignee.username}}" {% if assignee.username==prevassignee %} selected {% endif
-							%}>{{assignee.username}}</option>
-						{% endfor %}
-						{% endif %}
-					</select>
-					&emsp;
-					<button style="background-color: #003E7F; color: white;">Refresh</button>
-				</form>
-				<br>
-				<canvas id="myChart3" width="400" height="400"></canvas>
-			</div>
-		</div>
-	</div>
-</div>
 <script>
-	count_vs_status = JSON.parse({{ count_vs_status| tojson}});
-	statuses = [];
-	counts = [];
-	for (ele of count_vs_status) {
-		statuses.push(ele[1]);
-		counts.push(ele[0]);
-	}
+	   count_vs_status = JSON.parse( {{count_vs_status|tojson}} );
+	      statuses =[];
+	      counts=[];
+	      for(ele of count_vs_status)
+	      {
+	          statuses.push(ele[1]);
+	          counts.push(ele[0]);
+	      }
 	maxval = Math.max(...counts);
-	stepSize = Math.ceil(maxval / 5);
-	const ctx = document.getElementById('myChart1').getContext('2d');
-	const myChart1 = new Chart(ctx, {
-		type: 'bar',
-		data: {
-			labels: statuses,
-			datasets: [{
-				label: '# of Tickets',
-				data: counts,
-				borderWidth: 1,
-				backgroundColor: [
-					'rgba(255, 99, 132, 0.8)',
-					'rgba(54, 162, 235, 0.8)',
-					'rgba(255, 206, 86, 0.8)',
-					'rgba(75, 192, 192, 0.8)',
-					'rgba(153, 102, 255, 0.8)',
-					'rgba(255, 159, 64, 0.8)',
-					'rgba(255, 99, 132, 0.8)',
-					'rgba(54, 162, 235, 0.8)',
-					'rgba(255, 206, 86, 0.8)',
-					'rgba(75, 192, 192, 0.8)',
-					'rgba(153, 102, 255, 0.8)',
-					'rgba(255, 159, 64, 0.8)',
-					'rgba(255, 99, 132, 0.8)'
-				],
-				barPercentage: 0.5
-			}]
+	stepSize = Math.ceil(maxval/5);
+	   const ctx = document.getElementById('myChart1').getContext('2d');
+	   const myChart1 = new Chart(ctx, {
+	   type: 'bar',
+	   data: {
+	       labels: statuses,
+	       datasets: [{
+	           label: '# of Tickets',
+	           data: counts,
+	           borderWidth: 1,
+	           backgroundColor: [
+	            'rgba(255, 99, 132, 0.8)',
+	            'rgba(54, 162, 235, 0.8)',
+	            'rgba(255, 206, 86, 0.8)',
+	            'rgba(75, 192, 192, 0.8)',
+	            'rgba(153, 102, 255, 0.8)',
+	            'rgba(255, 159, 64, 0.8)',
+	            'rgba(255, 99, 132, 0.8)',
+	            'rgba(54, 162, 235, 0.8)',
+	            'rgba(255, 206, 86, 0.8)',
+	            'rgba(75, 192, 192, 0.8)',
+	            'rgba(153, 102, 255, 0.8)',
+	            'rgba(255, 159, 64, 0.8)',
+				'rgba(255, 99, 132, 0.8)'
+	          	],
+			barPercentage: 0.5
+	       }]
+	   },
+	   options: {
+		plugins: {
+			labels: {
+            	render: () => {}
+          	},
+			legend: {
+				position: "right",
+				labels: {
+					boxWidth:12,
+				generateLabels: (chart) => {
+					const datasets = chart.data.datasets;
+					return datasets[0].data.map((data, i) => ({
+					text: `${chart.data.labels[i]} : ${data}`,
+					fillStyle: datasets[0].backgroundColor[i],
+					}))
+				}
+			}
+	    		},
+	          title: {
+	              display: true,
+	              text: "Summary Report of Tickets per Status"
+	          }
+	      },
+	        legend: { display: true },
+	        responsive: true,
+	        maintainAspectRatio: true,
+	        aspectRatio: 3,
+	        scales: {
+		y: {
+			title: {
+	        			display: true,
+	        			text: 'Ticket Count',
+						font: {
+                        weight: 'bold'
+                    	}
+	     	 		},
+			min: 0,
+			grace: '20%',
+			beginAtZero:true,
+			ticks:{
+				stepSize:stepSize
+			}
 		},
-		options: {
-			plugins: {
-				legend: {
-					position: "right",
-					labels: {
-						boxWidth: 12,
-						generateLabels: (chart) => {
-							const datasets = chart.data.datasets;
-							return datasets[0].data.map((data, i) => ({
-								text: `${chart.data.labels[i]} - ${data}`,
-								fillStyle: datasets[0].backgroundColor[i],
-							}))
-						}
-					}
-				},
-				title: {
-					display: true,
-					text: "Summary Report for Ticket Count per Status"
-				}
-			},
-			legend: { display: true },
-			responsive: true,
-			maintainAspectRatio: true,
-			aspectRatio: 3,
-			scales: {
-				y: {
-					title: {
-						display: true,
-						text: 'Ticket Count',
+		x:{
+			title: {
+	        			display: true,
+	        			text: 'Ticket Status',
 						font: {
-							weight: 'bold'
-						}
-					},
-					min: 0,
-					grace: '20%',
-					beginAtZero: true,
-					ticks: {
-						stepSize: stepSize
-					}
-				},
-				x: {
-					title: {
-						display: true,
-						text: 'Status',
-						font: {
-							weight: 'bold'
-						}
-					}
-				}
-			},
-			tooltips: { enabled: true }
+                        weight: 'bold'
+                    	}
+	     	 		}
 		}
+	},
+	        tooltips: { enabled: true}
+	   }
 	});
 </script>
 
 <script>
-	tickets_date_created = JSON.parse({{ tickets_date_created| tojson}});
+	tickets_date_created = JSON.parse( {{tickets_date_created|tojson}} );
 	var s = document.getElementById("startdate");
 	var e = document.getElementById("enddate");
 	now = moment().format('YYYY/MM/DD');
-	yearago = moment().subtract(1, 'years').format('YYYY/MM/DD')
-	dateStart = moment(yearago, 'YYYY/MM/DD');
-	dateEnd = moment(now, 'YYYY/MM/DD');
-	if (e.value != "") {
+	yearago = moment().subtract(1,'years').format('YYYY/MM/DD')
+	dateStart=moment(yearago, 'YYYY/MM/DD');
+	dateEnd=moment(now, 'YYYY/MM/DD');
+	if(e.value != "")
+	{
 		dateEnd = moment(e.value, 'YYYY/MM/DD');
 	}
-	if (s.value != "") {
+	if(s.value != "")
+	{
 		dateStart = moment(s.value, 'YYYY/MM/DD');
 	}
 	datelen = tickets_date_created.length;
 	var monthRange = [];
-	while (dateEnd > dateStart || dateStart.format('M') === dateEnd.format('M')) {
-		monthRange.push(dateStart.format('MMM/YY'));
-		dateStart.add(1, 'month');
+	while (dateEnd > dateStart || dateStart.format('M') === dateEnd.format('M')) 
+	{
+		monthRange.push(dateStart.format('MMM-YY'));
+		dateStart.add(1,'month');
 	}
-	monthHeights = []
-	for (month of monthRange) {
-		count = 0;
-		month = moment(month, 'MMM/YY').format('MMM/YY');
+	monthHeights=[]
+	for(month of monthRange)
+	{
+		count=0;
+		month = moment(month,'MMM-YY').format('MMM-YY');
 		strmonth = String(month);
-		for (ele of tickets_date_created) {
-			temp = moment(ele, 'YYYY/MM/DD').format('MMM/YY');
+		for(ele of tickets_date_created)
+		{
+			temp = moment(ele, 'YYYY/MM/DD').format('MMM-YY');
 			strtemp = String(temp);
-			if (strtemp.localeCompare(strmonth) == 0) {
-				count = count + 1;
+			if(strtemp.localeCompare(strmonth)==0)
+			{
+				count = count+1;
 			}
 		}
 		monthHeights.push(count);
@@ -223,54 +254,54 @@ content %}
 			labels: monthRange,
 			datasets: [
 				{
-					label: '# of Tickets Created',
+					label: '# of Tickets',
 					data: monthHeights,
 					backgroundColor: [
-						'rgba(255, 99, 132, 0.8)',
-						'rgba(54, 162, 235, 0.8)',
-						'rgba(255, 206, 86, 0.8)',
-						'rgba(75, 192, 192, 0.8)',
-						'rgba(153, 102, 255, 0.8)',
-						'rgba(255, 159, 64, 0.8)',
-						'rgba(255, 99, 132, 0.8)',
-						'rgba(54, 162, 235, 0.8)',
-						'rgba(255, 206, 86, 0.8)',
-						'rgba(75, 192, 192, 0.8)',
-						'rgba(153, 102, 255, 0.8)',
-						'rgba(255, 159, 64, 0.8)',
-						'rgba(255, 99, 132, 0.8)'
-					],
+	            'rgba(255, 99, 132, 0.8)',
+	            'rgba(54, 162, 235, 0.8)',
+	            'rgba(255, 206, 86, 0.8)',
+	            'rgba(75, 192, 192, 0.8)',
+	            'rgba(153, 102, 255, 0.8)',
+	            'rgba(255, 159, 64, 0.8)',
+	            'rgba(255, 99, 132, 0.8)',
+	            'rgba(54, 162, 235, 0.8)',
+	            'rgba(255, 206, 86, 0.8)',
+	            'rgba(75, 192, 192, 0.8)',
+	            'rgba(153, 102, 255, 0.8)',
+	            'rgba(255, 159, 64, 0.8)',
+				'rgba(255, 99, 132, 0.8)'
+	          		],
 				},
 			],
 		},
 		options: {
 			animations: {
-				tension: {
+      			tension: {
 					duration: 10000,
 					easing: 'linear',
 					from: 0.3,
 					to: 0,
 					loop: true
-				}
+      			}
 			},
-			plugins: {
+			plugins:{
 				legend: {
-					position: "right",
-					labels: {
-						boxWidth: 12,
-						generateLabels: (chart) => {
-							const datasets = chart.data.datasets;
-							return datasets[0].data.map((data, i) => ({
-								text: `${chart.data.labels[i]} - ${data}`,
-								fillStyle: datasets[0].backgroundColor[i],
+				position: "right",
+				labels: {
+				boxWidth:12,
+				generateLabels: (chart) => {
+					const datasets = chart.data.datasets;
+					return datasets[0].data.map((data, i) => ({
+					text: `${chart.data.labels[i]} : ${data}`,
+					fillStyle: datasets[0].backgroundColor[i],
 							}))
 						}
 					}
-				},
+	    		},
 				title: {
-					display: true,
-					text: "Summary Report of Tickets Created per Month"
-				}
+	              display: true,
+	              text: "Summary Report of Tickets for Selected Duration"
+	          }
 			},
 			maintainAspectRatio: true,
 			aspectRatio: 3,
@@ -278,43 +309,69 @@ content %}
 				y: {
 					grace: '10%',
 					ticks: {
-						precision: 0,
+    					precision: 0,
 					},
-					min: 0,
+					min:0,
 					title: {
-						display: true,
-						text: 'Ticket Count',
+	        			display: true,
+	        			text: 'Ticket Count',
 						font: {
-							weight: 'bold'
-						}
-					},
+                        weight: 'bold'
+                    	}
+	     	 		},
 				},
-				x: {
+				x:{
 					title: {
-						display: true,
-						text: 'Months',
+	        			display: true,
+	        			text: 'Months',
 						font: {
-							weight: 'bold'
-						}
-					},
+                        weight: 'bold'
+                    	}
+	     	 		},
 				}
 			},
 		},
 	})
 </script>
-
-
 <script>
-	const ctx3 = document.getElementById('myChart3').getContext('2d');
-	const myChart3 = new Chart(ctx, {
+	tickets_date_closed = JSON.parse( {{tickets_date_closed|tojson}} );
+	now = moment().format('YYYY/MM/DD');
+	yearago = moment().subtract(1,'years').format('YYYY/MM/DD')
+	dateStart=moment(yearago, 'YYYY/MM/DD');
+	dateEnd=moment(now, 'YYYY/MM/DD');
+	monthRange = [];
+	monthHeights = [];
+	while (dateEnd > dateStart || dateStart.format('M') === dateEnd.format('M')) 
+	{
+		monthRange.push(dateStart.format('MMM-YY'));
+		dateStart.add(1,'month');
+	}
+	for(month of monthRange)
+	{
+		count=0;
+		month = moment(month,'MMM-YY').format('MMM-YY');
+		strmonth = String(month);
+		for(ele of tickets_date_closed)
+		{
+			temp = moment(ele, 'YYYY/MM/DD').format('MMM-YY');
+			strtemp = String(temp);
+			if(strtemp.localeCompare(strmonth)==0)
+			{
+				count = count+1;
+			}
+		}
+		monthHeights.push(count);
+	}
+	const ctx3 = document.getElementById("myChart3");
+	const pieChart = new Chart(ctx3, {
 		type: 'pie',
-		data: {
-			labels: statuses,
-			datasets: [{
-				label: '# of Tickets',
-				data: counts,
-				borderWidth: 1,
-				backgroundColor: [
+  		data: {
+			labels: monthRange,
+			datasets: [
+				{
+					label: '# of Tickets Closed',
+					data: monthHeights,
+					backgroundColor: [
 					'rgba(255, 99, 132, 0.8)',
 					'rgba(54, 162, 235, 0.8)',
 					'rgba(255, 206, 86, 0.8)',
@@ -328,30 +385,45 @@ content %}
 					'rgba(153, 102, 255, 0.8)',
 					'rgba(255, 159, 64, 0.8)',
 					'rgba(255, 99, 132, 0.8)'
-				],
-				barPercentage: 0.5
-			}]
-		},
-		options: {},
-
-		title: {
-			display: true,
-			text: "Summary Report for Ticket Count per Status"
-		},
-
-
-		legend: { display: true },
-		responsive: true,
-		maintainAspectRatio: true,
-		aspectRatio: 3,
-		scales: {
-
-		},
-		tooltips: { enabled: true }
-
-	});
-
-
+	          		],
+					hoverOffset: 4
+				}]
+			},
+			options:
+			{
+				layout: {
+					padding: {
+						//left:75
+					}
+  				},
+				plugins:
+				{
+					legend: {
+						position: "right",
+						labels: {
+						boxWidth:12,
+						generateLabels: (chart) => {
+							const datasets = chart.data.datasets;
+							return datasets[0].data.map((data, i) => ({
+							text: `${chart.data.labels[i]} : ${data}`,
+							fillStyle: datasets[0].backgroundColor[i],
+								}))
+							}
+						}
+					},
+					labels:
+					{
+						render: 'label'
+					},
+					title: {
+	              		display: true,
+	              		text: "Summary Report of Tickets Closed in last 12 Months for Assignee"
+	         		}
+				},
+				responsive: true,
+	        	maintainAspectRatio: false,
+			},
+		});
 </script>
 
 {% endblock %}
