@@ -54,8 +54,8 @@
     <div>
         <div class="card-header d-flex justify-content-between align-items-center">
             <div class="ml-auto p-2"
-                style=" font-size: 17px;  font-family: Verdana, Geneva, Tahoma, sans-serif; position: absolute; left: 10px; top:47px;">
-                <b style="font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif ; font-size: 23px;">Ticket
+                style=" font-size: 16px;  font-family: Verdana, Geneva, Tahoma, sans-serif; position: absolute; left: 10px; top:47px;">
+                <b style="font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif ; font-size: 20px; padding-bottom: 5px;">Ticket
                     #{{ticket.ticket_code}}{{ticket.id}}</b>
                 <br>
                 <!-- Created By: 
@@ -143,7 +143,7 @@
                         <div style="display: block; margin-left: -60px; width: 784px; margin-top: 27px;" class="row">
                             <span class="people" style="float:left; width:880px;">
                                 <div
-                                    style="font-size:17px; font-weight: bold; border: 1px solid grey; color: white; border-radius: 5px; background-color: #003E7F; padding: 7px; margin: -5px; margin-bottom: -15px; width: 784px; margin-left: -6px; margin-top: -6px;">
+                                    style="font-size:16px; font-weight: bold; border: 1px solid grey; color: white; border-radius: 5px; background-color: #003E7F; padding: 7px; margin: -5px; margin-bottom: -15px; width: 784px; margin-left: -6px; margin-top: -6px;">
                                     <!-- <button class="btn" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne" type="button"> -->
                                     Details
                                     <!-- </button>-->
@@ -151,11 +151,11 @@
                                 </div>
                                 <br>
 
-                                <p style="font-size:16px;" class="width-50"><b>Customer Name:</b>{{ticket.custname}}</p>
-                                <p class="width-50"><b>Region:</b> {{ticket.region}}</p>
-                                <p class="width-50"><b>Requirement Title:</b> {{ticket.title}}</p>
+                                <p style="font-size:14px;" class="width-50"><b>Customer Name:</b>{{ticket.custname}}</p>
+                                <p style="font-size:14px;" class="width-50"><b>Region:</b> {{ticket.region}}</p>
+                                <p style="font-size:14px;" class="width-50"><b>Requirement Title:</b> {{ticket.title}}</p>
                                
-                                <p class="width-50"><b>Current Status:</b><b class="badge {% if ticket.status == 'Opened' %} bg-primary {% elif ticket.status == 'Closed' %} bg-success {% else %} bg-warning {% endif %}">{{ticket.status}}</b></p>
+                                <p style="font-size:14px;" class="width-50"><b>Current Status:</b><b class="badge {% if ticket.status == 'Opened' %} bg-primary {% elif ticket.status == 'Closed' %} bg-success {% else %} bg-warning {% endif %}">{{ticket.status}}</b></p>
                             </span>
                         </div>
 
@@ -165,7 +165,7 @@
 
 
                                 <div
-                                    style="font-size:17px; font-weight: bold; border: 1px solid grey; color: white; border-radius: 5px; background-color: #003E7F; padding: 7px; margin: -5px; margin-bottom: -15px; width: 784px;">
+                                    style="font-size:16px; font-weight: bold; border: 1px solid grey; color: white; border-radius: 5px; background-color: #003E7F; padding: 7px; margin: -5px; margin-bottom: -15px; width: 784px;">
                                     Questions
                                     <i class="bi-chevron-down"
                                         style="width:11px; height:11px; float: right; padding-top: 3px; margin-right: 7px; "></i>
@@ -192,7 +192,7 @@
                                 aria-controls="collapseThree">
 
                                 <div
-                                    style="font-size:17px; font-weight: bold; border: 1px solid grey; color: white; border-radius: 5px; background-color: #003E7F; padding: 7px; margin: -5px; margin-bottom: -15px;  width: 784px;">
+                                    style="font-size:16px; font-weight: bold; border: 1px solid grey; color: white; border-radius: 5px; background-color: #003E7F; padding: 7px; margin: -5px; margin-bottom: -15px;  width: 784px;">
                                     Estimation Details
                                     <i class="bi-chevron-down"
                                         style="width:11px; height:11px; float: right; padding-top: 3px; margin-right: 7px; "></i>
@@ -214,7 +214,7 @@
                     <div class="row" style="display: block; margin-left: -60px; width:784px;">
                         <span class="people" style="float:left; width:880px;">
                             <div
-                                style="font-size:17px; font-weight: bold; border: 1px solid grey; color: white; border-radius: 5px; background-color: #003E7F; padding: 7px; margin: -5px; margin-bottom: -15px; margin-right: -6px; margin-left: -6px; margin-top: -6px;">
+                                style="font-size:16px; font-weight: bold; border: 1px solid grey; color: white; border-radius: 5px; background-color: #003E7F; padding: 7px; margin: -5px; margin-bottom: -15px; margin-right: -6px; margin-left: -6px; margin-top: -6px;">
                                 Comments</div>
                             <br>
                             <div class="collapse" id="comments-{{ticket.id}}">
@@ -224,7 +224,7 @@
                                         <div class="d-flex justify-content-between align-items-center">
                                             <div>
                                                 {% if comment.status == 'Edited' %}
-                                                <small>{{comment.User.username}} ({{comment.User.usertype}}) edited a
+                                                <small >{{comment.User.username}} ({{comment.User.usertype}}) edited a
                                                     comment - {{comment.date_created | humanize}} </small>
                                                 <pre contenteditable="false"
                                                     id="comment{{comment.id}}" style="white-space:pre-wrap;font-family: 'Assistant', sans-serif;">{{comment.text}}</pre>
@@ -295,7 +295,7 @@
                     <a data-bs-toggle="collapse" data-bs-target="#collapseFour" aria-expanded="true"
                         aria-controls="collapseFour">
                         <div
-                            style="font-size:17px; font-weight: bold; border: 1px solid grey; color: white; border-radius: 5px; background-color: #003E7F; padding: 7px; margin: -5px; margin-bottom: -15px; width: 784px;">
+                            style="font-size:16px; font-weight: bold; border: 1px solid grey; color: white; border-radius: 5px; background-color: #003E7F; padding: 7px; margin: -5px; margin-bottom: -15px; width: 784px;">
                             Attachments
                             <i class="bi-chevron-down"
                                         style="width:11px; height:11px; float: right; padding-top: 3px; margin-right: 7px; "></i>
@@ -368,14 +368,14 @@
 
                 <div class="people" style="margin-left:15px; margin-right: -40px; margin-top: 31px;">
                     <div
-                        style="font-size:17px; font-weight: bold; border: 1px solid grey; color: white; border-radius: 5px; background-color: #003E7F; padding: 7px; margin: -5px; margin-bottom: -15px; margin-right: -6px; margin-left: -6px; margin-top: -6px;">
+                        style="font-size:16px; font-weight: bold; border: 1px solid grey; color: white; border-radius: 5px; background-color: #003E7F; padding: 7px; margin: -5px; margin-bottom: -15px; margin-right: -6px; margin-left: -6px; margin-top: -6px;">
                         People</div>
 
                     <div class="ml-auto p-2" style="margin-top:10px">
-                        <b>Reported By:</b><img src="https://img.icons8.com/material-sharp/24/000000/person-male.png"
-                            height="20px" style="opacity: 0.5;" />{{ticket.author.username}}
+                        <b style="font-size:14px;">Reported By:</b><img src="https://img.icons8.com/material-sharp/24/000000/person-male.png"
+                            height="20px" style="opacity: 0.5;" /> {{ticket.author.username}}
                         <br>
-                        <b> Assignee:</b><img src="https://img.icons8.com/material-sharp/24/000000/person-male.png"
+                        <b  style="font-size:14px;"> Assignee:</b><img src="https://img.icons8.com/material-sharp/24/000000/person-male.png"
                             height="20px" style="opacity: 0.5;" />{{ticket.assignee.username}}
                         </a>
                     </div>
@@ -383,19 +383,19 @@
 
                 <div class="people" style="margin-top: 10px; margin-left:15px; margin-right: -40px;">
                     <div
-                        style="font-size:17px; font-weight: bold; border: 1px solid grey; color: white; border-radius: 5px; background-color: #003E7F; padding: 7px; margin: -5px; margin-bottom: -15px; margin-right: -6px; margin-left: -6px; margin-top: -6px;">
+                        style="font-size:16px; font-weight: bold; border: 1px solid grey; color: white; border-radius: 5px; background-color: #003E7F; padding: 7px; margin: -5px; margin-bottom: -15px; margin-right: -6px; margin-left: -6px; margin-top: -6px;">
                         Dates</div>
 
                     <div class="ml-auto p-2" style="margin-top: 10px;">
-                        <b>Created On:</b> {{ticket.date_created}}
+                        <b  style="font-size:14px;" >Created On:</b> {{ticket.date_created}}
                         <br>
-                        <b>Assigned On:</b> {{ticket.date_assigned}}
+                        <b  style="font-size:14px">Assigned On:</b> {{ticket.date_assigned}}
                         <br>
                         {% if ticket.status == "Closed" %}
-                        <b>Closed On:</b> {{ticket.date_closed}}
+                        <b  style="font-size:14px;">Closed On:</b> {{ticket.date_closed}}
                         <br>
                         {% endif %}
-                        <b>Last Modified On:</b> {{ticket.last_modified}}
+                        <b  style="font-size:14px;">Last Modified On:</b> {{ticket.last_modified}}
 
                     </div>
                 </div>

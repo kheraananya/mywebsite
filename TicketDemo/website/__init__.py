@@ -71,6 +71,6 @@ def create_app():
 
 def create_database(app):
     if not path.exists("website/TicketDemo"):
-        #db.drop_all(app=app)
+       # db.drop_all(app=app)
         db.create_all(app=app)
         #print("Created database")
