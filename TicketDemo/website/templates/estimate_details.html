@@ -16,7 +16,7 @@
             {% for effort in efforts %}
                 {% if effort.id == ticketeffortmap.effort_id %}
                     <label for="e{{effort.id}}">{{effort.effort}}</label>
-                    <textarea type="text" id="e{{effort.id}}" name="e{{effort.id}}" class="form-control">{{ticketeffortmap.value}}</textarea>
+                    <textarea type="text" id="e{{effort.id}}" name="e{{effort.id}}" class="form-control">{% if ticketeffortmap.value == None %}{% else %} {{ticketeffortmap.value}}{% endif %}</textarea>
                 {% endif %}
             {% endfor %}
         {% endfor %}

@@ -118,6 +118,8 @@
     </div>
     <script>
         $(document).ready(function () {
+            var navele = document.getElementById('navmaster');
+	        navele.setAttribute("style","padding-left:25px; color: white; font-weight: bold;");
             $('#myTable').DataTable();
             $('#submit').click(function () {
                 window.location.href = "/master-alert-home";

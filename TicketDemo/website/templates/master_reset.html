@@ -48,7 +48,9 @@
     </table>
    </div>
 </body>
-<script>  
+<script> 
+    var navele = document.getElementById('navmaster');
+	navele.setAttribute("style","padding-left:25px; color: white; font-weight: bold;");
     $("#deletebtn").on('click',function(e){
         e.preventDefault();
         var self = $(this);

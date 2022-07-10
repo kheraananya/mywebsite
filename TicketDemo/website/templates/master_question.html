@@ -61,6 +61,8 @@
 
    <script>  
     $(document).ready(function(){ 
+        var navele = document.getElementById('navmaster');
+	    navele.setAttribute("style","padding-left:25px; color: white; font-weight: bold;");
         $('#myTable').DataTable();  
         $('#add').click(function(){  
                 $.ajax({  

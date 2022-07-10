@@ -59,6 +59,7 @@ content %}
 		</div>
 	</div>
 </div>
+<br>
 <div class>
 	<div class="card card-style mb-2">
 		<div class="card-header">
@@ -334,6 +335,16 @@ content %}
 	})
 </script>
 <script>
+	document.addEventListener("DOMContentLoaded", function(event) { 
+            var scrollpos = localStorage.getItem('scrollpos');
+            if (scrollpos) window.scrollTo(0, scrollpos);
+        });
+
+        window.onbeforeunload = function(e) {
+            localStorage.setItem('scrollpos', window.scrollY);
+        };
+	var navele = document.getElementById('navhome');
+	navele.setAttribute("style","padding-left:25px; color: white; font-weight: bold;");
 	tickets_date_closed = JSON.parse( {{tickets_date_closed|tojson}} );
 	now = moment().format('YYYY/MM/DD');
 	yearago = moment().subtract(1,'years').format('YYYY/MM/DD')

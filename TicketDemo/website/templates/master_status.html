@@ -61,7 +61,9 @@
         </tbody>  
     </table>
    </div>
-   <script>  
+   <script>
+    var navele = document.getElementById('navmaster');
+	navele.setAttribute("style","padding-left:25px; color: white; font-weight: bold;");
     $(document).ready(function(){ 
         $('#myTable').DataTable();  
         $('#add').click(function(){  

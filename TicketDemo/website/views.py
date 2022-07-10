@@ -314,7 +314,7 @@ def edit_comment(comment_id):
 def estimated_details(ticket_id):
     efforts = Effort.query.order_by(Effort.id.asc()).all()
     ticket = Ticket.query.filter_by(id=ticket_id).first()
-    ticketeffortmaps = TicketEffortMap.query.filter(ticket_id==ticket_id).order_by(TicketEffortMap.id.asc()).all()
+    ticketeffortmaps = TicketEffortMap.query.filter_by(ticket_id=ticket_id).all()
     if request.method == "POST":
         if(efforts):
             for effort in efforts:
@@ -948,6 +948,8 @@ def graph_settings():
     enddate = request.form.get('enddate')
     reporter = request.form.get('reporters')
     assignee = request.form.get('assignees')
+    if(startdate<yearago):
+        flash("Please enter start date less than a year ago",category="error")
     if(str(datetype)=="assigned"):
         if(startdate and enddate):
             tickets_created = Ticket.query.filter(Ticket.date_assigned>startdate,Ticket.date_assigned<enddate,Ticket.date_assigned>yearago).order_by(Ticket.date_created.asc()).all()

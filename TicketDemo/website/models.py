@@ -55,14 +55,14 @@ class TicketQuestionMap(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     ticket_id = db.Column(db.Integer, db.ForeignKey('Ticket.id', ondelete="CASCADE"),nullable=False)
     question_id = db.Column(db.Integer, db.ForeignKey('Question.id', ondelete="CASCADE"),nullable=False)
-    value = db.Column(db.String(2000))
+    value = db.Column(db.Text)
 
 class TicketEffortMap(db.Model):
     __tablename__ = 'TicketEffortMap'
     id = db.Column(db.Integer, primary_key=True)
     ticket_id = db.Column(db.Integer, db.ForeignKey('Ticket.id', ondelete="CASCADE"),nullable=False)
     effort_id = db.Column(db.Integer, db.ForeignKey('Effort.id', ondelete="CASCADE"),nullable=False)
-    value = db.Column(db.String(2000))
+    value = db.Column(db.Text)
     
 
 class Question(db.Model):
@@ -94,7 +94,7 @@ class MasterAlertConfig(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     ticket_status = db.Column(db.String(200))
     alert_subject = db.Column(db.String(500))
-    alert_body = db.Column(db.String(5000))
+    alert_body = db.Column(db.Text)
     body_type =  db.Column(db.String(100))
     recipients = db.Column(db.String(200))
 
@@ -103,7 +103,7 @@ class MasterAlertAudit(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     ticket_status = db.Column(db.String(200))
     alert_subject = db.Column(db.String(500))
-    alert_body = db.Column(db.String(5000))
+    alert_body = db.Column(db.Text)
     recipients = db.Column(db.String(200))
     sent_on = db.Column(db.DateTime, default = time.strftime("%d/%B/%Y %H:%M:%S"))
 
