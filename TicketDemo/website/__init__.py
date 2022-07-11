@@ -5,6 +5,7 @@ from flask_login import LoginManager
 from datetime import datetime
 from configparser import ConfigParser
 
+
 file = 'devconfig.ini'
 config = ConfigParser()
 config.read(file)

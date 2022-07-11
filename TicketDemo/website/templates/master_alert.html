@@ -24,7 +24,7 @@
             aria-controls="collapseTwo">
 
 
-            <div align = "right"
+            <div align = "right" id="dropbtn"
                 style="font-size:17px; font-weight: bold; border: 1px solid grey; color: white; border-radius: 5px; background-color: #003E7F; padding: 7px; margin: -5px; margin-bottom: -15px; width: 125px; margin-left: 1030px;">
                 + Add Status
                 <i class="bi-chevron-down"
@@ -52,7 +52,7 @@
                             </div>
                             <div>
                                 <label for="alert_subject">Alert Subject</label>
-                                <input type="text" name="alert_subject" placeholder="Enter Alert Subject"
+                                <input type="text" name="alert_subject" id="alert_subject" placeholder="Enter Alert Subject"
                                     class="form-control name_list" />
         
                             </div>
@@ -62,7 +62,7 @@
                                 <label for="html">HTML</label>
                                 <input type="radio" id="text" name ="body_type" value="text" checked>
                                 <label for="text">Text Only</label>
-                                <textarea type="text" name="alert_body" placeholder="Enter Alert Body"
+                                <textarea type="text" name="alert_body" id="alert_body" placeholder="Enter Alert Body"
                                     class="form-control name_list"></textarea>
                             </div>
                             <div>
@@ -81,8 +81,9 @@
                     </div>
                     <br>
                     <div align="center">
-                        <button type="submit" class="btn btn-info" style="background-color: #003E7F; color: white;">
+                        <button type="submit" id="createbtn" class="btn btn-info" style="background-color: #003E7F; color: white;">
                             Create
+                        </button>
                     </div>
                 </form>
             </div>
@@ -108,15 +109,39 @@
                     <td>{{alert.ticket_status}}</a></td>
                     <td>{{alert.recipients|capitalize}}</td>
                     <td>{{alert.alert_subject}}</td>
-                    <td>{{alert.alert_body}}</td>
-                    <td><a href="/delete-alert/{{alert.id}}"><button type="button"
-                                class="btn btn-danger"><span class="bi-trash"></span></button></a></td>
+                    <td><p id="body{{alert.id}}">{{alert.alert_body}}</p></td>
+                    <td>
+                        <button type="button" onClick="editAlert('{{alert.id}}')" class="btn btn-danger"><span class="bi-pen"></span></button>
+                        <a href="/delete-alert/{{alert.id}}"><button type="button"
+                                class="btn btn-danger"><span class="bi-trash"></span></button></a>
+                    </td>
                 </tr>
                 {% endfor %}
             </tbody>
         </table>
     </div>
     <script>
+        function editAlert(alert_id)
+        {
+            var ticket_status = document.getElementById("ticket_status");
+            var alert_subject = document.getElementById("alert_subject");
+            var alert_body = document.getElementById("alert_body");
+            var recipients = document.getElementById("recipients");
+            var createbtn = document.getElementById("createbtn");
+            {% for alert in alerts %}
+                curr_id = String({{alert.id}});
+                if(curr_id.localeCompare(alert_id)==0)
+                {
+                    ticket_status.value = "{{alert.ticket_status}}";
+                    alert_subject.value = "{{alert.alert_subject}}";
+                    var text = document.getElementById("body"+alert_id);
+                    alert_body.innerHTML = text.textContent;
+                    recipients.value = "{{alert.recipients}}";
+                    createbtn.innerHTML = "Save Changes";
+                }
+            {% endfor %}
+            $('.collapse').collapse('show');
+        }
         $(document).ready(function () {
             var navele = document.getElementById('navmaster');
 	        navele.setAttribute("style","padding-left:25px; color: white; font-weight: bold;");

@@ -116,7 +116,7 @@
             </div>
             {% endif %}
             <div>
-                <span style="position: absolute; left:705px;top:58px">
+                <span style="position: absolute; left:633px;top:58px">
                     <select class="form-control" id="status-name" name="status-name">
                         {% for status in statuses %}
                         <option value="{{status.status}}">{{status.status}}</option>
@@ -179,7 +179,7 @@
                                 {% for question in questions %}
                                 {% if question.id == ticketquestionmap.question_id %}
 
-                                <pre style="white-space:pre-wrap;font-family: 'Assistant', sans-serif;"><b>{{question.question}}</b>{{ticketquestionmap.value}}</pre>
+                                <pre style="white-space:pre-wrap;font-family: 'Assistant', sans-serif;"><b>{{question.question}}</b><br>{{ticketquestionmap.value}}</pre>
 
                                 {% endif %}
                                 {% endfor %}
@@ -372,12 +372,10 @@
                         People</div>
 
                     <div class="ml-auto p-2" style="margin-top:10px">
-                        <b style="font-size:14px;">Reported By:</b><img src="https://img.icons8.com/material-sharp/24/000000/person-male.png"
-                            height="20px" style="opacity: 0.5;" /> {{ticket.author.username}}
-                        <br>
-                        <b  style="font-size:14px;"> Assignee:</b><img src="https://img.icons8.com/material-sharp/24/000000/person-male.png"
-                            height="20px" style="opacity: 0.5;" />{{ticket.assignee.username}}
-                        </a>
+                        <b style="font-size:14px;">Reported By:</b><br><img src="https://img.icons8.com/material-sharp/24/000000/person-male.png"
+                            height="20px" style="opacity: 0.5;float: left;" /><div style="font-size:14px;">{{ticket.author.username}}</div>
+                        <b style="font-size:14px;"> Assignee:</b><br><img src="https://img.icons8.com/material-sharp/24/000000/person-male.png"
+                            height="20px" style="opacity: 0.5;float: left;" /> <div style="font-size:14px;">{{ticket.assignee.username}}</div>
                     </div>
                 </div>
 
@@ -387,15 +385,12 @@
                         Dates</div>
 
                     <div class="ml-auto p-2" style="margin-top: 10px;">
-                        <b  style="font-size:14px;" >Created On:</b> {{ticket.date_created}}
-                        <br>
-                        <b  style="font-size:14px">Assigned On:</b> {{ticket.date_assigned}}
-                        <br>
+                        <b style="font-size:14px;float:left;" >Created On:</b> <div style="font-size:14px;">{{ticket.date_created}}</div>
+                        <b  style="font-size:14px;float:left;">Assigned On:</b> <div style="font-size:14px;">{{ticket.date_assigned}}</div>
                         {% if ticket.status == "Closed" %}
-                        <b  style="font-size:14px;">Closed On:</b> {{ticket.date_closed}}
-                        <br>
+                        <b  style="font-size:14px;float:left;">Closed On:</b> <div style="font-size:14px;">{{ticket.date_closed}}</div>
                         {% endif %}
-                        <b  style="font-size:14px;">Last Modified On:</b> {{ticket.last_modified}}
+                        <b  style="font-size:14px;float:left;">Last Modified On:</b> <div style="font-size:14px;">{{ticket.last_modified}}</div>
 
                     </div>
                 </div>
@@ -425,6 +420,9 @@
                 $('#status-name').select2({
                     placeholder: { id: "", text: 'Select Status' },
                     allowClear: true,
+                    dropdownAutoWidth : true,
+                    minimumResultsForSearch: -1
+                    //width: auto
                 });
                 $("#status-name").val("")
                 $("#status-name").trigger("change");

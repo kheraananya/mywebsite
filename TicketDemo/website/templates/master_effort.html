@@ -51,7 +51,10 @@
                     <td>{{effort.effort}}</td>
                     <td>{{effort.date_created}}</td>
                     <td>{% if effort.author_id %} {{ effort.author.username }} {%else%} Default {%endif%}</td>
-                    <td><a href="/delete-effort/{{effort.id}}"><button type="button" class="btn btn-danger"><span class="bi-trash"></span></button></a></td>
+                    <td>{% if effort.effort != "Total Effort(Hours)" and effort.effort != "Total Cost($)"  %}
+                        <a href="/delete-effort/{{effort.id}}"><button type="button" class="btn btn-danger"><span class="bi-trash"></span></button></a>
+                        {% endif %}
+                    </td>
                 </tr>
             {% endfor %}
         </tbody>  

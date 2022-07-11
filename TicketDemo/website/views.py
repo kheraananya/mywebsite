@@ -1,4 +1,5 @@
 from asyncio.windows_events import NULL
+from cProfile import run
 from unicodedata import category
 from flask import Blueprint, render_template, request,flash,redirect,url_for,jsonify,send_file,Response
 from flask_login import login_required, current_user,login_user
@@ -22,10 +23,18 @@ logopath = ''+str(config['logo']['path'])+''
 
 views = Blueprint("views",__name__)
 
+def run_query():
+    query = 'ALTER TABLE public."User" DROP newcol'
+    if(query):
+        db.session.execute(str(query))
+        db.session.commit()
+
+
 @views.route("/")
 @views.route("/home")
 @login_required
 def home():
+    #run_query()
     yearago = str(datetime.today() - timedelta(days=365)).split(" ")[0]
     now = str(datetime.today()).split(" ")[0]
     assignees = User.query.filter_by(usertype="assignee").all()
@@ -52,7 +61,12 @@ def home():
             tickets_date_closed.append(str(ticket.date_closed))
     count_vs_status = []
     for status in statuses :
-        count = Ticket.query.filter_by(status = status.status).count()
+        if current_user.usertype == 'assignee':
+            count = Ticket.query.filter_by(status = status.status,assignee_id=current_user.id).count()
+        elif current_user.usertype == 'reporter':
+            count = Ticket.query.filter_by(status = status.status,author_id=current_user.id).count()
+        else:
+            count = Ticket.query.filter_by(status = status.status).count()
         stat_tuple = (count,status.status)
         count_vs_status.append(stat_tuple)
         prevpie = current_user.username
@@ -220,6 +234,7 @@ def update_status(ticket_id):
         return render_template("/tickets/"+ticket.id)
     now = time.strftime("%d/%B/%Y %H:%M:%S")
     ticket = Ticket.query.filter_by(id=ticket_id).first()
+    oldstatus = ticket.status
     if not ticket:
         flash("Ticket does not exist", category='error')
     elif current_user.usertype == 'reporter':
@@ -240,6 +255,9 @@ def update_status(ticket_id):
                     return redirect('/tickets/'+str(ticket_id))
             ticket.status = status
             ticket.last_modified = now
+            comment_text = "Status changed from "+str(oldstatus)+" to "+str(status)
+            comment = Comment(text=str(comment_text),author=current_user.id,ticket_id=ticket_id,date_created=now)
+            db.session.add(comment) 
             db.session.commit()
             alertmechanism(ticket.status, ticket.id)
             #flash("Status updated",category='success')
@@ -312,6 +330,7 @@ def edit_comment(comment_id):
 @views.route("/estimated-details/<ticket_id>",methods=['GET','POST'])
 @login_required
 def estimated_details(ticket_id):
+    now = time.strftime("%d/%B/%Y %H:%M:%S")
     efforts = Effort.query.order_by(Effort.id.asc()).all()
     ticket = Ticket.query.filter_by(id=ticket_id).first()
     ticketeffortmaps = TicketEffortMap.query.filter_by(ticket_id=ticket_id).all()
@@ -321,6 +340,8 @@ def estimated_details(ticket_id):
                 answer = request.form.get("e"+str(effort.id))
                 map = TicketEffortMap.query.filter_by(ticket_id=ticket.id,effort_id=effort.id).first()
                 map.value = str(answer)
+            comment = Comment(text="Effort Estimation Details Updated",author=current_user.id,ticket_id=ticket_id,date_created=now)
+            db.session.add(comment) 
             db.session.commit()
         else:
             flash("Please complete Master Setup first",category="error")
@@ -371,6 +392,8 @@ def edit_ticket(ticket_id):
                     if(map):
                         map.value = str(answer)
                 if(custname and title and region and startdate):    
+                    comment = Comment(text="Ticket was edited",author=current_user.id,ticket_id=ticket_id,date_created=now)
+                    db.session.add(comment)
                     db.session.commit()
                 else:
                     flash("Enter required details",category="error")
@@ -401,7 +424,9 @@ def edit_ticket(ticket_id):
                     emap = TicketEffortMap.query.filter_by(ticket_id=ticket.id,effort_id=effort.id).first()
                     if(emap):
                         emap.value = str(eanswer)
-                if(custname and title and region and startdate):    
+                if(custname and title and region and startdate):
+                    comment = Comment(text="Ticket was edited",author=current_user.id,ticket_id=ticket_id,date_created=now)
+                    db.session.add(comment) 
                     db.session.commit()
                 else:
                     flash("Enter required details",category="error")
@@ -431,7 +456,9 @@ def edit_ticket(ticket_id):
                     emap = TicketEffortMap.query.filter_by(ticket_id=ticket.id,effort_id=effort.id).first()
                     if(emap):
                         emap.value = str(eanswer)
-                if(custname and title and region and startdate):    
+                if(custname and title and region and startdate):
+                    comment = Comment(text="Ticket was edited",author=current_user.id,ticket_id=ticket_id,date_created=now)
+                    db.session.add(comment)    
                     db.session.commit()
                 else:
                     flash("Enter required details",category="error")
@@ -556,13 +583,20 @@ def master_alert_home():
         alert_body = request.form.get('alert_body')
         body_type = request.form['body_type']
         recipients = request.form.get('recipients')
-        if(MasterAlertConfig.query.filter_by(ticket_status=ticket_status).first()):
-            flash("Status already exists",category="error")
+        curr = MasterAlertConfig.query.filter_by(ticket_status=ticket_status).first()
+        if(curr):
+            curr.alert_subject = alert_subject
+            curr.alert_body = alert_body
+            curr.body_type = body_type
+            curr.recipients = recipients
+            db.session.commit()
+            flash("Alert config updated",category="success")
             return redirect('/master-alert-home')
-        alert = MasterAlertConfig(ticket_status=ticket_status,alert_subject=alert_subject,alert_body=alert_body,body_type=body_type,recipients=recipients)
-        db.session.add(alert)
-        db.session.commit()
-        return redirect('/master-alert-home')
+        else:
+            alert = MasterAlertConfig(ticket_status=ticket_status,alert_subject=alert_subject,alert_body=alert_body,body_type=body_type,recipients=recipients)
+            db.session.add(alert)
+            db.session.commit()
+            return redirect('/master-alert-home')
 
     return render_template('master_alert.html',user=current_user,logopath=logopath,alerts=alerts,statuses=statuses)
 
@@ -720,7 +754,8 @@ def proc_files(files_raw,ticket_id):
 
 def alertmechanism(ticket_status, ticket_id):
     current = MasterAlertConfig.query.filter_by(ticket_status=ticket_status).first()
-    ticket = Ticket.query.filter_by(id = ticket_id ).first()
+    ticket = Ticket.query.filter_by(id = ticket_id).first()
+    ticket_code = ticket.ticket_code
     admins = User.query.filter_by(usertype = "admin").all()
     reporter_id = ticket.author_id
     assignee_id = ticket.assignee_id
@@ -733,6 +768,8 @@ def alertmechanism(ticket_status, ticket_id):
         assignee_email = ""
     alertsub =  current.alert_subject
     alertbody = current.alert_body
+    alertbody = alertbody.replace("<ticket_id>",str(ticket_code)+str(ticket_id))
+    alertbody = alertbody.replace("<ticket_status>",str(ticket_status))
     body_type = current.body_type
     recipients = current.recipients
     arr = recipients.split(";")
@@ -751,7 +788,6 @@ def alertmechanism(ticket_status, ticket_id):
                 
        
     recipients_email = recipients_email.strip(";")
-
     emailaudit = MasterAlertAudit(ticket_status = ticket_status , alert_subject  = alertsub , alert_body = alertbody , recipients = str(recipients_email) )
     #emailbysmtp(recipients_email , alertsub , alertbody , body_type)
     db.session.add(emailaudit)
