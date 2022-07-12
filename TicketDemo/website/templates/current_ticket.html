@@ -12,11 +12,11 @@
     }
 
     .left {
-        width: 65%;
+        width: 80%;
     }
 
     .right {
-        width: 35%;
+        width: 20%;
 
     }
 
@@ -44,6 +44,18 @@
         width: 50%;
 
     }
+    .width-20 {
+        clear: none;
+        float: left;
+        width: 20%;
+
+    }
+    .width-30 {
+        clear: none;
+        float: left;
+        width: 30%;
+
+    }
 
     p {
         margin: 0
@@ -66,7 +78,7 @@
             {% if ticket.status != "Closed" %}
             <div class="btn-group">
                 <button type="button" class="btn btn-sm"
-                    style="background-color: #C9E5EF; position: absolute;top:2px; {%if user.usertype=='reporter'%}left:630px;{%else%}left:340px;{%endif%}border: 2px solid; ">
+                    style="background-color: #C9E5EF; position: absolute;top:2px; left:817px; border: 2px solid; ">
                     <a href="/edit-ticket/{{ticket.id}}" class="dropdown-item">
                         <span class="bi-pen">Edit Ticket</span>
                     </a>
@@ -74,16 +86,38 @@
             </div>
             {% if user.id == ticket.author_id %}
             <div class="btn-group">
-                <button type="button" class="btn btn-sm" style="position: absolute;top:2px;">
+                <button type="button" class="btn btn-sm" 
+                style="background-color: #C9E5EF; position: absolute;top:2px; right:320px;border: 2px solid; ">
                     <a href="/delete-ticket/{{ticket.id}}" class="dropdown-item">
-                        <span class="bi-trash"></span>
+                        <span class="bi-trash">Delete Ticket</span>
                     </a>
                 </button>
             </div>
             {% endif %}
+           
+            {% if user.usertype == 'assignee' or user.usertype == 'admin' %}
+            {% if user.usertype == 'assignee' %}
+            <div>
+                <button type="button" class="btn btn-sm"
+                    style="position: absolute; left:750px; top:58px; background-color: #C9E5EF; border: 2px solid">
+                    <a href="/estimated-details/{{ticket.id}}" class="dropdown-item">
+                        <span class="bi-pen">Effort Estimation</span>
+                    </a>
+                </button>
+            </div>
+            {% endif %}
+            <div>
+                <span style="position: absolute; left:572px;top:58px">
+                    <select class="form-control" id="status-name" name="status-name">
+                        {% for status in statuses %}
+                        <option value="{{status.status}}">{{status.status}}</option>
+                        {% endfor %}
+                    </select>
+                </span>
+            </div>
             {% if user.usertype == 'admin' %}
             <div>
-                <span style="float: left; left: 530px; top: 58px; position: absolute;">
+                <span style="float: left; left: 748px; top: 58px; position: absolute;">
                     <select class="form-select" id="assignee-name" name="assignee-name">
                         <option></option>
                         <optgroup label="Available &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;">
@@ -104,27 +138,6 @@
                 </span>
             </div>
             {% endif %}
-            {% if user.usertype == 'assignee' or user.usertype == 'admin' %}
-            {% if user.usertype == 'assignee' %}
-            <div>
-                <button type="button" class="btn btn-sm"
-                    style="position: absolute; left:530px; top:58px; background-color: #C9E5EF; border: 2px solid">
-                    <a href="/estimated-details/{{ticket.id}}" class="dropdown-item">
-                        <span class="bi-pen">Effort Estimation</span>
-                    </a>
-                </button>
-            </div>
-            {% endif %}
-            <div>
-                <span style="position: absolute; left:633px;top:58px">
-                    <select class="form-control" id="status-name" name="status-name">
-                        {% for status in statuses %}
-                        <option value="{{status.status}}">{{status.status}}</option>
-                        {% endfor %}
-                    </select>
-                </span>
-            </div>
-
             {% endif %}
             {% else %}
             <button type="button" class="btn btn-sm" style="position:absolute;right:33px;top:56px;">
@@ -140,10 +153,10 @@
                 <div class="card-body">
                     <div class="card-text">
 
-                        <div style="display: block; margin-left: -60px; width: 784px; margin-top: 27px;" class="row">
-                            <span class="people" style="float:left; width:880px;">
+                        <div style="display: block; margin-left: -60px; width: 970px; margin-top: 27px;" class="row">
+                            <span class="people" style="float:left; width:1000px;">
                                 <div
-                                    style="font-size:16px; font-weight: bold; border: 1px solid grey; color: white; border-radius: 5px; background-color: #003E7F; padding: 7px; margin: -5px; margin-bottom: -15px; width: 784px; margin-left: -6px; margin-top: -6px;">
+                                    style="font-size:16px; font-weight: bold; border: 1px solid grey; color: white; border-radius: 5px; background-color: #003E7F; padding: 7px; margin: -5px; margin-bottom: -15px; width: 970px; margin-left: -6px; margin-top: -6px;">
                                     <!-- <button class="btn" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne" type="button"> -->
                                     Details
                                     <!-- </button>-->
@@ -152,20 +165,23 @@
                                 <br>
 
                                 <p style="font-size:14px;" class="width-50"><b>Customer Name:</b>{{ticket.custname}}</p>
-                                <p style="font-size:14px;" class="width-50"><b>Region:</b> {{ticket.region}}</p>
-                                <p style="font-size:14px;" class="width-50"><b>Requirement Title:</b> {{ticket.title}}</p>
+                                <p style="font-size:14px;" class="width-20"><b>Region:</b> {{ticket.region}}</p>
+                                
+                                <p style="font-size:14px;" class="width-30"><b>Current Status:</b><b class="badge {% if ticket.status == 'Opened' %} bg-primary {% elif ticket.status == 'Closed' %} bg-success {% else %} bg-warning {% endif %}">{{ticket.status}}</b></p>
+                                <br>
+                                <p style="font-size:14px;"><b>Requirement Title:</b> {{ticket.title}}</p>
                                
-                                <p style="font-size:14px;" class="width-50"><b>Current Status:</b><b class="badge {% if ticket.status == 'Opened' %} bg-primary {% elif ticket.status == 'Closed' %} bg-success {% else %} bg-warning {% endif %}">{{ticket.status}}</b></p>
+                               
                             </span>
                         </div>
 
-                        <div class="row" style="display: block; margin-left: -50px; margin-top: -20px;">
+                        <div class="row" style="display: block; margin-left: -50px; margin-top: -20px; width: 970px;">
                             <a data-bs-toggle="collapse" data-bs-target="#collapseTwo" aria-expanded="false"
                                 aria-controls="collapseTwo">
 
 
                                 <div
-                                    style="font-size:16px; font-weight: bold; border: 1px solid grey; color: white; border-radius: 5px; background-color: #003E7F; padding: 7px; margin: -5px; margin-bottom: -15px; width: 784px;">
+                                    style="font-size:16px; font-weight: bold; border: 1px solid grey; color: white; border-radius: 5px; background-color: #003E7F; padding: 7px; margin: -5px; margin-bottom: -15px; width: 970px;">
                                     Questions
                                     <i class="bi-chevron-down"
                                         style="width:11px; height:11px; float: right; padding-top: 3px; margin-right: 7px; "></i>
@@ -187,18 +203,18 @@
                             </span>
                         </div>
 
-                        <div class="row" style="display: block; margin-left: -50px; margin-right: -20px;">
+                        <div class="row" style="display: block; margin-left: -50px; margin-right: -20px; width: 970px;">
                             <a data-bs-toggle="collapse" data-bs-target="#collapseThree" aria-expanded="true"
                                 aria-controls="collapseThree">
 
                                 <div
-                                    style="font-size:16px; font-weight: bold; border: 1px solid grey; color: white; border-radius: 5px; background-color: #003E7F; padding: 7px; margin: -5px; margin-bottom: -15px;  width: 784px;">
+                                    style="font-size:16px; font-weight: bold; border: 1px solid grey; color: white; border-radius: 5px; background-color: #003E7F; padding: 7px; margin: -5px; margin-bottom: -15px;  width: 970px;">
                                     Estimation Details
                                     <i class="bi-chevron-down"
                                         style="width:11px; height:11px; float: right; padding-top: 3px; margin-right: 7px; "></i>
                                 </div>
                             </a>
-                            <span style="float:left; margin-top: -10px; margin-left: -5px; width: 784px;"
+                            <span style="float:left; margin-top: -10px; margin-left: -5px; "
                                 id="collapseThree" class="collapse people">
                                 {% for ticketeffortmap in ticketeffortmaps %}
                                 {% for effort in efforts %}
@@ -211,26 +227,26 @@
                         </div>
                     </div>
 
-                    <div class="row" style="display: block; margin-left: -60px; width:784px;">
-                        <span class="people" style="float:left; width:880px;">
+                    <div class="row" style="display: block; margin-left: -60px; width: 970px;">
+                        <span class="people" style="float:left;">
                             <div
-                                style="font-size:16px; font-weight: bold; border: 1px solid grey; color: white; border-radius: 5px; background-color: #003E7F; padding: 7px; margin: -5px; margin-bottom: -15px; margin-right: -6px; margin-left: -6px; margin-top: -6px;">
+                                style="font-size:16px; font-weight: bold; border: 1px solid grey; color: white; border-radius: 5px; background-color: #003E7F; padding: 7px; margin: -5px; margin-bottom: -15px; margin-right: -6px; margin-left: -6px; margin-top: -6px; width: 970px;">
                                 Comments</div>
                             <br>
-                            <div class="collapse" id="comments-{{ticket.id}}">
-                                <div class="card">
+                            <div class="collapse" id="comments-{{ticket.id}}" >
+                                <div class="card" >
                                     <div class="card-body" id="comments-expanded-{{ticket.id}}">
                                         {% for comment in comments %}
-                                        <div class="d-flex justify-content-between align-items-center">
+                                        <div class="d-flex justify-content-between align-items-center" >
                                             <div>
                                                 {% if comment.status == 'Edited' %}
-                                                <small >{{comment.User.username}} ({{comment.User.usertype}}) edited a
-                                                    comment - {{comment.date_created | humanize}} </small>
+                                                <small ><i>{{comment.User.username}} ({{comment.User.usertype}}) edited a
+                                                    comment - {{comment.date_created | humanize}}</i></small>
                                                 <pre contenteditable="false"
                                                     id="comment{{comment.id}}" style="white-space:pre-wrap;font-family: 'Assistant', sans-serif;">{{comment.text}}</pre>
                                                 {% else %}
-                                                <small>{{comment.User.username}} ({{comment.User.usertype}}) added a
-                                                    comment - {{comment.date_created | humanize}} </small>
+                                                <small><i>{{comment.User.username}} ({{comment.User.usertype}}) added a
+                                                    comment - {{comment.date_created | humanize}} </i></small>
                                                 {% if comment.status == 'Deleted' %}
                                                 <br>
                                                 <small><i>This message was deleted</i></small>
@@ -291,17 +307,17 @@
                 </div>
                 </span>
 
-                <div class="row" style="display: block; margin-left: -50px; margin-right: -20px;">
+                <div class="row" style="display: block; margin-left: -50px; margin-right: -20px; width:970px">
                     <a data-bs-toggle="collapse" data-bs-target="#collapseFour" aria-expanded="true"
                         aria-controls="collapseFour">
                         <div
-                            style="font-size:16px; font-weight: bold; border: 1px solid grey; color: white; border-radius: 5px; background-color: #003E7F; padding: 7px; margin: -5px; margin-bottom: -15px; width: 784px;">
+                            style="font-size:16px; font-weight: bold; border: 1px solid grey; color: white; border-radius: 5px; background-color: #003E7F; padding: 7px; margin: -5px; margin-bottom: -15px; width: 970px;">
                             Attachments
                             <i class="bi-chevron-down"
                                         style="width:11px; height:11px; float: right; padding-top: 3px; margin-right: 7px; "></i>
                         </div>
                     </a>
-                    <span style="float:left;  margin-top: -10px; margin-left: -5px; width: 784px; margin-bottom: 30px;" id="collapseFour"
+                    <span style="float:left;  margin-top: -10px; margin-left: -5px;  margin-bottom: 30px;" id="collapseFour"
                         class="collapse people container">
                         <form method="post" action="/attach-file/{{ticket.id}}" enctype="multipart/form-data">
                             <dl>
@@ -366,7 +382,7 @@
             <br>
             <div class="column right">
 
-                <div class="people" style="margin-left:15px; margin-right: -40px; margin-top: 31px;">
+                <div class="people" style="margin-left:15px; margin-right: -40px; margin-top: 31px; width: 250px;">
                     <div
                         style="font-size:16px; font-weight: bold; border: 1px solid grey; color: white; border-radius: 5px; background-color: #003E7F; padding: 7px; margin: -5px; margin-bottom: -15px; margin-right: -6px; margin-left: -6px; margin-top: -6px;">
                         People</div>
@@ -375,22 +391,22 @@
                         <b style="font-size:14px;">Reported By:</b><br><img src="https://img.icons8.com/material-sharp/24/000000/person-male.png"
                             height="20px" style="opacity: 0.5;float: left;" /><div style="font-size:14px;">{{ticket.author.username}}</div>
                         <b style="font-size:14px;"> Assignee:</b><br><img src="https://img.icons8.com/material-sharp/24/000000/person-male.png"
-                            height="20px" style="opacity: 0.5;float: left;" /> <div style="font-size:14px;">{{ticket.assignee.username}}</div>
+                            height="20px" style="opacity: 0.5;float: left;" /> <div style="font-size:14px;">{{ticket.assignee.username}}</div><br>
                     </div>
                 </div>
 
-                <div class="people" style="margin-top: 10px; margin-left:15px; margin-right: -40px;">
+                <div class="people" style="margin-top: 10px; margin-left:15px; margin-right: -40px; width: 250px;">
                     <div
                         style="font-size:16px; font-weight: bold; border: 1px solid grey; color: white; border-radius: 5px; background-color: #003E7F; padding: 7px; margin: -5px; margin-bottom: -15px; margin-right: -6px; margin-left: -6px; margin-top: -6px;">
                         Dates</div>
 
                     <div class="ml-auto p-2" style="margin-top: 10px;">
-                        <b style="font-size:14px;float:left;" >Created On:</b> <div style="font-size:14px;">{{ticket.date_created}}</div>
-                        <b  style="font-size:14px;float:left;">Assigned On:</b> <div style="font-size:14px;">{{ticket.date_assigned}}</div>
+                        <b style="font-size:14px;" >Created On:</b> <br><div style="font-size:14px;">{{ticket.date_created}}</div>
+                        <b  style="font-size:14px;">Assigned On:</b><br> <div style="font-size:14px;">{{ticket.date_assigned}}</div>
                         {% if ticket.status == "Closed" %}
-                        <b  style="font-size:14px;float:left;">Closed On:</b> <div style="font-size:14px;">{{ticket.date_closed}}</div>
+                        <b  style="font-size:14px;">Closed On:</b> <br><div style="font-size:14px;">{{ticket.date_closed}}</div>
                         {% endif %}
-                        <b  style="font-size:14px;float:left;">Last Modified On:</b> <div style="font-size:14px;">{{ticket.last_modified}}</div>
+                        <b  style="font-size:14px;">Last Modified On:</b><br> <div style="font-size:14px;">{{ticket.last_modified}}</div>
 
                     </div>
                 </div>

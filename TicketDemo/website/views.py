@@ -180,7 +180,7 @@ def tickets(ticket_id):
     ticketeffortmaps = TicketEffortMap.query.filter_by(ticket_id=ticket_id).order_by(TicketEffortMap.id.asc()).all()
     questions = Question.query.order_by(Question.id.asc()).all()
     statuses = Status.query.all()
-    files_raw = File.query.all()
+    files_raw = File.query.filter_by(ticket_id=ticket_id).all()
     files_list = proc_files(files_raw,ticket_id)
     ticket = Ticket.query.filter_by(id=ticket_id).first()
     comments = Comment.query.filter(Comment.ticket_id==ticket_id).order_by(Comment.id.asc()).all()
@@ -251,11 +251,11 @@ def update_status(ticket_id):
                     ticket.assignee.status = "Available"
                     ticket.date_closed = now
                 else:
-                    flash("Please do effort estimation before closing ticket",category="error")
+                    #flash("Please do effort estimation before closing ticket",category="error")
                     return redirect('/tickets/'+str(ticket_id))
             ticket.status = status
             ticket.last_modified = now
-            comment_text = "Status changed from "+str(oldstatus)+" to "+str(status)
+            comment_text = "Ticket Status changed from '"+str(oldstatus)+"' to '"+str(status)+"'"
             comment = Comment(text=str(comment_text),author=current_user.id,ticket_id=ticket_id,date_created=now)
             db.session.add(comment) 
             db.session.commit()
@@ -347,7 +347,7 @@ def estimated_details(ticket_id):
             flash("Please complete Master Setup first",category="error")
         return redirect('/tickets/'+str(ticket_id))
     if(TicketEffortMap.query.filter_by(ticket_id=ticket_id).first()):
-        reason = "So that duplicate mapping not created" 
+        reason = "So that duplicate mapping not created"
     else:
         for effort in efforts:
             ticketeffortmap = TicketEffortMap(ticket_id=ticket_id,effort_id=effort.id)
@@ -984,8 +984,8 @@ def graph_settings():
     enddate = request.form.get('enddate')
     reporter = request.form.get('reporters')
     assignee = request.form.get('assignees')
-    if(startdate<yearago):
-        flash("Please enter start date less than a year ago",category="error")
+    #if(startdate<yearago):
+        #flash("Please enter start date less than a year ago",category="error")
     if(str(datetype)=="assigned"):
         if(startdate and enddate):
             tickets_created = Ticket.query.filter(Ticket.date_assigned>startdate,Ticket.date_assigned<enddate,Ticket.date_assigned>yearago).order_by(Ticket.date_created.asc()).all()
@@ -1063,3 +1063,43 @@ def piegraph_settings():
     for ticket in tickets_closed:
         tickets_dates_closed.append(str(ticket.date_closed))
     return render_template("dashboard.html",user=current_user,logopath=logopath,count_vs_status=json.dumps(count_vs_status),tickets_date_created=json.dumps(tickets_date_created),tickets_date_closed=json.dumps(tickets_dates_closed),assignees=assignees,reporters=reporters,prevstartdate=null,prevenddate=null,prevassignee=null,prevreporter=null,prevdatetype="created",prevpie=assignee_name)
+
+
+@views.route("/edit-effort/<effort_id>",methods=['POST'])
+@login_required
+def edit_effort(effort_id):
+    now = time.strftime("%d/%B/%Y %H:%M:%S")
+    effort = Effort.query.filter_by(id=effort_id).first()
+    if request.method == "POST":
+        output = request.get_json()
+        result = json.loads(output)
+        newtext = str(result["newtext"])
+        effort.effort = newtext
+        db.session.commit()
+    return redirect('/master-effort-home')
+
+@views.route("/edit-question/<question_id>",methods=['POST'])
+@login_required
+def edit_question(question_id):
+    now = time.strftime("%d/%B/%Y %H:%M:%S")
+    question = Question.query.filter_by(id=question_id).first()
+    if request.method == "POST":
+        output = request.get_json()
+        result = json.loads(output)
+        newtext = str(result["newtext"])
+        question.question = newtext
+        db.session.commit()
+    return redirect('/master-question-home')
+
+@views.route("/edit-status/<status_id>",methods=['POST'])
+@login_required
+def edit_status(status_id):
+    now = time.strftime("%d/%B/%Y %H:%M:%S")
+    status = Status.query.filter_by(id=status_id).first()
+    if request.method == "POST":
+        output = request.get_json()
+        result = json.loads(output)
+        newtext = str(result["newtext"])
+        status.status = newtext
+        db.session.commit()
+    return redirect('/master-status-home')

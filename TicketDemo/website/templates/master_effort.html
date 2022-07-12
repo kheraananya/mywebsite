@@ -48,11 +48,14 @@
             {% for effort in efforts %}
                 <tr>
                     <td>{{effort.id}}</a></td>
-                    <td>{{effort.effort}}</td>
+                    <td><p id="effort{{effort.id}}">{{effort.effort}}</p></td>
                     <td>{{effort.date_created}}</td>
                     <td>{% if effort.author_id %} {{ effort.author.username }} {%else%} Default {%endif%}</td>
                     <td>{% if effort.effort != "Total Effort(Hours)" and effort.effort != "Total Cost($)"  %}
-                        <a href="/delete-effort/{{effort.id}}"><button type="button" class="btn btn-danger"><span class="bi-trash"></span></button></a>
+                        <div class="btn-group" id="buttongroup{{effort.id}}">
+                            <button type="button" id="button{{effort.id}}" class="btn btn-danger" onclick="editEffort('{{effort.id}}')"><span class="bi-pen" id="icon{{effort.id}}"></span></button>
+                            <button type="button" class="btn btn-danger"><a href="/delete-effort/{{effort.id}}" class="dropdown-item"><span class="bi-trash"></span></a></button>
+                        </div>
                         {% endif %}
                     </td>
                 </tr>
@@ -60,7 +63,44 @@
         </tbody>  
     </table>
    </div>
-   <script>  
+   <script>
+    function editEffort(effort_id) {
+                var edittext = document.getElementById("effort" + effort_id);
+                var button = document.getElementById("button" + effort_id);
+                var icon = document.getElementById("icon" + effort_id);
+                var textbox = document.createElement("textarea");
+                var close = document.createElement("button");
+                var curr = document.createElement("p");
+                var btngroup = document.getElementById("buttongroup" + effort_id);
+                var currtext = edittext.textContent;
+                close.setAttribute("class","btn btn-danger");
+                close.innerHTML = "<span class='bi-x-lg'></span>";
+                icon.setAttribute("class", "bi-save");
+                curr.innerHTML = currtext;
+                textbox.value = currtext;
+                edittext.parentNode.replaceChild(textbox, edittext);
+                btngroup.append(close);
+                close.onclick = function () {
+                    icon.setAttribute("class", "bi-pen");
+                    textbox.parentNode.replaceChild(curr, textbox);
+                    btngroup.removeChild(close);
+                };
+                button.onclick = function () {
+                    icon.setAttribute("class", "bi-pen");
+                    var newtext = textbox.value;
+                    edittext.innerHTML = newtext;
+                    textbox.parentNode.replaceChild(edittext, textbox);
+                    const dict_values = { effort_id, newtext };
+                    const s = JSON.stringify(dict_values);
+                    $.ajax({
+                        url: "/edit-effort/" + effort_id,
+                        type: "POST",
+                        contentType: "application/json",
+                        data: JSON.stringify(s)
+                    });
+                    btngroup.removeChild(close);
+                };
+            }
     $(document).ready(function(){ 
         var navele = document.getElementById('navmaster');
 	    navele.setAttribute("style","padding-left:25px; color: white; font-weight: bold;");

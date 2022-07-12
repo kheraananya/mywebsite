@@ -48,12 +48,15 @@
             {% for status in statuses %}
                 <tr>
                     <td>{{status.id}}</a></td>
-                    <td>{{status.status}}</td>
+                    <td><p id="status{{status.id}}">{{status.status}}</p></td>
                     <td>{{status.date_created}}</td>
                     <td>{% if status.author_id %} {{ status.author.username}} {%else%} Default {%endif%}</td>
                     <td>
                         {% if status.status != "Opened" and status.status != "Assigned" and status.status != "In-Review" and status.status != "Closed" %}
-                        <a href="/delete-status/{{status.id}}"><button type="button" class="btn btn-danger"><span class="bi-trash"></span></button></a>
+                        <div class="btn-group" id="buttongroup{{status.id}}">
+                            <button type="button" id="button{{status.id}}" class="btn btn-danger" onclick="editStatus('{{status.id}}')"><span class="bi-pen" id="icon{{status.id}}"></span></button>
+                            <button type="button" class="btn btn-danger"><a href="/delete-status/{{status.id}}" class="dropdown-item"><span class="bi-trash"></span></a></button>
+                        </div>
                         {% endif %}
                     </td>
                 </tr>
@@ -62,6 +65,43 @@
     </table>
    </div>
    <script>
+    function editStatus(status_id) {
+                var edittext = document.getElementById("status" + status_id);
+                var button = document.getElementById("button" + status_id);
+                var icon = document.getElementById("icon" + status_id);
+                var textbox = document.createElement("textarea");
+                var close = document.createElement("button");
+                var curr = document.createElement("p");
+                var btngroup = document.getElementById("buttongroup" + status_id);
+                var currtext = edittext.textContent;
+                close.setAttribute("class","btn btn-danger");
+                close.innerHTML = "<span class='bi-x-lg'></span>";
+                icon.setAttribute("class", "bi-save");
+                curr.innerHTML = currtext;
+                textbox.value = currtext;
+                edittext.parentNode.replaceChild(textbox, edittext);
+                btngroup.append(close);
+                close.onclick = function () {
+                    icon.setAttribute("class", "bi-pen");
+                    textbox.parentNode.replaceChild(curr, textbox);
+                    btngroup.removeChild(close);
+                };
+                button.onclick = function () {
+                    icon.setAttribute("class", "bi-pen");
+                    var newtext = textbox.value;
+                    edittext.innerHTML = newtext;
+                    textbox.parentNode.replaceChild(edittext, textbox);
+                    const dict_values = { status_id, newtext };
+                    const s = JSON.stringify(dict_values);
+                    $.ajax({
+                        url: "/edit-status/" + status_id,
+                        type: "POST",
+                        contentType: "application/json",
+                        data: JSON.stringify(s)
+                    });
+                    btngroup.removeChild(close);
+                };
+            }
     var navele = document.getElementById('navmaster');
 	navele.setAttribute("style","padding-left:25px; color: white; font-weight: bold;");
     $(document).ready(function(){ 

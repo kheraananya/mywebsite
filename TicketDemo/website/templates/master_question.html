@@ -48,10 +48,15 @@
             {% for question in questions %}
                 <tr>
                     <td>{{question.id}}</a></td>
-                    <td>{{question.question}}</td>
+                    <td><p id="question{{question.id}}">{{question.question}}</p></td>
                     <td>{{question.date_created}}</td>
-                    <td>{{user.username}}</td>
-                    <td><a href="/delete-question/{{question.id}}"> <button type="button" class="btn btn-danger"><span class="bi-trash"></span></button></a></td>
+                    <td>{% if question.author_id %} {{ question.author.username }} {%else%} Default {%endif%}</td>
+                    <td>
+                        <div class="btn-group" id="buttongroup{{question.id}}">
+                            <button type="button" id="button{{question.id}}" class="btn btn-danger" onclick="editQuestion('{{question.id}}')"><span class="bi-pen" id="icon{{question.id}}"></span></button>
+                            <button type="button" class="btn btn-danger"><a href="/delete-question/{{question.id}}" class="dropdown-item"><span class="bi-trash"></span></a></button>
+                        </div>
+                    </td>
                 </tr>
             {% endfor %}
         </tbody> 
@@ -59,7 +64,44 @@
     </table>
    </div>
 
-   <script>  
+   <script>
+    function editQuestion(question_id) {
+                var edittext = document.getElementById("question" + question_id);
+                var button = document.getElementById("button" + question_id);
+                var icon = document.getElementById("icon" + question_id);
+                var textbox = document.createElement("textarea");
+                var close = document.createElement("button");
+                var curr = document.createElement("p");
+                var btngroup = document.getElementById("buttongroup" + question_id);
+                var currtext = edittext.textContent;
+                close.setAttribute("class","btn btn-danger");
+                close.innerHTML = "<span class='bi-x-lg'></span>";
+                icon.setAttribute("class", "bi-save");
+                curr.innerHTML = currtext;
+                textbox.value = currtext;
+                edittext.parentNode.replaceChild(textbox, edittext);
+                btngroup.append(close);
+                close.onclick = function () {
+                    icon.setAttribute("class", "bi-pen");
+                    textbox.parentNode.replaceChild(curr, textbox);
+                    btngroup.removeChild(close);
+                };
+                button.onclick = function () {
+                    icon.setAttribute("class", "bi-pen");
+                    var newtext = textbox.value;
+                    edittext.innerHTML = newtext;
+                    textbox.parentNode.replaceChild(edittext, textbox);
+                    const dict_values = { question_id, newtext };
+                    const s = JSON.stringify(dict_values);
+                    $.ajax({
+                        url: "/edit-question/" + question_id,
+                        type: "POST",
+                        contentType: "application/json",
+                        data: JSON.stringify(s)
+                    });
+                    btngroup.removeChild(close);
+                };
+            }
     $(document).ready(function(){ 
         var navele = document.getElementById('navmaster');
 	    navele.setAttribute("style","padding-left:25px; color: white; font-weight: bold;");

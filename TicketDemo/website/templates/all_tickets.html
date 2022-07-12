@@ -1,82 +1,85 @@
 {% extends "base.html" %} {% block title %} All Tickets {% endblock %} {% block
-content %}
-<style>
-	.table > tbody > tr:nth-of-type(odd) {
-		background-color: #c9e5ef;
-	}
-</style>
-<br />
-<div class="container-fluid">
-	{% if user.usertype == 'reporter' %}
-	<div style="position: absolute; left: 90px">
-		<a href="/create-ticket">
-			<button
-				type="button"
-				class="btn btn-info lg"
-				style="background-color: #003e7f; color: white"
-			>
-				Create New Ticket
-			</button>
-		</a>
+	content %}
+	<style>
+		.table > tbody > tr:nth-of-type(odd) {
+			background-color: #c9e5ef;
+		}
+	</style>
+	<br />
+	<div class="container-fluid">
+		{% if user.usertype == 'reporter' %}
+		<div style="position: absolute; left: 90px;">
+			<a href="/create-ticket">
+				<button
+					type="button"
+					class="btn btn-info lg"
+					style="background-color: #003e7f; color: white"
+				>
+					Create New Ticket
+				</button>
+			</a>
+		</div>
+		<h5 align="center" style = "padding-top: 5px;"><b>All Tickets</b></h5>
+		{% else %}
+		<h5 align="left" style = "padding-top: 5px;"><b>All Tickets</b></h5>
+		{% endif %}
+		<div style="position: absolute; right: 90px;top: 73px;">
+			<a href="/export-alltickets">
+				<button
+					type="button"
+					class="btn btn-info lg"
+					style="background-color: #003e7f; color: white"
+				>
+					Export
+				</button>
+			</a>
+		</div>
 	</div>
-	{% endif %}
-	<h2 align="center"><b>All Tickets</b></h2>
-	<div style="position: absolute; right: 90px;top: 73px;">
-		<a href="/export-alltickets">
-			<button
-				type="button"
-				class="btn btn-info lg"
-				style="background-color: #003e7f; color: white"
-			>
-				Export
-			</button>
-		</a>
+	<br />
+	
+	<div class="container">
+		<table class="table" id="myTable" class="table table-striped" style=" font-size: 14px; ">
+			<thead>
+				<tr style="background-color: #003e7f; color: white ;">
+					<th style = "font-size: 15px;">Ticket ID</th>
+					<th style = "font-size: 15px;">Customer Name</th>
+					<th style = "font-size: 15px;">Reporter Name</th>
+					<th style = "font-size: 15px;">Current Status</th>
+					<th style = "font-size: 15px;">Assignee</th>
+					<th style = "font-size: 15px;">Created On</th>
+					<th style = "font-size: 15px;">Last Modified On</th>
+				</tr>
+			</thead>
+			<tbody>
+				{% for ticket in tickets %}
+				<tr>
+					<td><a href="/tickets/{{ticket.id}}">{{ticket.ticket_code}}{{ticket.id}}</a></td>
+					<td>{{ticket.custname}}</td>
+					<td>{{ticket.author.username}}</td>
+					<td>
+						<b
+							class="badge {% if ticket.status == 'Opened' %} bg-primary {% elif ticket.status == 'Closed' %} bg-success {% else %} bg-warning {% endif %}"
+							>{{ticket.status}}</b
+						>
+					</td>
+					<td>
+						{% if ticket.assignee_id %} {{ticket.assignee.username}} {% else %}
+						Not Assigned {% endif %}
+					</td>
+					<td>{{ticket.date_created}}</td>
+					<td>{{ticket.last_modified}}</td>
+				</tr>
+				{% endfor %}
+			</tbody>
+		</table>
 	</div>
-</div>
-<br />
-
-<div class="container">
-	<table class="table" id="myTable" class="table table-striped" style=" font-size: 14px; ">
-		<thead>
-			<tr style="background-color: #003e7f; color: white ;">
-				<th style = "font-size: 15px;">Ticket ID</th>
-				<th style = "font-size: 15px;">Customer Name</th>
-				<th style = "font-size: 15px;">Reporter Name</th>
-				<th style = "font-size: 15px;">Current Status</th>
-				<th style = "font-size: 15px;">Assignee</th>
-				<th style = "font-size: 15px;">Created On</th>
-				<th style = "font-size: 15px;">Last Modified On</th>
-			</tr>
-		</thead>
-		<tbody>
-			{% for ticket in tickets %}
-			<tr>
-				<td><a href="/tickets/{{ticket.id}}">{{ticket.ticket_code}}{{ticket.id}}</a></td>
-				<td>{{ticket.custname}}</td>
-				<td>{{ticket.author.username}}</td>
-				<td>
-					<b
-						class="badge {% if ticket.status == 'Opened' %} bg-primary {% elif ticket.status == 'Closed' %} bg-success {% else %} bg-warning {% endif %}"
-						>{{ticket.status}}</b
-					>
-				</td>
-				<td>
-					{% if ticket.assignee_id %} {{ticket.assignee.username}} {% else %}
-					Not Assigned {% endif %}
-				</td>
-				<td>{{ticket.date_created}}</td>
-				<td>{{ticket.last_modified}}</td>
-			</tr>
-			{% endfor %}
-		</tbody>
-	</table>
-</div>
-<br />
-<script>
-	$(document).ready(function () {
-		var navele = document.getElementById('navalltickets');
-		navele.setAttribute("style","padding-left:25px; color: white; font-weight: bold;");
-		$("#myTable").DataTable();
-	});
-</script>
-{% block footer %}{% endblock %} {% endblock %}
+	<br />
+	<script>
+		$(document).ready(function () {
+			var navele = document.getElementById('navalltickets');
+			navele.setAttribute("style","padding-left:25px; color: white; font-weight: bold;");
+			$("#myTable").DataTable();
+		});
+	</script>
+	{% block footer %}{% endblock %} {% endblock %}
+	
