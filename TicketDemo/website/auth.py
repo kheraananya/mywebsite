@@ -17,7 +17,6 @@ def login():
     if request.method == 'POST':
         email = request.form.get("email")
         password = request.form.get("password")
-
         user = User.query.filter_by(email=email).first()
         if user:
             if check_password_hash(user.password,password):
@@ -37,11 +36,13 @@ def signup():
         password1 = request.form.get("password1")
         password2 = request.form.get("password2")
         usertype = request.form.get("usertype")
-
+        domain = email.split("@")[1]
         email_exists = User.query.filter_by(email=email).first()
         username_exists = User.query.filter_by(username=username).first()
         if email_exists:
             flash('Email already in use',category='error')
+        elif (domain != "adobe.com"):
+            flash('Please use your Adobe Email',category='error')
         elif username_exists:
             flash('Username is taken',category='error')
         elif password1 != password2:

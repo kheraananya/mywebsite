@@ -89,7 +89,11 @@ def all_tickets():
 @views.route("/alert-audit")
 @login_required
 def alert_audit():
-    alertaudits = MasterAlertAudit.query.all()
+    if current_user.usertype == "admin":
+        alertaudits = MasterAlertAudit.query.all()
+    else:
+        search = "%{}%".format(str(current_user.email))
+        alertaudits = MasterAlertAudit.query.filter(MasterAlertAudit.recipients.like(search)).all()
     return render_template("alert_audit.html",user=current_user,alertaudits=alertaudits,logopath=logopath)
 
 
@@ -673,6 +677,30 @@ def master_ticketcode_home():
         db.session.commit()
     return render_template('master_ticketcode.html',user=current_user,logopath=logopath,ticket_code=masterticketcode.code)
 
+
+@views.route("/master-logo-home",methods=['GET','POST'])
+@login_required
+def master_logo_home():
+    return render_template('master_logo.html',user=current_user,logopath=logopath)
+
+import os
+APP_ROOT = os.path.dirname(os.path.abspath(__file__))
+
+@views.route("/master-logo",methods=['POST'])
+@login_required
+def master_logo():
+    target = os.path.join(APP_ROOT, 'static/')
+
+    if not os.path.isdir(target):
+        os.mkdir(target)
+
+    file = request.files["file"]
+    filename = "logo.png"
+    destination = "/".join([target, filename])
+    file.save(destination)
+    flash("Logo Uploaded",category="succeess")
+    return render_template('master_logo.html',user=current_user,logopath=logopath)
+
 import PIL.Image as Image
 import io
 import base64
@@ -839,26 +867,27 @@ def emailbysmtp(recipients_email , alertsub , alertbody , body_type):
     password = ''+str(config['email']['senderpwd'])+''
     for i in arr :
         receiver_email = str(i)
-    
-        message = MIMEMultipart("alternative")
-        message["Subject"] = alertsub
-        message["From"] = sender_email
-        message["To"] = receiver_email
-        if(body_type == 'HTML'):
-            html = alertbody
-            part1 = MIMEText(html, "html")
-            message.attach(part1)
-        else:
-            text = alertbody
-            part2 = MIMEText(text, "text")
-            message.attach(part2)
+        domain = receiver_email.split("@")[1]
+        if(domain != "adobe.com"):
+            message = MIMEMultipart("alternative")
+            message["Subject"] = alertsub
+            message["From"] = sender_email
+            message["To"] = receiver_email
+            if(body_type == 'HTML'):
+                html = alertbody
+                part1 = MIMEText(html, "html")
+                message.attach(part1)
+            else:
+                text = alertbody
+                part2 = MIMEText(text, "text")
+                message.attach(part2)
 
-        context = ssl.create_default_context()
-        with smtplib.SMTP_SSL("smtp.gmail.com", 465, context=context) as server:
-            server.login(sender_email, password)
-            server.sendmail(
-                sender_email, receiver_email, message.as_string()
-            )
+            context = ssl.create_default_context()
+            with smtplib.SMTP_SSL("smtp.gmail.com", 465, context=context) as server:
+                server.login(sender_email, password)
+                server.sendmail(
+                    sender_email, receiver_email, message.as_string()
+                )
 
 
 import xlwt

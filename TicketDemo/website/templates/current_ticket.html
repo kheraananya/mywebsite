@@ -240,13 +240,13 @@
                                         <div class="d-flex justify-content-between align-items-center" >
                                             <div>
                                                 {% if comment.status == 'Edited' %}
-                                                <small ><i>{{comment.User.username}} ({{comment.User.usertype}}) edited a
-                                                    comment - {{comment.date_created | humanize}}</i></small>
+                                                <small style="color:rgb(150, 150, 150)"><i>{{comment.User.username}} ({{comment.User.usertype}}) edited a
+                                                    comment - {{comment.date_created | humanize}} ({{comment.date_created}})</i></small>
                                                 <pre contenteditable="false"
                                                     id="comment{{comment.id}}" style="white-space:pre-wrap;font-family: 'Assistant', sans-serif;">{{comment.text}}</pre>
                                                 {% else %}
-                                                <small><i>{{comment.User.username}} ({{comment.User.usertype}}) added a
-                                                    comment - {{comment.date_created | humanize}} </i></small>
+                                                <small style="color:rgb(150, 150, 150)"><i>{{comment.User.username}} ({{comment.User.usertype}}) added a
+                                                    comment - {{comment.date_created | humanize}} ({{comment.date_created}})</i></small>
                                                 {% if comment.status == 'Deleted' %}
                                                 <br>
                                                 <small><i>This message was deleted</i></small>

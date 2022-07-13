@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+{% block title %} Master Logo {% endblock %}
+{% block content %}
+<body>
+    <br>
+    <div align='center'>
+		<a href="/master-ticketcode-home"><button type="button" class="btn btn-primary" >Ticket Code</button></a>
+        <a href="/master-logo-home"><button type="button" class="btn btn-success" style="background-color: #003E7F;">Logo Upload</button></a>
+        <a href="/master-question-home"><button type="button" class="btn btn-primary">Questionaires</button></a>
+        <a href="/master-status-home"><button type="button" class="btn btn-primary">Ticket Statuses</button></a>
+        <a href="/master-effort-home"><button type="button" class="btn btn-primary">Effort Estimation Fields</button></a>
+        <a href="/master-alert-home"><button type="button" class="btn btn-primary">Alert Configuration</button></a>
+        <a href="/master-reset-home"><button type="button" class="btn btn-primary">Reset Database</button></a>
+    </div>
+    <br>
+    <div class="container">
+        <form id="upload-form" action="/master-logo" method="POST" enctype="multipart/form-data">
+            <div class="input-group mb-3">
+                <input id="file-picker" type="file" name="file" class="form-control" autocomplete="off" accept="image/*" required>
+                <div class="input-group-append">
+                    <input style="background-color: #003E7F; color:white;" type="submit" value="Submit" class="btn btn-info">
+                </div>
+            </div>
+        </form>
+	</div>  
+    <br>
+</body>
+<script>
+  var navele = document.getElementById('navmaster');
+	navele.setAttribute("style","padding-left:25px; color: white; font-weight: bold;");
+</script>
+{% endblock %}   
