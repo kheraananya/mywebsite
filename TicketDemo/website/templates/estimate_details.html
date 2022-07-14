@@ -9,14 +9,15 @@
 
     <div style="border: 1px solid grey; border-radius: 5px; background-color: #C9E5EF; padding : 5px; ">
         <div style="border : 1px solid grey ;color: white; border-radius: 5px; background-color: #003E7F; padding:10px">
-            Estimation Field
+            Estimation Fields
         </div>
         <br>
-        {% for ticketeffortmap in ticketeffortmaps %}
-            {% for effort in efforts %}
+        {% for effort in efforts %}
+            {% for ticketeffortmap in ticketeffortmaps %}
                 {% if effort.id == ticketeffortmap.effort_id %}
-                    <label for="e{{effort.id}}">{{effort.effort}}</label>
+                    <b><label for="e{{effort.id}}">{{effort.effort}}</label></b>
                     <textarea type="text" id="e{{effort.id}}" name="e{{effort.id}}" class="form-control">{% if ticketeffortmap.value == None %}{% else %} {{ticketeffortmap.value}}{% endif %}</textarea>
+                    <br>
                 {% endif %}
             {% endfor %}
         {% endfor %}

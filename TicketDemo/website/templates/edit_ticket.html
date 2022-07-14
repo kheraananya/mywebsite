@@ -16,7 +16,7 @@
 
     <div class="right" style="float: right; margin-top: -18px;">
 
-        <button class="btn btn-info">Save</button>
+        <button class="btn btn-info">Update</button>
 
     </div>
 
@@ -29,7 +29,7 @@
         </div>
         <div class="form-group" class="grid-container" style="display: grid;
         grid-template-columns: auto auto ; grid-gap: 30px; padding: 10px;">
-            <div><label for="custname">Customer Name </label>
+            <div><label for="custname">Customer Name <span style="color: red">*</span></label>
                 <input type="text" name="custname" value="{{ticket.custname}}"
                     class="form-control name_list" />
 
@@ -43,12 +43,12 @@
 				</select>
 			</div>
             <div>
-                <label for="title">Requirement Title</label>
+                <label for="title">Requirement Title<span style="color: red">*</span></label>
                 <input type="text" name="title" value = "{{ticket.title}}""
                     class="form-control name_list" />
             </div>
 			<div>
-				<label for="startdate">Approx Start Date:</label>
+				<label for="startdate">Approx Start Date:<span style="color: red">*</span></label>
 				<br>
   				<input type="date" id="startdate" name="startdate" value="{{ticket.startdate}}">
 			</div>
@@ -64,25 +64,26 @@
             <div class="form-group" class="grid-container" style="display: grid;
             grid-template-columns: auto auto ; grid-gap: 30px; padding: 10px; ">
                 <div>
-                    {% for ticketquestionmap in ticketquestionmaps %}
                     {% for question in questions %}
+                    {% for ticketquestionmap in ticketquestionmaps %}
                     {% if question.id == ticketquestionmap.question_id %}
-                    <label for="q{{question.id}}">{{question.question}}</label>
+                    <b><label for="q{{question.id}}">{{question.question}}</label></b>
                     <textarea type="text" id="q{{question.id}}" name="q{{question.id}}" class="form-control"
                         value="{{ticketquestionmap.value}}">{{ticketquestionmap.value}}</textarea>
+                    <br>
                     {% endif %}
                     {% endfor %}
                     {% endfor %}
                 </div>
                 <div>
                     {% if user.usertype != "reporter" %}
-                    {% for ticketeffortmap in ticketeffortmaps %}
                     {% for effort in efforts %}
+                    {% for ticketeffortmap in ticketeffortmaps %}
                     {% if effort.id == ticketeffortmap.effort_id %}
-                    <label for="e{{effort.id}}">{{effort.effort}}</label>
+                    <b><label for="e{{effort.id}}">{{effort.effort}}</label></b>
                     <textarea type="text" id="e{{effort.id}}" name="e{{effort.id}}" class="form-control"
                         value="{{ticketeffortmap.value}}">{{ticketeffortmap.value}}</textarea>
-
+                    <br>
                     {% endif %}
 
                     {% endfor %}

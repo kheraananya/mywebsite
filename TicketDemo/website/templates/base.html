@@ -93,6 +93,7 @@
 
         </style>
     <title>{% block title %}{% endblock %}</title>
+    <link rel="icon" type="image/x-icon" href="/static/favicon.ico">
 </head>
 <body>
     <nav class="navbar sticky-top navbar-expand-lg py-1 shadow" style="background-color: #045de9; background-image: linear-gradient(45deg, #045de9 0%, #1bc0ee 74%);">
@@ -108,7 +109,9 @@
         <div class="collapse navbar-collapse" id="navbarSupportedContent">
             <ul class="navbar-nav me-auto mb-2 mb-lg-0">
                 <li class="nav-item">
+                    {% if user.is_authenticated %}
                     <a class="nav-link" href ="/home" id="navhome" style="padding-left:25px; color: white; font-size: 16px;">Home</a>
+                    {% endif %}
                 </li>
                     {% if user.is_authenticated %}
                         <a class="nav-link" href ="/all-tickets" id="navalltickets"style="padding-left:25px; color: white; font-size: 16px;">All Tickets</a>

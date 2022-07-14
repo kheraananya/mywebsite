@@ -75,21 +75,21 @@
                 <!-- <a href="/ticketsby/{{ticket.author.username}}">
                 </a> -->
             </div>
-            {% if ticket.status != "Closed" %}
+            {% if ticket.status != "Closed" and ticket.status != "Cancelled" %}
             <div class="btn-group">
                 <button type="button" class="btn btn-sm"
-                    style="background-color: #C9E5EF; position: absolute;top:2px; left:817px; border: 2px solid; ">
+                    style="background-color: #C9E5EF; position: absolute;top:0px; left:809px; border: 2px solid; font-size: 15px;">
                     <a href="/edit-ticket/{{ticket.id}}" class="dropdown-item">
-                        <span class="bi-pen">Edit Ticket</span>
+                        <span class="bi-pen"> Edit Ticket</span>
                     </a>
                 </button>
             </div>
             {% if user.id == ticket.author_id %}
             <div class="btn-group">
                 <button type="button" class="btn btn-sm" 
-                style="background-color: #C9E5EF; position: absolute;top:2px; right:320px;border: 2px solid; ">
+                style="background-color: #C9E5EF; position: absolute;top:0px; right:320px;border: 2px solid; font-size: 15px; ">
                     <a href="/delete-ticket/{{ticket.id}}" class="dropdown-item">
-                        <span class="bi-trash">Delete Ticket</span>
+                        <span class="bi-trash"> Delete Ticket</span>
                     </a>
                 </button>
             </div>
@@ -99,25 +99,33 @@
             {% if user.usertype == 'assignee' %}
             <div>
                 <button type="button" class="btn btn-sm"
-                    style="position: absolute; left:750px; top:58px; background-color: #C9E5EF; border: 2px solid">
+                    style="position: absolute; left:735px; top:56px; background-color: #C9E5EF; border: 2px solid;font-size: 15px;">
                     <a href="/estimated-details/{{ticket.id}}" class="dropdown-item">
-                        <span class="bi-pen">Effort Estimation</span>
+                        <span class="bi-pen"> Effort Estimation</span>
                     </a>
                 </button>
             </div>
             {% endif %}
             <div>
-                <span style="position: absolute; left:572px;top:58px">
+                <span style="position: absolute; left:565px;top:58px">
                     <select class="form-control" id="status-name" name="status-name">
                         {% for status in statuses %}
-                        <option value="{{status.status}}">{{status.status}}</option>
+                            {% if status.status == "Closed" %}
+                                {% if ticketeffortmaps %}
+                                    <option value="{{status.status}}">{{status.status}}</option>
+                                {% else %}
+                                    <option value="{{status.status}}" title="Please Complete Effort Estimation" disabled>{{status.status}}</option>
+                                {% endif %}
+                            {% else %}
+                            <option value="{{status.status}}">{{status.status}}</option>
+                            {% endif %}
                         {% endfor %}
                     </select>
                 </span>
             </div>
             {% if user.usertype == 'admin' %}
             <div>
-                <span style="float: left; left: 748px; top: 58px; position: absolute;">
+                <span style="float: left; left: 740px; top: 58px; position: absolute;">
                     <select class="form-select" id="assignee-name" name="assignee-name">
                         <option></option>
                         <optgroup label="Available &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;">
@@ -167,7 +175,7 @@
                                 <p style="font-size:14px;" class="width-50"><b>Customer Name:</b>{{ticket.custname}}</p>
                                 <p style="font-size:14px;" class="width-20"><b>Region:</b> {{ticket.region}}</p>
                                 
-                                <p style="font-size:14px;" class="width-30"><b>Current Status:</b><b class="badge {% if ticket.status == 'Opened' %} bg-primary {% elif ticket.status == 'Closed' %} bg-success {% else %} bg-warning {% endif %}">{{ticket.status}}</b></p>
+                                <p style="font-size:14px;" class="width-30"><b>Current Status: </b><b style="font-size:14px" class="badge {% if ticket.status == 'Opened' %} bg-primary {% elif ticket.status == 'Closed' %} bg-success {% else %} bg-warning {% endif %}">{{ticket.status}}</b></p>
                                 <br>
                                 <p style="font-size:14px;"><b>Requirement Title:</b> {{ticket.title}}</p>
                                
@@ -191,8 +199,8 @@
                             <span
                                 style="float:left; margin-top: -10px; margin-left: -5px; margin-right: -5px; padding-right: 10px;"
                                 id="collapseTwo" class="collapse people">
-                                {% for ticketquestionmap in ticketquestionmaps %}
                                 {% for question in questions %}
+                                {% for ticketquestionmap in ticketquestionmaps %}
                                 {% if question.id == ticketquestionmap.question_id %}
 
                                 <pre style="white-space:pre-wrap;font-family: 'Assistant', sans-serif;"><b>{{question.question}}</b><br>{{ticketquestionmap.value}}</pre>
@@ -216,8 +224,8 @@
                             </a>
                             <span style="float:left; margin-top: -10px; margin-left: -5px; "
                                 id="collapseThree" class="collapse people">
-                                {% for ticketeffortmap in ticketeffortmaps %}
                                 {% for effort in efforts %}
+                                {% for ticketeffortmap in ticketeffortmaps %}
                                 {% if effort.id == ticketeffortmap.effort_id %}
                                 <pre style="white-space:pre-wrap;font-family: 'Assistant', sans-serif;"><b>{{effort.effort}}:<br></b>{{ticketeffortmap.value}}</pre>
                                 {% endif %}
@@ -233,7 +241,23 @@
                                 style="font-size:16px; font-weight: bold; border: 1px solid grey; color: white; border-radius: 5px; background-color: #003E7F; padding: 7px; margin: -5px; margin-bottom: -15px; margin-right: -6px; margin-left: -6px; margin-top: -6px; width: 970px;">
                                 Comments</div>
                             <br>
-                            <div class="collapse" id="comments-{{ticket.id}}" >
+                            {% if ticket.status != "Closed" and ticket.status != "Cancelled" %}
+                            <form class="input-group mb-3" method="POST" action="/create-comment/{{ticket.id}}">
+                                <textarea type="text" id="text" name="text" class="form-control"
+                                    placeholder="Comment here"></textarea>
+                                <button type="submit" class="btn" style="background-color: #003E7F; color:white;">Comment</button>
+                            </form>
+                            {% endif %}
+                            <p class="card-text">
+                                {% if ticket.comments|length > 0 %}
+                                <a data-bs-toggle="collapse" href="#comments-{{ticket.id}}" role="button">
+                                    <small>View {{ticket.comments|length}} Comments</small>
+                                </a>
+                                {% else %}
+                                <small class="text-muted">No Comments</small>
+                                {% endif %}
+                            </p>
+                            <div class="collapse show" id="comments-{{ticket.id}}" >
                                 <div class="card" >
                                     <div class="card-body" id="comments-expanded-{{ticket.id}}">
                                         {% for comment in comments %}
@@ -242,6 +266,7 @@
                                                 {% if comment.status == 'Edited' %}
                                                 <small style="color:rgb(150, 150, 150)"><i>{{comment.User.username}} ({{comment.User.usertype}}) edited a
                                                     comment - {{comment.date_created | humanize}} ({{comment.date_created}})</i></small>
+                                                <br>
                                                 <pre contenteditable="false"
                                                     id="comment{{comment.id}}" style="white-space:pre-wrap;font-family: 'Assistant', sans-serif;">{{comment.text}}</pre>
                                                 {% else %}
@@ -251,6 +276,7 @@
                                                 <br>
                                                 <small><i>This message was deleted</i></small>
                                                 {% else %}
+                                                <br>
                                                 <pre contenteditable="false"
                                                     id="comment{{comment.id}}" style="white-space:pre-wrap;font-family: 'Assistant', sans-serif;">{{comment.text}}</pre>
                                                 {% endif %}
@@ -280,30 +306,7 @@
                                     </div>
                                 </div>
                             </div>
-                            <p class="card-text">
-                                {% if ticket.comments|length > 0 %}
-                                <a data-bs-toggle="collapse" href="#comments-{{ticket.id}}" role="button">
-                                    <small>View {{ticket.comments|length}} Comments</small>
-                                </a>
-                                {% else %}
-                                <small class="text-muted">No Comments</small>
-                                {% endif %}
-                            </p>
-                            {% if ticket.status != "Closed" %}
-                            <form class="input-group mb-3" method="POST" action="/create-comment/{{ticket.id}}">
-                                <textarea type="text" id="text" name="text" class="form-control"
-                                    placeholder="Comment here"></textarea>
-                                <button type="submit" class="btn" style="background-color: #003E7F; color:white;">Comment</button>
-                            </form>
-                            {% endif %}
                     </div>
-
-                    <!-- <div class = "card-footer text-muted">
-                Created On: {{ticket.date_created}}
-                <br>
-                Last Modified: {{ticket.last_modified}}
-            </div> -->
-
                 </div>
                 </span>
 
@@ -323,7 +326,7 @@
                             <dl>
                                 <p>
                                 <div class="input-group mb-3">
-                                    {% if ticket.status != "Closed" %}
+                                    {% if ticket.status != "Closed" and ticket.status != "Cancelled" %}
                                     <input type="file" name="upload" class="form-control" autocomplete="off" required>
                                     <div class="input-group-append">
                                         <input style="background-color: #003E7F; color:white;" type="submit" value="Submit" class="btn btn-info">
@@ -339,7 +342,7 @@
                         {% for file in files_list %}
                         {% if file.2 =="image/jpeg" or file.2=="image/png" %}
                         <a href = "/display-image/{{file.1}}"><img width="200" height="200" id= "image{{file.1}}" src="data:image/png;base64, {{file.0}}"/></a>
-                        {% if ticket.status != "Closed" %}
+                        {% if ticket.status != "Closed" and ticket.status != "Cancelled" %}
                         <button type="button" class="btn btn-sm">
                             <a href="/delete-file/{{file.1}}" class="dropdown-item">
                                 <span class="bi-x-lg"></span>
@@ -358,7 +361,7 @@
                         {% for file in files_list %}
                         {% if file.2 !="image/jpeg" and file.2 != "image/png" %}
                         {{file.0}}
-                        {% if ticket.status != "Closed" %}
+                        {% if ticket.status != "Closed" and ticket.status != "Cancelled" %}
                         <button type="button" class="btn btn-sm">
                             <a href="/delete-file/{{file.1}}" class="dropdown-item">
                                 <span class="bi-x-lg"></span>
@@ -413,6 +416,14 @@
             </div>
         </div>
         <script>
+            document.addEventListener("DOMContentLoaded", function(event) { 
+				var scrollpos = localStorage.getItem('scrollpos');
+				if (scrollpos) window.scrollTo(0, scrollpos);
+			});
+	
+			window.onbeforeunload = function(e) {
+				localStorage.setItem('scrollpos', window.scrollY);
+			};
             $(document).ready(function () {
                 $('#assignee-name').select2({
                     placeholder: { id: "", text: 'Select Assignee' },
@@ -461,12 +472,16 @@
                 var editmsg = document.getElementById("editmsg" + comment_id);
                 var editmsgflag = document.getElementById("editmsgflag" + comment_id);
                 var textbox = document.createElement("textarea");
+                var height = edittext.innerHTML.split('\n').length;
+                textbox.setAttribute("rows",height);
+                textbox.setAttribute("cols","110");
                 var close = document.createElement("button");
                 var curr = document.createElement("pre");
                 var btngroup = document.getElementById("buttongroup" + comment_id);
                 var currtext = edittext.textContent;
                 close.innerHTML = "<span class='bi-x-lg'></span>";
                 icon.setAttribute("class", "bi-save");
+                curr.setAttribute("style", "white-space:pre-wrap;font-family: 'Assistant', sans-serif;")
                 curr.innerHTML = currtext;
                 textbox.value = currtext;
                 edittext.parentNode.replaceChild(textbox, edittext);
@@ -475,6 +490,7 @@
                     icon.setAttribute("class", "bi-pen");
                     textbox.parentNode.replaceChild(curr, textbox);
                     btngroup.removeChild(close);
+                    location.reload();
                 };
                 button.onclick = function () {
                     icon.setAttribute("class", "bi-pen");
@@ -490,6 +506,7 @@
                         data: JSON.stringify(s)
                     });
                     btngroup.removeChild(close);
+                    location.reload();
                 };
             }
         </script>

@@ -19,7 +19,9 @@ from configparser import ConfigParser
 file = 'devconfig.ini'
 config = ConfigParser()
 config.read(file)
+
 logopath = ''+str(config['logo']['path'])+''
+masterticketcode = ''+str(config['database']['URI_DB_name'])+''
 
 views = Blueprint("views",__name__)
 
@@ -81,6 +83,8 @@ def home():
 def all_tickets():
     if current_user.usertype == 'assignee':
         tickets = Ticket.query.filter_by(assignee_id=current_user.id).all()
+    elif current_user.usertype == 'reporter':
+        tickets = Ticket.query.filter_by(author_id=current_user.id).all()
     else:
         tickets = Ticket.query.all()
     return render_template("all_tickets.html",user=current_user,tickets=tickets,logopath=logopath)
@@ -102,7 +106,6 @@ def alert_audit():
 def create_ticket():
     questions = Question.query.all()
     masteralertconfig = MasterAlertConfig.query.all()
-    masterticketcode = MasterTicketCode.query.first()
     if(questions and masteralertconfig):
         if request.method == "POST":
             now = time.strftime("%d/%B/%Y %H:%M:%S")
@@ -116,7 +119,7 @@ def create_ticket():
             ticket.title = title
             ticket.region = region
             ticket.startdate = startdate
-            ticket.ticket_code = masterticketcode.code
+            ticket.ticket_code = masterticketcode
             db.session.add(ticket)
             if(custname and title and startdate and region):
                 db.session.commit()
@@ -157,8 +160,9 @@ def delete_ticket(id):
     elif current_user.id != ticket.author_id:
         flash("You do not have permission to delete this ticket",category='error')
     else:
-        db.session.delete(ticket)
+        ticket.assignee.status = "Available"
         ticket.last_modified = now
+        db.session.delete(ticket)
         db.session.commit()
         flash('Ticket Deleted',category='success')
     return redirect(url_for('views.home'))
@@ -187,7 +191,7 @@ def tickets(ticket_id):
     files_raw = File.query.filter_by(ticket_id=ticket_id).all()
     files_list = proc_files(files_raw,ticket_id)
     ticket = Ticket.query.filter_by(id=ticket_id).first()
-    comments = Comment.query.filter(Comment.ticket_id==ticket_id).order_by(Comment.id.asc()).all()
+    comments = Comment.query.filter(Comment.ticket_id==ticket_id).order_by(Comment.id.desc()).all()
     if not ticket:
         flash("Invalid ticket ID",category='error')
         return redirect(url_for('views.home'))
@@ -255,8 +259,11 @@ def update_status(ticket_id):
                     ticket.assignee.status = "Available"
                     ticket.date_closed = now
                 else:
-                    #flash("Please do effort estimation before closing ticket",category="error")
+                    flash("Please do effort estimation before closing ticket",category="error")
                     return redirect('/tickets/'+str(ticket_id))
+            if(status == "Cancelled"):
+                if(ticket.assignee):
+                    ticket.assignee.status = "Available"
             ticket.status = status
             ticket.last_modified = now
             comment_text = "Ticket Status changed from '"+str(oldstatus)+"' to '"+str(status)+"'"
@@ -264,7 +271,6 @@ def update_status(ticket_id):
             db.session.add(comment) 
             db.session.commit()
             alertmechanism(ticket.status, ticket.id)
-            #flash("Status updated",category='success')
             return redirect('/tickets/'+str(ticket_id))
     return redirect('/tickets/'+str(ticket_id))
 
@@ -327,7 +333,6 @@ def edit_comment(comment_id):
             comment.status = "Edited"
             ticket.last_modified = now
             db.session.commit()
-            flash("Comment Edited",category='success')
     return redirect('/tickets/'+str(ticket_id))
 
 
@@ -337,6 +342,13 @@ def estimated_details(ticket_id):
     now = time.strftime("%d/%B/%Y %H:%M:%S")
     efforts = Effort.query.order_by(Effort.id.asc()).all()
     ticket = Ticket.query.filter_by(id=ticket_id).first()
+    if(TicketEffortMap.query.filter_by(ticket_id=ticket_id).first()):
+        reason = "So that duplicate mapping not created"
+    else:
+        for effort in efforts:
+            ticketeffortmap = TicketEffortMap(ticket_id=ticket_id,effort_id=effort.id)
+            db.session.add(ticketeffortmap)
+        db.session.commit()
     ticketeffortmaps = TicketEffortMap.query.filter_by(ticket_id=ticket_id).all()
     if request.method == "POST":
         if(efforts):
@@ -346,17 +358,11 @@ def estimated_details(ticket_id):
                 map.value = str(answer)
             comment = Comment(text="Effort Estimation Details Updated",author=current_user.id,ticket_id=ticket_id,date_created=now)
             db.session.add(comment) 
+            ticket.last_modified = now
             db.session.commit()
         else:
             flash("Please complete Master Setup first",category="error")
         return redirect('/tickets/'+str(ticket_id))
-    if(TicketEffortMap.query.filter_by(ticket_id=ticket_id).first()):
-        reason = "So that duplicate mapping not created"
-    else:
-        for effort in efforts:
-            ticketeffortmap = TicketEffortMap(ticket_id=ticket_id,effort_id=effort.id)
-            db.session.add(ticketeffortmap)
-        db.session.commit()
     return render_template("estimate_details.html",ticket=ticket,efforts=efforts,user=current_user,logopath=logopath,ticketeffortmaps=ticketeffortmaps)
 
 
@@ -527,11 +533,14 @@ def master_status():
     if request.method == "POST":
         output = request.get_json()
         for ele in output:
-            status = Status(status=str(ele["value"]),date_created=now,author_id=current_user.id)
-            db.session.add(status)
-            db.session.commit()
-            
-    return redirect('/master')
+            if(str(ele["value"])!=""):
+                status = Status(status=str(ele["value"]),date_created=now,author_id=current_user.id)
+                db.session.add(status)
+                db.session.commit()
+            else:
+                flash("Please fill status field",category="error")
+                return redirect('/master-status-home')
+    return redirect('/master-status-home')
 
 @views.route("/delete-status/<status_id>",methods=['GET'])
 @login_required
@@ -587,6 +596,9 @@ def master_alert_home():
         alert_body = request.form.get('alert_body')
         body_type = request.form['body_type']
         recipients = request.form.get('recipients')
+        if(len(alert_subject)>500):
+            flash("Alert Subject exceeded 500 characters",category="error")
+            return redirect('/master-alert-home')
         curr = MasterAlertConfig.query.filter_by(ticket_status=ticket_status).first()
         if(curr):
             curr.alert_subject = alert_subject
@@ -652,10 +664,12 @@ def master_ticketcode_home():
         status2 = Status(status="Assigned",date_created=now)
         status3 = Status(status="In-Review",date_created=now)
         status4 = Status(status="Closed",date_created=now)
+        status5 = Status(status="Cancelled",date_created=now)
         db.session.add(status1)
         db.session.add(status2)
         db.session.add(status3)
         db.session.add(status4)
+        db.session.add(status5)
         db.session.commit()
     if(Effort.query.all()):
         pass
@@ -665,17 +679,17 @@ def master_ticketcode_home():
         db.session.add(effort1)
         db.session.add(effort2)
         db.session.commit()
-    masterticketcode = MasterTicketCode.query.first()
-    if(masterticketcode):
-        pass
-    else:
-        masterticketcode = MasterTicketCode()
-        db.session.add(masterticketcode)
-    if request.method == 'POST':
-        ticketcode = request.form.get('ticketcode')
-        masterticketcode.code = ticketcode
-        db.session.commit()
-    return render_template('master_ticketcode.html',user=current_user,logopath=logopath,ticket_code=masterticketcode.code)
+    # masterticketcode = MasterTicketCode.query.first()
+    # if(masterticketcode):
+    #     pass
+    # else:
+    #     masterticketcode = MasterTicketCode()
+    #     db.session.add(masterticketcode)
+    # if request.method == 'POST':
+    #     ticketcode = request.form.get('ticketcode')
+    #     masterticketcode.code = ticketcode
+    #     db.session.commit()
+    return render_template('master_ticketcode.html',user=current_user,logopath=logopath,ticket_code=masterticketcode)
 
 
 @views.route("/master-logo-home",methods=['GET','POST'])
@@ -710,6 +724,8 @@ import cv2
 @views.route("/attach-file/<ticket_id>",methods=['POST'])
 @login_required
 def attach_file(ticket_id):
+    now = time.strftime("%d/%B/%Y %H:%M:%S")
+    ticket = Ticket.query.filter_by(id=ticket_id).first()
     upload = request.files['upload']
     if not upload:
         return 'No pic uploaded!', 400
@@ -721,6 +737,7 @@ def attach_file(ticket_id):
 
     file = File(data=upload.read(), name=filename, mimetype=mimetype,ticket_id=ticket_id)
     db.session.add(file)
+    ticket.last_modified = now
     db.session.commit()
     return redirect('/tickets/'+str(ticket_id))
 
@@ -728,9 +745,12 @@ def attach_file(ticket_id):
 @views.route("/delete-file/<file_id>",methods=['GET'])
 @login_required
 def delete_file(file_id):
+    now = time.strftime("%d/%B/%Y %H:%M:%S")
+    ticket = Ticket.query.filter_by(id=ticket_id).first()
     file = File.query.filter_by(id=file_id).first()
     ticket_id = file.ticket_id
     db.session.delete(file)
+    ticket.last_modified = now
     db.session.commit()
     return redirect('/tickets/'+str(ticket_id))
 
@@ -782,44 +802,45 @@ def proc_files(files_raw,ticket_id):
 
 def alertmechanism(ticket_status, ticket_id):
     current = MasterAlertConfig.query.filter_by(ticket_status=ticket_status).first()
-    ticket = Ticket.query.filter_by(id = ticket_id).first()
-    ticket_code = ticket.ticket_code
-    admins = User.query.filter_by(usertype = "admin").all()
-    reporter_id = ticket.author_id
-    assignee_id = ticket.assignee_id
-    reporter = User.query.filter_by(id = reporter_id).first()
-    reporter_email = reporter.email
-    assignee = User.query.filter_by(id = assignee_id).first()
-    if(assignee):
-        assignee_email = assignee.email
-    else:
-        assignee_email = ""
-    alertsub =  current.alert_subject
-    alertbody = current.alert_body
-    alertbody = alertbody.replace("<ticket_id>",str(ticket_code)+str(ticket_id))
-    alertbody = alertbody.replace("<ticket_status>",str(ticket_status))
-    body_type = current.body_type
-    recipients = current.recipients
-    arr = recipients.split(";")
-    recipients_email = ""
-    for i  in range(len(arr)) :
+    if(current):
+        ticket = Ticket.query.filter_by(id = ticket_id).first()
+        ticket_code = ticket.ticket_code
+        admins = User.query.filter_by(usertype = "admin").all()
+        reporter_id = ticket.author_id
+        assignee_id = ticket.assignee_id
+        reporter = User.query.filter_by(id = reporter_id).first()
+        reporter_email = reporter.email
+        assignee = User.query.filter_by(id = assignee_id).first()
+        if(assignee):
+            assignee_email = assignee.email
+        else:
+            assignee_email = ""
+        alertsub =  current.alert_subject
+        alertbody = current.alert_body
+        alertbody = alertbody.replace("<ticket_id>",str(ticket_code)+str(ticket_id))
+        alertbody = alertbody.replace("<ticket_status>",str(ticket_status))
+        body_type = current.body_type
+        recipients = current.recipients
+        arr = recipients.split(";")
+        recipients_email = ""
+        for i  in range(len(arr)) :
 
-        if arr[i] == "reporter" :
-            recipients_email  = recipients_email + ";" + reporter_email
+            if arr[i] == "reporter" :
+                recipients_email  = recipients_email + ";" + reporter_email
+            
+            elif arr[i] == "assignee" :
+                recipients_email  = recipients_email + ";" +  assignee_email
+            elif arr[i] == 'admin':
+                for admin in admins:
+                    admin_email = admin.email
+                    recipients_email  = recipients_email + ";" +  admin_email
+                    
         
-        elif arr[i] == "assignee" :
-            recipients_email  = recipients_email + ";" +  assignee_email
-        elif arr[i] == 'admin':
-            for admin in admins:
-                admin_email = admin.email
-                recipients_email  = recipients_email + ";" +  admin_email
-                
-       
-    recipients_email = recipients_email.strip(";")
-    emailaudit = MasterAlertAudit(ticket_status = ticket_status , alert_subject  = alertsub , alert_body = alertbody , recipients = str(recipients_email) )
-    #emailbysmtp(recipients_email , alertsub , alertbody , body_type)
-    db.session.add(emailaudit)
-    db.session.commit()
+        recipients_email = recipients_email.strip(";")
+        emailaudit = MasterAlertAudit(ticket_status = ticket_status , alert_subject  = alertsub , alert_body = alertbody , recipients = str(recipients_email) )
+        #emailbysmtp(recipients_email , alertsub , alertbody , body_type)
+        db.session.add(emailaudit)
+        db.session.commit()
 
 @views.route("/viewprofile",methods=['GET','POST'])
 @login_required
@@ -857,7 +878,7 @@ def forgot_password():
             user.password=password
             db.session.commit()
             login_user(user,remember=True)
-            flash('Password changed successfully')
+            flash('Password changed successfully',category="error")
             return redirect(url_for('views.home'))
     return render_template('forgotpassword.html',user=current_user,logopath=logopath)
 

@@ -26,7 +26,7 @@
                   <div class="table-responsive">
                        <table class="table" id="dynamic_field"  style = " border-radius:15px;">  
                             <tr>  
-                                 <td style="width:84%"><input type="text" name="status" placeholder="Enter Status" class="form-control name_list"/></td>  
+                                 <td style="width:84%"><input type="text" name="status" placeholder="Enter Status" maxlength = "25" class="form-control name_list"/></td>  
                                  <td><button type="button" name="add" id="add" class="btn btn-success" style="background-color: #003E7F;">Add Ticket Status</button></td>  
                             </tr>  
                        </table>  
@@ -53,7 +53,7 @@
                     <td>{{status.date_created}}</td>
                     <td>{% if status.author_id %} {{ status.author.username}} {%else%} Default {%endif%}</td>
                     <td>
-                        {% if status.status != "Opened" and status.status != "Assigned" and status.status != "In-Review" and status.status != "Closed" %}
+                        {% if status.status != "Opened" and status.status != "Assigned" and status.status != "In-Review" and status.status != "Closed" and status.status != "Cancelled"%}
                         <div class="btn-group" id="buttongroup{{status.id}}">
                             <button type="button" id="button{{status.id}}" class="btn btn-danger" onclick="editStatus('{{status.id}}')"><span class="bi-pen" id="icon{{status.id}}"></span></button>
                             <button type="button" class="btn btn-danger"><a href="/delete-status/{{status.id}}" class="dropdown-item"><span class="bi-trash"></span></a></button>
