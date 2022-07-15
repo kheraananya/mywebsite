@@ -4,6 +4,7 @@
 
 Python Modules to be installed:
 - Flask
+- flask_login
 - flask_sqlalchemy
 - psycopg2
 - pillow
