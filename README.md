@@ -4,10 +4,11 @@
 
 Python Modules to be installed:
 - Flask
+- flask_login
 - flask_sqlalchemy
 - psycopg2
 - pillow
-- opencv
+- opencv-python
 - xlwt
 
 ## Libraries Used
