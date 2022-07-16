@@ -13,7 +13,7 @@
     <div align='center'>
         <a href="/master-ticketcode-home"><button type="button" class="btn btn-primary">Ticket Code</button></a>
         <a href="/master-status-home"><button type="button" class="btn btn-success" style="background-color: #003E7F;">Ticket Statuses</button></a>
-        <a href="/master-question-home"><button type="button" class="btn btn-primary">Questionaires</button></a>
+        <a href="/master-question-home"><button type="button" class="btn btn-primary">Questionnaire</button></a>
         <a href="/master-effort-home"><button type="button" class="btn btn-primary">Effort Estimation Fields</button></a>
         <a href="/master-alert-home"><button type="button" class="btn btn-primary">Alert Configuration</button></a>
         <a href="/master-logo-home"><button type="button" class="btn btn-primary">Logo Upload</button></a>
@@ -86,6 +86,7 @@
                     icon.setAttribute("class", "bi-pen");
                     textbox.parentNode.replaceChild(curr, textbox);
                     btngroup.removeChild(close);
+                    location.reload();
                 };
                 button.onclick = function () {
                     icon.setAttribute("class", "bi-pen");
@@ -101,6 +102,7 @@
                         data: JSON.stringify(s)
                     });
                     btngroup.removeChild(close);
+                    location.reload();
                 };
             }
     var navele = document.getElementById('navmaster');

@@ -746,9 +746,9 @@ def attach_file(ticket_id):
 @login_required
 def delete_file(file_id):
     now = time.strftime("%d/%B/%Y %H:%M:%S")
-    ticket = Ticket.query.filter_by(id=ticket_id).first()
     file = File.query.filter_by(id=file_id).first()
     ticket_id = file.ticket_id
+    ticket = Ticket.query.filter_by(id=ticket_id).first()
     db.session.delete(file)
     ticket.last_modified = now
     db.session.commit()
@@ -889,7 +889,7 @@ def emailbysmtp(recipients_email , alertsub , alertbody , body_type):
     for i in arr :
         receiver_email = str(i)
         domain = receiver_email.split("@")[1]
-        if(domain != "adobe.com"):
+        if(domain == "adobe.com"):
             message = MIMEMultipart("alternative")
             message["Subject"] = alertsub
             message["From"] = sender_email
