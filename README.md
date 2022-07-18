@@ -47,12 +47,15 @@ if __name__ == "__main__":
  ## Steps to Alter Database Schema
  
  * Run the SQL ALTER query inside pgAdmin4
- * Document the query inside DB_Queries.sql in the template format provided below
- * ```Executed On:
-      Executed by:
-      Description:
-      Query:
-      ```
+ * Next, document the query inside DB_Queries.sql in the template format provided below
+```sql
+/*
+Executed On:
+Executed by:
+Description:
+Query:
+*/
+```
  
 Useful Links 
 * [How to install PIP for Python on Windows, Mac and Linux](https://www.makeuseof.com/tag/install-pip-for-python/)
