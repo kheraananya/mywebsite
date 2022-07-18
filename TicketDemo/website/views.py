@@ -36,7 +36,6 @@ def run_query():
 @views.route("/home")
 @login_required
 def home():
-    #run_query()
     yearago = str(datetime.today() - timedelta(days=365)).split(" ")[0]
     now = str(datetime.today()).split(" ")[0]
     assignees = User.query.filter_by(usertype="assignee").all()
@@ -799,6 +798,7 @@ def proc_files(files_raw,ticket_id):
             filetuple = (file_raw.name,file_raw.id,file_raw.mimetype)
             files_list.append(filetuple)
     return files_list
+
 
 def alertmechanism(ticket_status, ticket_id):
     current = MasterAlertConfig.query.filter_by(ticket_status=ticket_status).first()
