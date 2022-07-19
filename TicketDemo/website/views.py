@@ -838,7 +838,10 @@ def alertmechanism(ticket_status, ticket_id):
         
         recipients_email = recipients_email.strip(";")
         emailaudit = MasterAlertAudit(ticket_status = ticket_status , alert_subject  = alertsub , alert_body = alertbody , recipients = str(recipients_email) )
-        #emailbysmtp(recipients_email , alertsub , alertbody , body_type)
+        sendflag = ''+str(config['email']['sendflag'])+''
+        if(sendflag=="true"):
+            print("email sent")
+            emailbysmtp(recipients_email , alertsub , alertbody , body_type)
         db.session.add(emailaudit)
         db.session.commit()
 

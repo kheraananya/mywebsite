@@ -125,15 +125,15 @@
                 </ul>
                 <img src = {{logopath}} width="30px" height="30px">
                 <div class="d-flex">
-                    <a href="/helpdoc"><i class="bi-question-circle" style="font-size:24px;color:white;padding-left:25px;"></i></a>
                     {% if user.is_authenticated %}
-                        <a class="nav-item nav-link" href ="/logout" style="color: white;font-size: 16px;padding-left:25px;padding-top: 5px;">Logout</a>
-                        <a class="nav-item nav-link" id="profile" href ="/viewprofile" style="color: white; padding-left:25px;padding-top: 4px; font-size: 16px;"><img src="../static/PersonLogo.png" height="25x" width="25px"/></a>
+                        <a class="nav-item nav-link" href ="/logout" style="color: white;font-size: 16px;padding-left:25px;padding-top: 2px;">Logout</a>
+                        <a class="nav-item nav-link" id="profile" href ="/viewprofile" style="color: white; padding-left:25px;padding-top: 1px; font-size: 16px;"><img src="../static/PersonLogo.png" height="25x" width="25px"/></a>
                     {% else %}
-                        <a class="nav-item nav-link" href ="/login" id="login" style="color: white; padding-left:25px;font-size: 16px;padding-top: 5px;">Login</a>
-                        <a class="nav-item nav-link " href ="/signup" id="signup" style="color: white; padding-left:25px;font-size: 16px;padding-top: 5px;">Signup</a>
+                        <a class="nav-item nav-link" href ="/login" id="login" style="color: white; padding-left:25px;font-size: 16px;padding-top: 2px;">Login</a>
+                        <a class="nav-item nav-link " href ="/signup" id="signup" style="color: white; padding-left:25px;font-size: 16px;padding-top: 2px;">Signup</a>
                     {% endif %}
                 </div>
+                <a href="/helpdoc" style="padding-top: 3px;"><i class="bi-question-circle" style="font-size:20px;color:white;padding-left:25px;"></i></a>
             </div>
         </div>
     </nav>
