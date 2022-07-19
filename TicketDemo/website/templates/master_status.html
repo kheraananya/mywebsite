@@ -2,12 +2,10 @@
 {% block title %} Master Ticket Statuses {% endblock %}
 {% block content %}
 <style>
-    .table>tbody>tr:nth-of-type(odd) {  
-     background-color:#C9E5EF;  
-  }  
-     
-      
-  </style>
+    .table > tbody{
+        background-color: rgb(235,235,235);
+    } 
+</style>
 <body>
     <br>
     <div align='center'>
@@ -47,7 +45,7 @@
             </thead>
         <tbody>
             {% for status in statuses %}
-                <tr>
+                <tr style="font-size: 14px;">
                     <td>{{status.id}}</a></td>
                     <td><p id="status{{status.id}}">{{status.status}}</p></td>
                     <td>{{status.date_created}}</td>

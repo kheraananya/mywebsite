@@ -2,9 +2,9 @@
 {% block title %} Master Ticket Statuses {% endblock %}
 {% block content %}
 <style>
-    .table>tbody>tr:nth-of-type(odd) {
-        background-color: #C9E5EF;
-    }
+    .table > tbody{
+        background-color: rgb(235,235,235);
+    } 
 </style>
 
 <body>
@@ -40,7 +40,7 @@
             id="collapseTwo" class="collapse people">
             <div class="container">
                 <form method='POST'>
-                    <div style="border: 1px solid grey; border-radius: 5px; background-color: #C9E5EF;">
+                    <div style="border: 1px solid grey; border-radius: 5px; background-color: rgb(235,235,235);">
                         <div class="form-group" class="grid-container" style="display: grid;
                     grid-template-columns: auto auto ; grid-gap: 30px; padding: 10px;">
                             <div><label for="ticket_status">Ticket Status</label>
@@ -107,7 +107,7 @@
             </thead>
             <tbody>
                 {% for alert in alerts %}
-                <tr>
+                <tr style="font-size: 14px;">
                     <td>{{alert.ticket_status}}</a></td>
                     <td>{{alert.recipients|capitalize}}</td>
                     <td>{{alert.alert_subject}}</td>

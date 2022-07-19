@@ -3,9 +3,9 @@
 {% block content %}
 <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <style>
-    .table>tbody>tr:nth-of-type(odd) {  
-     background-color:#C9E5EF;  
-  }  
+    .table > tbody{
+        background-color: rgb(235,235,235);
+    } 
 </style>
 <body>
     <br>
@@ -33,7 +33,7 @@
             </thead>
         <tbody>
             {% for reset in resets %}
-                <tr>
+                <tr style="font-size: 14px;">
                     <td>{{reset.id}}</a></td>
                     <td>
                         {% for admin in admins %}

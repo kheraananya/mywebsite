@@ -2,12 +2,10 @@
 {% block title %} Master Effort Estimation Fields{% endblock %}
 {% block content %}
 <style>
-    .table>tbody>tr:nth-of-type(odd) {  
-     background-color:#C9E5EF;  
-  }  
-     
-      
-  </style>
+    .table > tbody{
+        background-color: rgb(235,235,235);
+    } 
+</style>
 <body>
     <br>
     <div align='center'>
@@ -47,7 +45,7 @@
             </thead>
         <tbody>
             {% for effort in efforts %}
-                <tr>
+                <tr style="font-size: 14px;">
                     <td>{{effort.id}}</a></td>
                     <td><p id="effort{{effort.id}}">{{effort.effort}}</p></td>
                     <td>{{effort.date_created}}</td>
