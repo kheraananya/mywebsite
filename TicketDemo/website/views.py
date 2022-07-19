@@ -1153,3 +1153,7 @@ def edit_status(status_id):
         status.status = newtext
         db.session.commit()
     return redirect('/master-status-home')
+
+@views.route("/helpdoc")
+def help_doc():
+    return render_template("helpdoc.html",user=current_user,logopath=logopath)
