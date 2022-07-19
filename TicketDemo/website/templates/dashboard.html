@@ -10,7 +10,22 @@
 	<script src="https://unpkg.com/chart.js-plugin-labels-dv/dist/chartjs-plugin-labels.min.js"></script>
 	<br>
 	<h5 align="left" style="font-family: 'Assistant', sans-serif; padding-left: 5px;"><b>Home</b></h5>
-	
+	<br>
+	<div class>
+		<div class="card card-style mb-2">
+			<div class="card-header">
+				<div align="left" style="float: left;">
+					<i class="fa-solid fa-chart-column"></i> Status Report
+				</div>
+			</div>
+			<div class="card-body shadow">
+				<div class="chart-container" style="position: relative">
+					<canvas id="myChart1" width="400" height="400"></canvas>
+				</div>
+			</div>
+		</div>
+	</div>
+	<br>
 	{% if user.usertype != 'reporter' %}
 	<div class>
 		<div class="card card-style mb-2">
@@ -46,21 +61,7 @@
 	</div>
 	{% endif %}
 	<br>
-	<div class>
-		<div class="card card-style mb-2">
-			<div class="card-header">
-				<div align="left" style="float: left;">
-					<i class="fa-solid fa-chart-column"></i> Status Report
-				</div>
-			</div>
-			<div class="card-body shadow">
-				<div class="chart-container" style="position: relative">
-					<canvas id="myChart1" width="400" height="400"></canvas>
-				</div>
-			</div>
-		</div>
-	</div>
-	<br>
+
 	<div class>
 		<div class="card card-style mb-2">
 			<div class="card-header">
@@ -124,7 +125,7 @@
 				localStorage.setItem('scrollpos', window.scrollY);
 			};
 		var navele = document.getElementById('navhome');
-		navele.setAttribute("style","padding-left:25px; color: white; font-weight: bold;");
+		navele.setAttribute("style","padding-left:25px; color: white; font-weight: bold;text-decoration: underline;");
 		   count_vs_status = JSON.parse( {{count_vs_status|tojson}} );
 			  statuses =[];
 			  counts=[];

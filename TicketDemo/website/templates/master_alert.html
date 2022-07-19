@@ -11,7 +11,7 @@
     <br>
     <div align='center'>
         <a href="/master-ticketcode-home"><button type="button" class="btn btn-primary">Ticket Code</button></a>
-        <a href="/master-status-home"><button type="button" class="btn btn-primary">Ticket Statuses</button></a>
+        <a href="/master-status-home"><button type="button" class="btn btn-primary">Ticket Status</button></a>
         <a href="/master-question-home"><button type="button" class="btn btn-primary">Questionnaire</button></a>
         <a href="/master-effort-home"><button type="button" class="btn btn-primary">Effort Estimation Fields</button></a>
         <a href="/master-alert-home"><button type="button"class="btn btn-success" style="background-color: #003E7F;">Alert Configuration</button></a>
@@ -146,7 +146,7 @@
         }
         $(document).ready(function () {
             var navele = document.getElementById('navmaster');
-	        navele.setAttribute("style","padding-left:25px; color: white; font-weight: bold;");
+	        navele.setAttribute("style","padding-left:25px; color: white; font-weight: bold;text-decoration: underline;");
             $('#myTable').DataTable();
             $('#submit').click(function () {
                 window.location.href = "/master-alert-home";

@@ -23,10 +23,10 @@ content %}
 	</div>
 	<div class="container py-5 h-50">
 		<div class="row d-flex justify-content-center align-items-center h-100">
-			<div class="col-12 col-md-8 col-lg-6 col-xl-5" style="margin-top: -40px">
+			<div class="col-12 col-md-8 col-lg-6 col-xl-5" style="margin-top: -40px;">
 				<div class="card shadow" style="border-radius: 1rem">
 					<div class="card-body p-5 text-center">
-						<h4 class="mb-5"><b>Login to ScoPortal</b></h4>
+						<!-- <h4 class="mb-5"><b>Login to ScoPortal</b></h4> -->
 
 						<div class="form-outline mb-4" style="margin-top: -30px">
 							<label class="form-label" for="email">Email</label>
@@ -62,7 +62,8 @@ content %}
 <script>
 	$(document).ready(function () {
 		var x = document.getElementById("login");
-		x.setAttribute("class", "nav-item nav-link active");
+		//x.setAttribute("class", "nav-item nav-link active");
+		x.setAttribute("style","padding-left:25px; color: white; font-weight: bold;text-decoration: underline;padding-top: 5px;");
 	});
 </script>
 {% endblock %}

@@ -1,9 +1,9 @@
 {% extends "base.html" %} {% block title %} Alert Audit {% endblock %} {% block
 	content %}
 	<style>
-		.table > tbody > tr:nth-of-type(odd) {
-			background-color: #c9e5ef;
-		}
+		.table > tbody{
+			background-color: rgb(235,235,235);
+		} 
 	</style>
 	<br />
 	<h5 align="left" style="font-family: 'Assistant', sans-serif; padding-top: 5px; padding-left: 10px;"><b>Alert Audit</b></h5>
@@ -46,7 +46,7 @@
 	<script>
 		$(document).ready(function () {
 			var navele = document.getElementById('navalertaudit');
-			navele.setAttribute("style","padding-left:25px; color: white; font-weight: bold;");
+			navele.setAttribute("style","padding-left:25px; color: white; font-weight: bold;text-decoration: underline;");
 			$("#myTable").DataTable();
 		});
 	</script>

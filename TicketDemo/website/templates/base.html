@@ -56,8 +56,8 @@
 
         body{
             font-family: 'Assistant', sans-serif;
-            background-color: white; /* For browsers that do not support gradients */
-            background-image: linear-gradient( rgb(233, 232, 232),#93cdf4);
+            background-color: rgb(245, 245, 245); /* For browsers that do not support gradients */
+            /* background-image: linear-gradient( rgb(233, 232, 232),#93cdf4); */
             min-height: 100%;
             background-attachment: fixed;
             }
@@ -96,11 +96,12 @@
     <link rel="icon" type="image/x-icon" href="/static/favicon.ico">
 </head>
 <body>
-    <nav class="navbar sticky-top navbar-expand-lg py-1 shadow" style="background-color: #045de9; background-image: linear-gradient(45deg, #045de9 0%, #1bc0ee 74%);">
+    <!-- background-image: linear-gradient(45deg, #045de9 0%, #1bc0ee 74%); -->
+    <nav class="navbar sticky-top navbar-expand-lg py-1 shadow" style="background-color: #003e7f; ">
         <div class="container-fluid">
-            <img src="../static/CompanyLogo.png" width="95px" height="25px" >
-            <img src = {{logopath}} width="107px" height="35px" style="padding-left:5px;">
-            <div class="vl py-0" style="border-left: 2px solid white;height: 25px;"></div>
+            <img src="../static/CompanyLogo.png" width="30px" height="30px" >
+            
+            <!-- <div class="vl py-0" style="border-left: 2px solid white;height: 25px;"></div> -->
             <h5 class="nav-item mb-lg-0" style="color:white; padding-left:5px;font-size: 15px; font-family: 'Lato', sans-serif;font-weight: 400; ">ScoPortal</h5>
             
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
@@ -122,13 +123,15 @@
                         {% endif %}
                     </li>
                 </ul>
+                <img src = {{logopath}} width="30px" height="30px">
                 <div class="d-flex">
+                    <a href="/helpdoc"><i class="bi-question-circle" style="font-size:24px;color:white;padding-left:25px;"></i></a>
                     {% if user.is_authenticated %}
-                        <a class="nav-item nav-link" href ="/logout" style="color: white;font-size: 16px;padding-left:25px;">Logout</a>
-                        <a class="nav-item nav-link" id="profile" href ="/viewprofile" style="color: white; padding-left:10px;padding-right: 5px; font-size: 13px;"><img src="https://img.icons8.com/ios-glyphs/30/000000/test-account.png" height="20px" style="padding-left:5px;"/></a>
+                        <a class="nav-item nav-link" href ="/logout" style="color: white;font-size: 16px;padding-left:25px;padding-top: 5px;">Logout</a>
+                        <a class="nav-item nav-link" id="profile" href ="/viewprofile" style="color: white; padding-left:25px;padding-top: 4px; font-size: 16px;"><img src="../static/PersonLogo.png" height="25x" width="25px"/></a>
                     {% else %}
-                        <a class="nav-item nav-link" href ="/login" style="color: white; padding-left:25px;font-size: 16px;">Login</a>
-                        <a class="nav-item nav-link " href ="/signup" style="color: white; padding-left:25px;font-size: 16px;">Signup</a>
+                        <a class="nav-item nav-link" href ="/login" id="login" style="color: white; padding-left:25px;font-size: 16px;padding-top: 5px;">Login</a>
+                        <a class="nav-item nav-link " href ="/signup" id="signup" style="color: white; padding-left:25px;font-size: 16px;padding-top: 5px;">Signup</a>
                     {% endif %}
                 </div>
             </div>
