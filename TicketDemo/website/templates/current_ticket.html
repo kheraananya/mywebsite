@@ -34,7 +34,7 @@
         margin: 5px;
         border: 1px solid grey;
         border-radius: 5px;
-        background-color: #C9E5EF;
+        background-color: rgb(235,235,235);
 
     }
 
@@ -78,7 +78,7 @@
             {% if ticket.status != "Closed" and ticket.status != "Cancelled" %}
             <div class="btn-group">
                 <button type="button" class="btn btn-sm"
-                    style="background-color: #C9E5EF; position: absolute;top:0px; left:809px; border: 2px solid; font-size: 15px;">
+                    style="background-color: rgb(235,235,235); position: absolute;top:0px; left:809px; border: 2px solid; font-size: 15px;">
                     <a href="/edit-ticket/{{ticket.id}}" class="dropdown-item">
                         <span class="bi-pen"> Edit Ticket</span>
                     </a>
@@ -87,7 +87,7 @@
             {% if user.id == ticket.author_id %}
             <div class="btn-group">
                 <button type="button" class="btn btn-sm" 
-                style="background-color: #C9E5EF; position: absolute;top:0px; right:320px;border: 2px solid; font-size: 15px; ">
+                style="background-color: rgb(235,235,235); position: absolute;top:0px; right:320px;border: 2px solid; font-size: 15px; ">
                     <a href="/delete-ticket/{{ticket.id}}" class="dropdown-item">
                         <span class="bi-trash"> Delete Ticket</span>
                     </a>
@@ -99,7 +99,7 @@
             {% if user.usertype == 'assignee' %}
             <div>
                 <button type="button" class="btn btn-sm"
-                    style="position: absolute; left:735px; top:56px; background-color: #C9E5EF; border: 2px solid;font-size: 15px;">
+                    style="position: absolute; left:735px; top:56px; background-color: rgb(235,235,235); border: 2px solid;font-size: 15px;">
                     <a href="/estimated-details/{{ticket.id}}" class="dropdown-item">
                         <span class="bi-pen"> Effort Estimation</span>
                     </a>
@@ -161,7 +161,7 @@
                 <div class="card-body">
                     <div class="card-text">
 
-                        <div style="display: block; margin-left: -60px; width: 970px; margin-top: 27px;" class="row">
+                        <div style="display: block; margin-left: -60px; width: 970px; margin-top: 27px; margin-bottom: -20px;" class="row">
                             <span class="people" style="float:left; width:1000px;">
                                 <div
                                     style="font-size:16px; font-weight: bold; border: 1px solid grey; color: white; border-radius: 5px; background-color: #003E7F; padding: 7px; margin: -5px; margin-bottom: -15px; width: 970px; margin-left: -6px; margin-top: -6px;">
@@ -183,7 +183,7 @@
                             </span>
                         </div>
 
-                        <div class="row" style="display: block; margin-left: -50px; margin-top: -20px; width: 970px;">
+                        <div class="row" style="display: block; margin-left: -50px; margin-top: -20px; width: 970px; margin-bottom: -20px;">
                             <a data-bs-toggle="collapse" data-bs-target="#collapseTwo" aria-expanded="false"
                                 aria-controls="collapseTwo">
 
@@ -235,7 +235,7 @@
                         </div>
                     </div>
 
-                    <div class="row" style="display: block; margin-left: -60px; width: 970px;">
+                    <div class="row" style="display: block; margin-left: -60px; width: 970px; ">
                         <span class="people" style="float:left;">
                             <div
                                 style="font-size:16px; font-weight: bold; border: 1px solid grey; color: white; border-radius: 5px; background-color: #003E7F; padding: 7px; margin: -5px; margin-bottom: -15px; margin-right: -6px; margin-left: -6px; margin-top: -6px; width: 970px;">
