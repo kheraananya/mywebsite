@@ -33,7 +33,7 @@
         </div>  
     </div>
     <div class="container">
-        <table class = "table" id="myTable">
+        <table class = "table" id="MasterEffortTable">
             <thead class = "thead-light">
                 <tr style="background-color: #003E7F; color: white;">
                     <th style = "font-size: 15px;">Effort ID</th>        
@@ -105,7 +105,7 @@
     $(document).ready(function(){ 
         var navele = document.getElementById('navmaster');
 	    navele.setAttribute("style","padding-left:25px; color: white; font-weight: bold;text-decoration: underline;");
-        $('#myTable').DataTable();  
+        $('#MasterEffortTable').DataTable();  
         $('#add').click(function(){  
                 $.ajax({  
                     url:"/master-effort",  

@@ -33,7 +33,7 @@
         </div>  
     </div>
     <div class="container">
-        <table class = "table" id="myTable">
+        <table class = "table" id="MasterStatusTable">
             <thead class = "thead-light">
                 <tr style="background-color: #003E7F; color: white;">
                     <th style = "font-size: 15px;">Status ID</th>        
@@ -106,7 +106,7 @@
     var navele = document.getElementById('navmaster');
 	navele.setAttribute("style","padding-left:25px; color: white; font-weight: bold;text-decoration: underline;");
     $(document).ready(function(){ 
-        $('#myTable').DataTable();  
+        $('#MasterStatusTable').DataTable();  
         $('#add').click(function(){  
                 $.ajax({  
                     url:"/master-status",  
