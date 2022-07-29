@@ -163,7 +163,17 @@
         integrity="sha384-pprn3073KE6tl6bjs2QrFaJGz5/SUsLqktiwsUTF55Jfv3qYSDhgCecCxMW52nD2"
         crossorigin="anonymous"
     ></script>
-    
+    <script>
+        var scale = window.devicePixelRatio;
+			if(scale==1)
+			{
+				document.body.style.zoom="130%";
+			}
+            if(scale==1.25)
+			{
+				document.body.style.zoom="100%";
+			}
+    </script>
     <style>
         html { overflow-y: scroll; }
     </style>
