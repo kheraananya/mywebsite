@@ -136,6 +136,7 @@ def create_ticket():
             if(custname and title and startdate and region):
                 db.session.commit()
                 alertmechanism("Opened", ticket.id)
+                flash("Ticket created Successfully. Consultant will be assigned within next 2-3 working days.",category="success")
             else:
                 flash("Enter required details",category="error")
                 return redirect(url_for("views.create_ticket"))
